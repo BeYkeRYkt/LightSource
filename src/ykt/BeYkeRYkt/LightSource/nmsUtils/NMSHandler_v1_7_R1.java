@@ -1,6 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.nmsUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import net.minecraft.server.v1_7_R1.ChunkCoordIntPair;
@@ -9,6 +10,7 @@ import net.minecraft.server.v1_7_R1.EntityHuman;
 import net.minecraft.server.v1_7_R1.EntityPlayer;
 import net.minecraft.server.v1_7_R1.EnumSkyBlock;
 import net.minecraft.server.v1_7_R1.IWorldAccess;
+import net.minecraft.server.v1_7_R1.PacketPlayOutMapChunk;
 import net.minecraft.server.v1_7_R1.PlayerChunkMap;
 import net.minecraft.server.v1_7_R1.WorldServer;
 
@@ -21,48 +23,100 @@ import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import ykt.BeYkeRYkt.LightSource.LightSource;
+
+
 
 public class NMSHandler_v1_7_R1 implements NMSInterface {
 
 	/**
 	 * 
-	 * FIRST BLOOD!
+	 * BETA STAGE №1
 	 * 
 	 * @author BeYkeRYkt
 	 */
 	
+	
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
-		BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+	private static Method cachedPlayerChunk;
+	private static Field cachedDirtyField;
+	
+	private static Method getPlayerCountMethod() throws NoSuchMethodException, SecurityException {
+		if (cachedPlayerChunk == null) {
+		cachedPlayerChunk = PlayerChunkMap.class.getDeclaredMethod("a", int.class, int.class, boolean.class);
+		cachedPlayerChunk.setAccessible(true);
+		}
+		return cachedPlayerChunk;
+		}
+		 
+		private static Field getDirtyField(Object playerChunk) throws NoSuchFieldException, SecurityException {
+		if (cachedDirtyField == null) {
+		cachedDirtyField = playerChunk.getClass().getDeclaredField("dirtyCount");
+		cachedDirtyField.setAccessible(true);
+		}
+		return cachedDirtyField;
+		}
 	
 	@Override
 	public void recalculateBlockLighting(World world, int x, int y, int z) {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-		//nmsWorld.A(x, y ,z); - Random ?!
 		nmsWorld.t(x, y, z);
 	}
 
-
+	//PLAYER LOCATION
 	@Override
-	public void createLightSource(Location loc, int level) {
+	public void createLightSourceForPlayer(Location loc, int level) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-		
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ(), level);
-		updateChunk(loc.getWorld(), loc);
+
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
+
+		updateChunk(loc.getWorld(), loc, UpdateLocationType.PLAYER_LOCATION);
 	}
 
 	@Override
-	public void deleteLightSource(Location loc) {
+	public void deleteLightSourceForPlayer(Location loc) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
 	}
 
 	@Override
-	public void deleteLightSourceAndUpdate(Location loc) {
-		deleteLightSource(loc);
+	public void deleteLightSourceAndUpdateForPlayer(Location loc) {
+		deleteLightSourceForPlayer(loc);
 
-		updateChunk(loc.getWorld(), loc);
+		updateChunk(loc.getWorld(), loc, UpdateLocationType.PLAYER_LOCATION);
 	}
+
 	
+	
+	
+	
+	
+	
+	
+	
+	//ENTITY LOCATION
+	@Override
+	public void createLightSourceForEntity(Location loc, int level) {
+		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
+
+		updateChunk(loc.getWorld(), loc, UpdateLocationType.MOB_LOCATION);
+	}
+
+	@Override
+	public void deleteLightSourceForEntity(Location loc) {
+		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
+	}
+
+	@Override
+	public void deleteLightSourceAndUpdateForEntity(Location loc) {
+		deleteLightSourceForEntity(loc);
+
+		updateChunk(loc.getWorld(), loc, UpdateLocationType.MOB_LOCATION);
+	}
 	public Block getAdjacentAirBlock(Block block) {
 		// Find the first adjacent air block
 		for (BlockFace face : SIDES) {
@@ -81,15 +135,18 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 		return block;
 	}
 
-	//New light update system (ALPHA)
+	//Данная версия состоит из рукожопного кода из моего рукожопного мозга. Если у вас способ получше, я его с радостью приму :3
+	//Баги:
+	//1. Иногда зависает свет
+	//2. Два источника света = говножоп
+	//3. Свет изчезает в узких помещениях
+	//4. ГОВНОКОД
 	@Override
-	public void updateChunk(World world, Location loc) {
+	public void updateChunk(World world, Location loc, UpdateLocationType type) {
 		try {
 			WorldServer nmsWorld = ((CraftWorld) world).getHandle();
 			PlayerChunkMap map = nmsWorld.getPlayerChunkMap();
 			
-			if(loc.getChunk().isLoaded()){
-
 			IWorldAccess access = countLightUpdates(loc.getWorld(), map);
 			nmsWorld.addIWorldAccess(access);
 				
@@ -100,30 +157,72 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			Field field = net.minecraft.server.v1_7_R1.World.class.getDeclaredField("u");
 			field.setAccessible(true);
 			((List) field.get(nmsWorld)).remove(access);
+			
+			//List<Chunk> cs = new ArrayList<Chunk>();
 
+			//for(int x=-1; x<=1; x++) {
+			//for(int z=-1; z<=1; z++) {
+			//Chunk chunk = ((CraftChunk) loc.clone().add(16 * x, 0, 16 * z).getChunk()).getHandle();
+			//if (!cs.contains(chunk)) {
+				//cs.add(chunk);
+			//}
+			//}
+			//}
+			
+			
+			int chunkX = loc.getBlockX() >> 4;
+			int chunkZ = loc.getBlockZ() >> 4;
 			map.flagDirty(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-								    
-			ChunkCoordIntPair location = new ChunkCoordIntPair(loc.getChunk().getX() * 16, loc.getChunk().getZ() * 16);
-						
-			for(Player players: loc.getWorld().getPlayers()){
-			if(players.getLocation().distance(loc) <= Bukkit.getServer().getViewDistance()*16 ){
-			EntityPlayer nmsplayers = ((CraftPlayer) players).getHandle();
-	           if (!nmsplayers.chunkCoordIntPairQueue.contains(location)) {
-	                nmsplayers.chunkCoordIntPairQueue.add(location);
-	            }
-			   }
-			}
-			}
+									
+			for (int dX = -1; dX <= 1; dX++) {
+				for (int dZ =-1; dZ <=1; dZ++) {
+				// That class is package private unfortunately				 					
+				Object playerChunk = getPlayerCountMethod().invoke(map, chunkX + dX, chunkZ + dZ, false);
+				
+				if (playerChunk != null) {
+				Field dirtyField = getDirtyField(playerChunk);
+				int dirtyCount = (Integer) dirtyField.get(playerChunk);
+				 
+				//It's Work
+				//System.out.println("Dirty count: " + dirtyCount);
+				
+				// Minecraft will automatically send out a Packet51MapChunk for us,
+				// with only those segments (16x16x16) that are needed.
+				if (dirtyCount > 0) {
+				dirtyField.set(playerChunk, 64);
+				}
+				
+				if(type == UpdateLocationType.PLAYER_LOCATION){
+				ChunkCoordIntPair chunkCoord = new ChunkCoordIntPair(nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locX, nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locZ);
+				for(Player players: loc.getWorld().getPlayers()){
+				if(players.getLocation().distance(loc) <= Bukkit.getServer().getViewDistance()*16){
+				   EntityPlayer nmsplayers = ((CraftPlayer) players).getHandle();
+		           if (!nmsplayers.chunkCoordIntPairQueue.contains(chunkCoord)) {
+		                nmsplayers.playerConnection.sendPacket(new PacketPlayOutMapChunk(nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ), false, 65535));
+		                if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+		                    LightSource.getInstance().getLogger().info("SendPacket to chunk: X=" + nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locX + " , Z="+nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locZ);
+		                  }
+		                nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).initLighting();
+		            }
+				   }
+				}
+				}
+				//end
+				
+				
+				}
+				}
+				}
+				
 			
 			map.flush();
-
 		} catch (SecurityException e) {
 			throw new RuntimeException("Access denied", e);
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException("Reflection problem.", e);
 		}
 	}
-	
+
 	private static IWorldAccess countLightUpdates(final org.bukkit.World world,
 			final PlayerChunkMap map) {
 		return new IWorldAccess() {
@@ -198,6 +297,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			@Override
 			public void b() {
 				// TODO Auto-generated method stub
+				
 			}
 
 		};

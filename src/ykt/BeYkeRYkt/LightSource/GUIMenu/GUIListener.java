@@ -35,6 +35,7 @@ public class GUIListener implements Listener{
 					  LightSource.getInstance().getConfig().options().copyDefaults(true);
 					  LightSource.getInstance().saveConfig();
 					  LightSource.getInstance().getConfig().options().copyDefaults(false);
+					  LightSource.getInstance().registerAdvancedItemListener(false);
 						
 					  player.closeInventory();
 					  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
@@ -44,9 +45,10 @@ public class GUIListener implements Listener{
 					  LightSource.getInstance().getConfig().options().copyDefaults(true);
 					  LightSource.getInstance().saveConfig();
 					  LightSource.getInstance().getConfig().options().copyDefaults(false);
-						
+					  LightSource.getInstance().registerAdvancedItemListener(true);
+					  
 					  player.closeInventory();
-					  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+					  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						}else{
 							player.closeInventory();
 							player.sendMessage(ChatColor.RED + "To work needed BKCommonLib. Advanced listener does not include.");
@@ -59,9 +61,10 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().registerAdvancedEntityListener(false);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  
 					  }else if(clicked.getItemMeta().getLore().contains("false")){
 							if(Bukkit.getPluginManager().getPlugin("BKCommonLib") != null  && Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()){
@@ -70,9 +73,10 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().registerAdvancedEntityListener(true);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 							}else{
 								player.closeInventory();
 								player.sendMessage(ChatColor.RED + "To work needed BKCommonLib. Advanced listener does not include.");
@@ -87,7 +91,7 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  
 					  }else if(clicked.getItemMeta().getLore().contains("false")){
 				
@@ -97,7 +101,7 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 					  }
 				}else if(cmd.getGUIEnable().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					if(clicked.getItemMeta().getLore().contains("true")){
@@ -106,9 +110,10 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().setGUI(false);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  
 					  }else if(clicked.getItemMeta().getLore().contains("false")){
 		
@@ -116,9 +121,10 @@ public class GUIListener implements Listener{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().setGUI(true);
 							
 						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 					  }
 				}else if(cmd.getReload().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					  LightSource.getInstance().reloadConfig();
@@ -165,7 +171,7 @@ public class GUIListener implements Listener{
 							  LightSource.getInstance().getConfig().options().copyDefaults(false);
 								
 							  player.closeInventory();
-							  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+							  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }else if(clicked.getItemMeta().getLore().contains("false")){
 							  LightSource.getInstance().getConfig().set("Worlds." + clicked.getItemMeta().getDisplayName(), true);
 							  LightSource.getInstance().getConfig().options().copyDefaults(true);
@@ -173,10 +179,11 @@ public class GUIListener implements Listener{
 							  LightSource.getInstance().getConfig().options().copyDefaults(false);
 								
 							  player.closeInventory();
-							  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+							  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }
 					}
 				}
+				event.setCancelled(true);
 			}
 		}
 	}

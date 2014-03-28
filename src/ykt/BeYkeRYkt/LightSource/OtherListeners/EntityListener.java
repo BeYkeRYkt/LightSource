@@ -20,6 +20,7 @@ public class EntityListener implements Listener {
 		if (entity instanceof LivingEntity) {
 			LivingEntity le = (LivingEntity) entity;
 
+			if(le.getLocation().getChunk().isLoaded()){
 			if (le.getFireTicks() > 0) {
 				if (event.getFromX() != event.getToX()
 						|| event.getFromY() != event.getToY()
@@ -31,15 +32,16 @@ public class EntityListener implements Listener {
 					Location to = new Location(le.getWorld(), event.getToX(),
 							event.getToY(), event.getToZ());
 
-					LightAPI.deleteLightSource(from);
-					LightAPI.createLightSource(to, 12);
+					LightAPI.deleteLightSourceForEntity(from);
+					LightAPI.createLightSourceForEntity(to, 12);
 
 				}
 			} else {
 				Location from = new Location(le.getWorld(), event.getFromX(),
 						event.getFromY(), event.getFromZ());
-				LightAPI.deleteLightSourceAndUpdate(from);
+				LightAPI.deleteLightSourceAndUpdateForEntity(from);
 			}
+		}
 		}
 	}
 
@@ -50,10 +52,11 @@ public class EntityListener implements Listener {
 			LivingEntity le = (LivingEntity) entity;
 			Location loc = le.getLocation();
 
+			if(le.getLocation().getChunk().isLoaded()){
 			if (le.getFireTicks() > 0) {
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
 			}
-
+			}
 		}
 	}
 
@@ -64,10 +67,11 @@ public class EntityListener implements Listener {
 			LivingEntity le = (LivingEntity) entity;
 			Location loc = le.getLocation();
 
+			if(le.getLocation().getChunk().isLoaded()){
 			if (le.getFireTicks() > 0) {
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
 			}
-
+			}
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.HeadLamp;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +26,7 @@ public class HeadLampListener implements Listener {
 
 		if (LightSource.getInstance().getConfig().getBoolean("Worlds." + event.getPlayer().getWorld().getName()) || event.getPlayer().isOp()){
 		// Checking player
-		if (LightSource.getInstance().getHeadPlayers().contains(player)) {
+		if (LightSource.getInstance().getHeadPlayers().contains(player.getName())) {
 			if (item != null && HeadManager.isHeadLamp(item)) {
 				if (event.getFrom().getBlock().getLocation().getBlockX() != event.getTo().getBlock().getLocation().getBlockX()
 						|| event.getFrom().getBlock().getLocation().getBlockY() != event.getTo().getBlock().getLocation()
@@ -33,14 +34,14 @@ public class HeadLampListener implements Listener {
 						|| event.getFrom().getBlock().getLocation().getBlockZ() != event.getTo().getBlock().getLocation()
 								.getBlockZ()) {
 
-					LightAPI.deleteLightSource(event.getFrom().getBlock().getLocation());
-					LightAPI.createLightSource(event.getTo().getBlock().getLocation(),
+					LightAPI.deleteLightSourceForPlayer(event.getFrom().getBlock().getLocation());
+					LightAPI.createLightSourceForPlayer(event.getTo().getBlock().getLocation(),
 							HeadManager.getLightLevel(item));
 				}
 			} else if (item != null && !HeadManager.isHeadLamp(item)
-					|| item == null) {
-				LightAPI.deleteLightSourceAndUpdate(event.getFrom().getBlock().getLocation());
-				LightSource.getInstance().getHeadPlayers().remove(player);
+					|| item == null || item.getType() == Material.AIR) {
+				LightAPI.deleteLightSourceAndUpdateForPlayer(event.getFrom().getBlock().getLocation());
+				LightSource.getInstance().getHeadPlayers().remove(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 					LightSource.getInstance().getLogger()
@@ -49,11 +50,11 @@ public class HeadLampListener implements Listener {
 
 			}
 
-		} else if (!LightSource.getInstance().getHeadPlayers().contains(player)) {
+		} else if (!LightSource.getInstance().getHeadPlayers().contains(player.getName())) {
 			if (item != null && HeadManager.isHeadLamp(item)) {
-				LightAPI.createLightSource(player.getLocation().getBlock().getLocation(),
+				LightAPI.createLightSourceForPlayer(player.getLocation().getBlock().getLocation(),
 						HeadManager.getLightLevel(item));
-				LightSource.getInstance().getHeadPlayers().add(player);
+				LightSource.getInstance().getHeadPlayers().add(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 					LightSource.getInstance().getLogger()
@@ -70,8 +71,8 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getPlayer().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 		}
 
 	}
@@ -81,8 +82,8 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getPlayer().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 		}
 
 	}
@@ -92,8 +93,8 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getEntity().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getEntity())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getEntity().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 		}
 
 	}
@@ -103,10 +104,10 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getPlayer().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer());
+					.remove(event.getPlayer().getName());
 		}
 
 	}
@@ -116,10 +117,10 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getPlayer().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer());
+					.remove(event.getPlayer().getName());
 		}
 
 	}
@@ -129,10 +130,10 @@ public class HeadLampListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
 		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
+				.contains(event.getPlayer().getName())) {
+			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
 			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer());
+					.remove(event.getPlayer().getName());
 		}
 
 	}

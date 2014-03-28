@@ -26,6 +26,8 @@ public class ItemLightListener implements Listener {
 			Item item_entity = (Item) entity;
 			ItemStack item = item_entity.getItemStack();
 
+			if(item_entity.getLocation().getChunk().isLoaded()){
+			
 			if (item != null && ItemManager.isTorchLight(item)) {
 				if (event.getFromX() != event.getToX()
 						|| event.getFromY() != event.getToY()
@@ -37,11 +39,12 @@ public class ItemLightListener implements Listener {
 					Location to = new Location(item_entity.getWorld(),
 							event.getToX(), event.getToY(), event.getToZ());
 
-					LightAPI.deleteLightSource(from);
-					LightAPI.createLightSource(to,
+					LightAPI.deleteLightSourceForEntity(from);
+					LightAPI.createLightSourceForEntity(to,
 							ItemManager.getLightLevel(item));
 				}
 			}
+		}
 		}
 	}
 
@@ -53,8 +56,10 @@ public class ItemLightListener implements Listener {
 			ItemStack item = item_entity.getItemStack();
 			Location loc = item_entity.getLocation();
 
+			if(item_entity.getLocation().getChunk().isLoaded()){
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+			}
 			}
 		}
 	}
@@ -67,21 +72,23 @@ public class ItemLightListener implements Listener {
 			ItemStack item = item_entity.getItemStack();
 			Location loc = item_entity.getLocation();
 
+			if(item_entity.getLocation().getChunk().isLoaded()){
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+			}
 			}
 		}
 	}
 
-	// @EventHandler
+	@EventHandler
 	public void onPlayerPickupLight(PlayerPickupItemEvent event) {
 		Location loc = event.getPlayer().getLocation();
 		Item entity = event.getItem();
 		ItemStack item = entity.getItemStack();
 
 		if (item != null && ItemManager.isTorchLight(item)) {
-			LightAPI.deleteLightSourceAndUpdate(entity.getLocation());
-			LightSource.getInstance().getTorchPlayers().add(event.getPlayer());
+			LightAPI.deleteLightSourceAndUpdateForEntity(entity.getLocation());
+			LightSource.getInstance().getTorchPlayers().add(event.getPlayer().getName());
 		}
 	}
 

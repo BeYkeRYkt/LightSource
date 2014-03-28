@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,13 +25,16 @@ import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
 public class LightSource extends JavaPlugin {
 
 	private static LightSource plugin;
-	private ArrayList<Player> torch = new ArrayList<Player>();
-	private ArrayList<Player> head = new ArrayList<Player>();
+	private ArrayList<String> torch = new ArrayList<String>();
+	private ArrayList<String> head = new ArrayList<String>();
 	private ItemManager im;
 	private HeadManager hm;
 	private LightAPI api;
 	private boolean gui;
-
+    private ItemLightListener ill= new ItemLightListener();
+    private EntityListener el = new EntityListener();
+	
+	
 	// Enable
 	@Override
 	public void onEnable() {
@@ -38,6 +43,7 @@ public class LightSource extends JavaPlugin {
 		this.hm = new HeadManager();
 		this.im = new ItemManager();
 
+		if(api.getNMSHandler() != null){
 		PluginDescriptionFile pdfFile = getDescription();
 
 		try {
@@ -48,7 +54,7 @@ public class LightSource extends JavaPlugin {
 								+ " Configuration" + "\nHave fun :3"
 								+ "\nby BeYkeRYkt");
 				fc.addDefault("Debug", false);
-				fc.addDefault("Enable-GUI", false);
+				fc.addDefault("Enable-GUI", true);
 				fc.addDefault("Advanced-Listener.TorchLight", false);
 				fc.addDefault("Advanced-Listener.Entity", false);
 
@@ -76,49 +82,32 @@ public class LightSource extends JavaPlugin {
 		// Advanced Item listener
 		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
 
-			if (Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
-				this.getLogger().info(
-						"Found BKCommonLib! Enabling Advanced item listener!");
-				Bukkit.getPluginManager().registerEvents(
-						new ItemLightListener(), this);
-			} else {
-				this.getLogger()
-						.info("To work needed BKCommonLib. Advanced listener does not include.");
-			}
+			registerAdvancedItemListener(true);
 
 		}
 
 		// Advanced Entity listener
 		if (this.getConfig().getBoolean("Advanced-Listener.Entity")) {
 
-			if (Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
-				this.getLogger()
-						.info("Found BKCommonLib! Enabling Advanced entity listener!");
-				Bukkit.getPluginManager().registerEvents(new EntityListener(),
-						this);
-			} else {
-				this.getLogger()
-						.info("To work needed BKCommonLib. Advanced listener does not include.");
-			}
+			registerAdvancedEntityListener(true);
 
 		}
 
 		this.gui = getConfig().getBoolean("Enable-GUI");	
-		if(gui){
-			Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-		}
+		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 		
+		
+		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.OP));
 		getCommand("ls").setExecutor(new MainCommand());
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
-
+		}
 	}
 
 	public void createExampleTorch() {
 		try {
 			FileConfiguration fc = getItemManager().getConfig()
 					.getSourceConfig();
-			if (!new File(getDataFolder(), "TorchLight.yml").exists()) {
-
+			if (!new File(getDataFolder(), "TorchLight.yml").exists()) {				
 				fc.addDefault("DEMO.name", null);
 				fc.addDefault("DEMO.material", "TORCH");
 				fc.addDefault("DEMO.lightlevel", 14);
@@ -163,8 +152,10 @@ public class LightSource extends JavaPlugin {
 	public void onDisable() {
 		
 		for(Player players : Bukkit.getOnlinePlayers()){
-			LightAPI.deleteLightSourceAndUpdate(players.getLocation().getBlock().getLocation());
+			LightAPI.deleteLightSourceAndUpdateForPlayer(players.getLocation().getBlock().getLocation());
 		}
+		
+		Bukkit.getPluginManager().removePermission("lightsource.admin");
 		
 		HandlerList.unregisterAll(this);
 		
@@ -185,11 +176,11 @@ public class LightSource extends JavaPlugin {
 		return plugin;
 	}
 
-	public ArrayList<Player> getTorchPlayers() {
+	public ArrayList<String> getTorchPlayers() {
 		return torch;
 	}
 
-	public ArrayList<Player> getHeadPlayers() {
+	public ArrayList<String> getHeadPlayers() {
 		return head;
 	}
 
@@ -209,5 +200,36 @@ public class LightSource extends JavaPlugin {
 	public boolean getGUI() {
 		return gui;
 	}
+	
+	public void registerAdvancedItemListener(boolean flag){
+		if(flag){
+		if (Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
+			this.getLogger().info("Found BKCommonLib! Enabling Advanced item listener!");
+			Bukkit.getPluginManager().registerEvents(ill, this);
+		} else {
+			this.getLogger().info("To work needed BKCommonLib. Advanced listener does not include.");
+		}
+		}else if(!flag){
+			this.getLogger().info("Disabling Advanced listener for items");
+			HandlerList.unregisterAll(ill);
+		}
+	}
 
+	public void registerAdvancedEntityListener(boolean flag){
+		if(flag){
+		if (Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
+			this.getLogger().info("Found BKCommonLib! Enabling Advanced entity listener!");
+			Bukkit.getPluginManager().registerEvents(el,this);
+		} else {
+			this.getLogger().info("To work needed BKCommonLib. Advanced listener does not include.");
+		}
+		}else if(!flag){
+			this.getLogger().info("Disabling Advanced listener for entity");
+			HandlerList.unregisterAll(el);
+		}
+	}
+
+	public void setGUI(boolean parseBoolean) {
+		this.gui = parseBoolean;
+	}
 }

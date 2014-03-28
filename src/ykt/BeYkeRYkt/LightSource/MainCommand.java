@@ -100,8 +100,9 @@ public class MainCommand implements CommandExecutor{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().setGUI(Boolean.parseBoolean(args[1]));
 							
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
@@ -112,7 +113,7 @@ public class MainCommand implements CommandExecutor{
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
 							
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
@@ -126,8 +127,9 @@ public class MainCommand implements CommandExecutor{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().registerAdvancedItemListener(Boolean.parseBoolean(args[1]));
 							
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
@@ -138,8 +140,9 @@ public class MainCommand implements CommandExecutor{
 						  LightSource.getInstance().getConfig().options().copyDefaults(true);
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
+						  LightSource.getInstance().registerAdvancedEntityListener(Boolean.parseBoolean(args[1]));
 							
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 					  }else{
 						  player.sendMessage(ChatColor.RED + "You do not have permission");
 					  }
@@ -200,7 +203,7 @@ public class MainCommand implements CommandExecutor{
 						  LightSource.getInstance().saveConfig();
 						  LightSource.getInstance().getConfig().options().copyDefaults(false);
 						  
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 					  }else{
 						  player.sendMessage(ChatColor.RED + "You do not have permission");
 					  }

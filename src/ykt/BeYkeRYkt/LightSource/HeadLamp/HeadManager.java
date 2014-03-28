@@ -66,7 +66,7 @@ public class HeadManager {
 	}
 
 	public static boolean isHeadLamp(ItemStack item) {
-
+		if(item != null && item.getType() != Material.AIR){
 		if (item.getItemMeta().hasDisplayName()) {
 			String name = item.getItemMeta().getDisplayName();
 			Material mat = item.getType();
@@ -85,11 +85,12 @@ public class HeadManager {
 				}
 			}
 		}
-
+		}
 		return false;
 	}
 
 	public static int getLightLevel(ItemStack item) {
+		if(item != null && item.getType() != Material.AIR){
 		if (item.getItemMeta().hasDisplayName()) {
 			String name = item.getItemMeta().getDisplayName();
 			Material mat = item.getType();
@@ -122,7 +123,7 @@ public class HeadManager {
 				}
 			}
 		}
-
+		}
 		return 0;
 	}
 

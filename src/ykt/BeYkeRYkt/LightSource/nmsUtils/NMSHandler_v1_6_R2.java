@@ -4,34 +4,34 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import net.minecraft.server.v1_5_R3.ChunkCoordIntPair;
-import net.minecraft.server.v1_5_R3.Entity;
-import net.minecraft.server.v1_5_R3.EntityHuman;
-import net.minecraft.server.v1_5_R3.EntityPlayer;
-import net.minecraft.server.v1_5_R3.EnumSkyBlock;
-import net.minecraft.server.v1_5_R3.IWorldAccess;
-import net.minecraft.server.v1_5_R3.Packet51MapChunk;
-import net.minecraft.server.v1_5_R3.PlayerChunkMap;
-import net.minecraft.server.v1_5_R3.WorldServer;
+import net.minecraft.server.v1_6_R3.ChunkCoordIntPair;
+import net.minecraft.server.v1_6_R3.Entity;
+import net.minecraft.server.v1_6_R3.EntityHuman;
+import net.minecraft.server.v1_6_R3.EntityPlayer;
+import net.minecraft.server.v1_6_R3.EnumSkyBlock;
+import net.minecraft.server.v1_6_R3.IWorldAccess;
+import net.minecraft.server.v1_6_R3.Packet51MapChunk;
+import net.minecraft.server.v1_6_R3.PlayerChunkMap;
+import net.minecraft.server.v1_6_R3.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
 
 
 
-public class NMSHandler_v1_5_R3 implements NMSInterface {
+public class NMSHandler_v1_6_R2 implements NMSInterface {
 
 	/**
 	 * 
-	 * BETA STAGE №5 !!
+	 * BETA STAGE №1 !!
 	 * 
 	 * @author BeYkeRYkt
 	 */
@@ -156,7 +156,7 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 
 			recalculateBlockLighting(world, adjacent.getX(), adjacent.getY(),adjacent.getZ());
 
-			Field field = net.minecraft.server.v1_5_R3.World.class.getDeclaredField("u");
+			Field field = net.minecraft.server.v1_6_R3.World.class.getDeclaredField("u");
 			field.setAccessible(true);
 			((List) field.get(nmsWorld)).remove(access);
 			

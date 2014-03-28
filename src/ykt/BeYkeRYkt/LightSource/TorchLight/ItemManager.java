@@ -65,6 +65,7 @@ public class ItemManager {
 	}
 
 	public static boolean isTorchLight(ItemStack item) {
+		if(item != null && item.getType() != Material.AIR){
 		if (item.getItemMeta().hasDisplayName()) {
 			String name = item.getItemMeta().getDisplayName();
 			Material mat = item.getType();
@@ -83,11 +84,12 @@ public class ItemManager {
 				}
 			}
 		}
-
+		}
 		return false;
 	}
 
 	public static int getLightLevel(ItemStack item) {
+		if(item != null){
 		if (item.getItemMeta().hasDisplayName()) {
 			String name = item.getItemMeta().getDisplayName();
 			Material mat = item.getType();
@@ -120,7 +122,7 @@ public class ItemManager {
 				}
 			}
 		}
-
+		}
 		return 0;
 	}
 

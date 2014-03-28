@@ -1,0 +1,8 @@
+name: LightSource
+main: ykt.BeYkeRYkt.LightSource.LightSource
+version: 1.0
+description: More Lights!
+author: BeYkeRYkt
+commands:
+   ls:
+      description: Main command

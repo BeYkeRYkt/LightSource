@@ -48,48 +48,9 @@ public class LightAPI{
      * @param loc - which block to update.
      * @param level - the new light level.
      */
-    public static void createLightSourceForPlayer(Location loc, int level) {
+    public static void createLightSource(Location loc, int level, UpdateLocationType type) {
 
-    	nms.createLightSourceForPlayer(loc, level);
-
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-        LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
-        }
-    }
-
-    
-    /**
-     * Delete light with level at a location. (Not update)
-     * @param loc - which block to update.
-     */
-    public static void deleteLightSourceForPlayer(Location loc){
-    	
-    	nms.deleteLightSourceForPlayer(loc);
-
-    }
-
-    
-	/**
-	* Destroy light with level at a location (Update)
-	* @param loc - location to the block that was updated.
-	*/
-    public static void deleteLightSourceAndUpdateForPlayer(Location loc){
-    	
-    	nms.deleteLightSourceAndUpdateForPlayer(loc);
-
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-           LightSource.getInstance().getLogger().info("Deleted light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
-        }
-    }
-     
-    /**
-     * Create light with level at a location. 
-     * @param loc - which block to update.
-     * @param level - the new light level.
-     */
-    public static void createLightSourceForEntity(Location loc, int level) {
-
-    	nms.createLightSourceForEntity(loc, level);
+    	nms.createLightSource(loc, level, type);
 
         if(LightSource.getInstance().getConfig().getBoolean("Debug")){
         LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
@@ -101,9 +62,9 @@ public class LightAPI{
      * Delete light with level at a location. (Not update)
      * @param loc - which block to update.
      */
-    public static void deleteLightSourceForEntity(Location loc){
+    public static void deleteLightSource(Location loc){
     	
-    	nms.deleteLightSourceForEntity(loc);
+    	nms.deleteLightSource(loc);
 
     }
 
@@ -112,15 +73,14 @@ public class LightAPI{
 	* Destroy light with level at a location (Update)
 	* @param loc - location to the block that was updated.
 	*/
-    public static void deleteLightSourceAndUpdateForEntity(Location loc){
+    public static void deleteLightSourceAndUpdate(Location loc, UpdateLocationType type){
     	
-    	nms.deleteLightSourceAndUpdateForEntity(loc);
+    	nms.deleteLightSourceAndUpdate(loc, type);
 
         if(LightSource.getInstance().getConfig().getBoolean("Debug")){
            LightSource.getInstance().getLogger().info("Deleted light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
         }
-    }
-    
+    }  
     
 	/**
 	* Gets all the chunks touching/diagonal to the chunk the location is in and updates players with them.

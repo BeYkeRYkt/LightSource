@@ -64,59 +64,29 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 		nmsWorld.t(x, y, z);
 	}
 
-	//PLAYER LOCATION
+	//LOCATION
 	@Override
-	public void createLightSourceForPlayer(Location loc, int level) {
+	public void createLightSource(Location loc, int level, UpdateLocationType type) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 
 		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
 
-		updateChunk(loc.getWorld(), loc, UpdateLocationType.PLAYER_LOCATION);
+		updateChunk(loc.getWorld(), loc, type);
 	}
 
 	@Override
-	public void deleteLightSourceForPlayer(Location loc) {
+	public void deleteLightSource(Location loc) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
 	}
 
 	@Override
-	public void deleteLightSourceAndUpdateForPlayer(Location loc) {
-		deleteLightSourceForPlayer(loc);
+	public void deleteLightSourceAndUpdate(Location loc,  UpdateLocationType type) {
+		deleteLightSource(loc);
 
-		updateChunk(loc.getWorld(), loc, UpdateLocationType.PLAYER_LOCATION);
+		updateChunk(loc.getWorld(), loc, type);
 	}
-
 	
-	
-	
-	
-	
-	
-	
-	
-	//ENTITY LOCATION
-	@Override
-	public void createLightSourceForEntity(Location loc, int level) {
-		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
-
-		updateChunk(loc.getWorld(), loc, UpdateLocationType.MOB_LOCATION);
-	}
-
-	@Override
-	public void deleteLightSourceForEntity(Location loc) {
-		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
-	}
-
-	@Override
-	public void deleteLightSourceAndUpdateForEntity(Location loc) {
-		deleteLightSourceForEntity(loc);
-
-		updateChunk(loc.getWorld(), loc, UpdateLocationType.MOB_LOCATION);
-	}
 	public Block getAdjacentAirBlock(Block block) {
 		// Find the first adjacent air block
 		for (BlockFace face : SIDES) {
@@ -173,7 +143,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			int chunkX = loc.getBlockX() >> 4;
 			int chunkZ = loc.getBlockZ() >> 4;
 			map.flagDirty(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-									
+			
 			for (int dX = -1; dX <= 1; dX++) {
 				for (int dZ =-1; dZ <=1; dZ++) {
 				// That class is package private unfortunately				 					
@@ -192,7 +162,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 				dirtyField.set(playerChunk, 64);
 				}
 				
-				if(type == UpdateLocationType.PLAYER_LOCATION){
+				if(type == UpdateLocationType.PLAYER_LOCATION|| type == UpdateLocationType.ITEM_LOCATION){
 				ChunkCoordIntPair chunkCoord = new ChunkCoordIntPair(nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locX, nmsWorld.getChunkAt(chunkX +dX, chunkZ + dZ).locZ);
 				for(Player players: loc.getWorld().getPlayers()){
 				if(players.getLocation().distance(loc) <= Bukkit.getServer().getViewDistance()*16){

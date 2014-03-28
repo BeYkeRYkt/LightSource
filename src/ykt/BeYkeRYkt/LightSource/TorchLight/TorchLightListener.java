@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.UpdateLocationType;
 
 public class TorchLightListener implements Listener {
 
@@ -35,15 +36,15 @@ public class TorchLightListener implements Listener {
 				if (event.getFrom().getBlock().getLocation().getBlockX() != event.getTo().getBlock().getLocation().getBlockX()
 					|| event.getFrom().getBlock().getLocation().getBlockY() != event.getTo().getBlock().getLocation().getBlockY()
 						|| event.getFrom().getBlock().getLocation().getBlockZ() != event.getTo().getBlock().getLocation().getBlockZ()) {
-					LightAPI.deleteLightSourceForPlayer(event.getFrom().getBlock().getLocation());
+					LightAPI.deleteLightSource(event.getFrom().getBlock().getLocation());
 					
-					LightAPI.createLightSourceForPlayer(event.getTo().getBlock().getLocation(),
-							ItemManager.getLightLevel(item));
+					LightAPI.createLightSource(event.getTo().getBlock().getLocation(),
+							ItemManager.getLightLevel(item), UpdateLocationType.PLAYER_LOCATION);
 				}
 			}else if (item != null && !ItemManager.isTorchLight(item)|| item == null) {
 
-				LightAPI.deleteLightSourceForPlayer(event.getFrom().getBlock().getLocation());
-				LightAPI.deleteLightSourceAndUpdateForPlayer(event.getTo().getBlock().getLocation());
+				LightAPI.deleteLightSource(event.getFrom().getBlock().getLocation());
+				LightAPI.deleteLightSourceAndUpdate(event.getTo().getBlock().getLocation(), UpdateLocationType.PLAYER_LOCATION);
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
 				
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -56,7 +57,7 @@ public class TorchLightListener implements Listener {
 				if (event.getFrom().getBlock().getLocation().getBlockX() != event.getTo().getBlock().getLocation().getBlockX()
 					|| event.getFrom().getBlock().getLocation().getBlockY() != event.getTo().getBlock().getLocation().getBlockY()
 						|| event.getFrom().getBlock().getLocation().getBlockZ() != event.getTo().getBlock().getLocation().getBlockZ()) {					
-					LightAPI.createLightSourceForPlayer(event.getTo().getBlock().getLocation(),ItemManager.getLightLevel(item));
+					LightAPI.createLightSource(event.getTo().getBlock().getLocation(),ItemManager.getLightLevel(item), UpdateLocationType.PLAYER_LOCATION);
 					LightSource.getInstance().getTorchPlayers().add(player.getName());
 					
 					if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -81,7 +82,7 @@ public class TorchLightListener implements Listener {
 			return;
 		if (!LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.createLightSourceForPlayer(loc, ItemManager.getLightLevel(item));
+				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item), UpdateLocationType.PLAYER_LOCATION);
 				LightSource.getInstance().getTorchPlayers().add(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -92,7 +93,7 @@ public class TorchLightListener implements Listener {
 
 		} else if (LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && !ItemManager.isTorchLight(item) || item == null|| item.getType() == Material.AIR) {
-				LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -101,8 +102,8 @@ public class TorchLightListener implements Listener {
 				}
 
 			} else if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceForPlayer(loc);
-				LightAPI.createLightSourceForPlayer(loc, ItemManager.getLightLevel(item));
+				LightAPI.deleteLightSource(loc);
+				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item), UpdateLocationType.PLAYER_LOCATION);
 			}
 		}
 	}
@@ -114,7 +115,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 		}
 
 	}
@@ -125,7 +126,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 		}
 
 	}
@@ -136,7 +137,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getEntity().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 		}
 
 	}
@@ -147,7 +148,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 			LightSource.getInstance().getTorchPlayers()
 					.remove(event.getPlayer().getName());
 		}
@@ -160,7 +161,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 			LightSource.getInstance().getTorchPlayers()
 					.remove(event.getPlayer().getName());
 		}
@@ -173,7 +174,7 @@ public class TorchLightListener implements Listener {
 
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 			LightSource.getInstance().getTorchPlayers()
 					.remove(event.getPlayer().getName());
 		}
@@ -185,7 +186,7 @@ public class TorchLightListener implements Listener {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdateForPlayer(loc);
+			LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.PLAYER_LOCATION);
 			LightSource.getInstance().getTorchPlayers()
 					.remove(event.getPlayer().getName());
 		}

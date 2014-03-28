@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.UpdateLocationType;
 
 import com.bergerkiller.bukkit.common.events.EntityMoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
@@ -32,14 +33,14 @@ public class EntityListener implements Listener {
 					Location to = new Location(le.getWorld(), event.getToX(),
 							event.getToY(), event.getToZ());
 
-					LightAPI.deleteLightSourceForEntity(from);
-					LightAPI.createLightSourceForEntity(to, 12);
+					LightAPI.deleteLightSource(from);
+					LightAPI.createLightSource(to, 12,UpdateLocationType.MOB_LOCATION);
 
 				}
 			} else {
 				Location from = new Location(le.getWorld(), event.getFromX(),
 						event.getFromY(), event.getFromZ());
-				LightAPI.deleteLightSourceAndUpdateForEntity(from);
+				LightAPI.deleteLightSourceAndUpdate(from, UpdateLocationType.MOB_LOCATION);
 			}
 		}
 		}
@@ -54,7 +55,7 @@ public class EntityListener implements Listener {
 
 			if(le.getLocation().getChunk().isLoaded()){
 			if (le.getFireTicks() > 0) {
-				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.MOB_LOCATION);
 			}
 			}
 		}
@@ -69,7 +70,7 @@ public class EntityListener implements Listener {
 
 			if(le.getLocation().getChunk().isLoaded()){
 			if (le.getFireTicks() > 0) {
-				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.MOB_LOCATION);
 			}
 			}
 		}

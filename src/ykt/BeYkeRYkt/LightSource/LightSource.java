@@ -21,6 +21,7 @@ import ykt.BeYkeRYkt.LightSource.OtherListeners.EntityListener;
 import ykt.BeYkeRYkt.LightSource.OtherListeners.ItemLightListener;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
 import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.UpdateLocationType;
 
 public class LightSource extends JavaPlugin {
 
@@ -152,7 +153,7 @@ public class LightSource extends JavaPlugin {
 	public void onDisable() {
 		
 		for(Player players : Bukkit.getOnlinePlayers()){
-			LightAPI.deleteLightSourceAndUpdateForPlayer(players.getLocation().getBlock().getLocation());
+			LightAPI.deleteLightSourceAndUpdate(players.getLocation().getBlock().getLocation(), UpdateLocationType.PLAYER_LOCATION);
 		}
 		
 		Bukkit.getPluginManager().removePermission("lightsource.admin");

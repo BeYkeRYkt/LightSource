@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.UpdateLocationType;
 
 import com.bergerkiller.bukkit.common.events.EntityMoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
@@ -39,9 +40,9 @@ public class ItemLightListener implements Listener {
 					Location to = new Location(item_entity.getWorld(),
 							event.getToX(), event.getToY(), event.getToZ());
 
-					LightAPI.deleteLightSourceForEntity(from);
-					LightAPI.createLightSourceForEntity(to,
-							ItemManager.getLightLevel(item));
+					LightAPI.deleteLightSource(from);
+					LightAPI.createLightSource(to,
+							ItemManager.getLightLevel(item), UpdateLocationType.ITEM_LOCATION);
 				}
 			}
 		}
@@ -58,7 +59,7 @@ public class ItemLightListener implements Listener {
 
 			if(item_entity.getLocation().getChunk().isLoaded()){
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+				LightAPI.deleteLightSourceAndUpdate(loc,UpdateLocationType.ITEM_LOCATION);
 			}
 			}
 		}
@@ -74,7 +75,7 @@ public class ItemLightListener implements Listener {
 
 			if(item_entity.getLocation().getChunk().isLoaded()){
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdateForEntity(loc);
+				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.ITEM_LOCATION);
 			}
 			}
 		}
@@ -87,7 +88,7 @@ public class ItemLightListener implements Listener {
 		ItemStack item = entity.getItemStack();
 
 		if (item != null && ItemManager.isTorchLight(item)) {
-			LightAPI.deleteLightSourceAndUpdateForEntity(entity.getLocation());
+			LightAPI.deleteLightSourceAndUpdate(entity.getLocation(), UpdateLocationType.ITEM_LOCATION);
 			LightSource.getInstance().getTorchPlayers().add(event.getPlayer().getName());
 		}
 	}

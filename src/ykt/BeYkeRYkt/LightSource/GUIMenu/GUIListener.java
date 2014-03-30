@@ -38,7 +38,7 @@ public class GUIListener implements Listener{
 					  LightSource.getInstance().registerAdvancedItemListener(false);
 						
 					  player.closeInventory();
-					  player.sendMessage(ChatColor.GREEN + "Settings are changed. Restart the plugin.");
+					  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 				  }else if(clicked.getItemMeta().getLore().contains("false")){
 						if(Bukkit.getPluginManager().getPlugin("BKCommonLib") != null && Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()){	 
 					  LightSource.getInstance().getConfig().set("Advanced-Listener.TorchLight", true);
@@ -54,34 +54,6 @@ public class GUIListener implements Listener{
 							player.sendMessage(ChatColor.RED + "To work needed BKCommonLib. Advanced listener does not include.");
 						}
 				  }
-				}else if(cmd.getAdv_Ent().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
-					if(clicked.getItemMeta().getLore().contains("true")){
-
-						  LightSource.getInstance().getConfig().set("Advanced-Listener.Entity", false);
-						  LightSource.getInstance().getConfig().options().copyDefaults(true);
-						  LightSource.getInstance().saveConfig();
-						  LightSource.getInstance().getConfig().options().copyDefaults(false);
-						  LightSource.getInstance().registerAdvancedEntityListener(false);
-							
-						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
-						  
-					  }else if(clicked.getItemMeta().getLore().contains("false")){
-							if(Bukkit.getPluginManager().getPlugin("BKCommonLib") != null  && Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()){
-								
-						  LightSource.getInstance().getConfig().set("Advanced-Listener.Entity", true);
-						  LightSource.getInstance().getConfig().options().copyDefaults(true);
-						  LightSource.getInstance().saveConfig();
-						  LightSource.getInstance().getConfig().options().copyDefaults(false);
-						  LightSource.getInstance().registerAdvancedEntityListener(true);
-							
-						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
-							}else{
-								player.closeInventory();
-								player.sendMessage(ChatColor.RED + "To work needed BKCommonLib. Advanced listener does not include.");
-							}
-					  }
 				}else if(cmd.getDebug().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					if(clicked.getItemMeta().getLore().contains("true")){
 

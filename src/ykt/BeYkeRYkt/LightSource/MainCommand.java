@@ -28,7 +28,6 @@ public class MainCommand implements CommandExecutor{
 				
 				if(player.hasPermission("lightsource.admin")){
 					player.sendMessage("- /ls advanced-item " + ChatColor.GREEN + "[true/false]" + ChatColor.YELLOW +"- Enabling/Disabling advanced listener for items.");
-					player.sendMessage("- /ls advanced-entity " + ChatColor.GREEN + "[true/false]" + ChatColor.YELLOW +"- Enabling/Disaling advanced listener for entity.");
 					player.sendMessage("- /ls world [worldName] " + ChatColor.GREEN + "[true/false]" + ChatColor.YELLOW +"- Enabling/Disaling lighting for world.");
 					player.sendMessage("- /ls gui [true/false]" + ChatColor.YELLOW +"- Enabling/Disabling GUI Menu");
 					player.sendMessage("- /ls debug [true/false]" + ChatColor.YELLOW +"- Enabling/Disabling debug mode");
@@ -66,13 +65,6 @@ public class MainCommand implements CommandExecutor{
 					  }else{
 						  player.sendMessage(ChatColor.RED + "You do not have permission");
 					  }
-				  }else if(args[0].equalsIgnoreCase("advanced-entity")){
-					  if(player.hasPermission("lightsource.admin")){
-					  player.sendMessage(ChatColor.RED + "Need more arguments!");
-					  player.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.WHITE + "Enabling/Disabling advanced listener for entity");
-				  }else{
-					  player.sendMessage(ChatColor.RED + "You do not have permission");
-				  }
 				  }else if(args[0].equalsIgnoreCase("world")){
 					  if(player.hasPermission("lightsource.admin")){
 					  player.sendMessage(ChatColor.RED + "Need more arguments!");
@@ -133,19 +125,6 @@ public class MainCommand implements CommandExecutor{
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
-					  }else if(args[0].equalsIgnoreCase("advanced-entity")){
-						  
-						  if(player.hasPermission("lightsource.admin")){
-						  LightSource.getInstance().getConfig().set("Advanced-Listener.Entity", Boolean.parseBoolean(args[1]));
-						  LightSource.getInstance().getConfig().options().copyDefaults(true);
-						  LightSource.getInstance().saveConfig();
-						  LightSource.getInstance().getConfig().options().copyDefaults(false);
-						  LightSource.getInstance().registerAdvancedEntityListener(Boolean.parseBoolean(args[1]));
-							
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
-					  }else{
-						  player.sendMessage(ChatColor.RED + "You do not have permission");
-					  }
 					  }else if(args[0].equalsIgnoreCase("world")){
 						  
 						  if(player.hasPermission("lightsource.admin")){
@@ -189,13 +168,6 @@ public class MainCommand implements CommandExecutor{
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
-					  }else if(args[0].equalsIgnoreCase("advanced-entity")){
-						  if(player.hasPermission("lightsource.admin")){
-							  player.sendMessage(ChatColor.RED + "Too many arguments.");
-							  }else{
-								  player.sendMessage(ChatColor.RED + "You do not have permission");
-							  }
-						  
 					  }else if(args[0].equalsIgnoreCase("world")){
 						  if(player.hasPermission("lightsource.admin")){
 						  LightSource.getInstance().getConfig().set("Worlds." + args[1], Boolean.parseBoolean(args[1]));
@@ -241,13 +213,6 @@ public class MainCommand implements CommandExecutor{
 								  player.sendMessage(ChatColor.RED + "You do not have permission");
 							  }
 						  
-					  }else if(args[0].equalsIgnoreCase("advanced-entity")){
-						  if(player.hasPermission("lightsource.admin")){
-							  player.sendMessage(ChatColor.RED + "Too many arguments.");
-							  }else{
-								  player.sendMessage(ChatColor.RED + "You do not have permission");
-							  }
-						  
 					  }else if(args[0].equalsIgnoreCase("world")){
 						  if(player.hasPermission("lightsource.admin")){
 							  player.sendMessage(ChatColor.RED + "Too many arguments.");
@@ -274,11 +239,10 @@ public class MainCommand implements CommandExecutor{
 				  
 				  if(player.hasPermission("lightsource.admin")){
 					  menu.addItem(getAdv_Item(), 1);
-					  menu.addItem(getAdv_Ent(), 2);
-					  menu.addItem(getWorlds(), 3);
-					  menu.addItem(getDebug(), 4);
-					  menu.addItem(getGUIEnable(), 5);
-					  menu.addItem(getReload(), 6);
+					  menu.addItem(getWorlds(), 2);
+					  menu.addItem(getDebug(), 3);
+					  menu.addItem(getGUIEnable(), 4);
+					  menu.addItem(getReload(), 5);
 					  
 				  }
 				
@@ -316,19 +280,6 @@ public class MainCommand implements CommandExecutor{
 		  meta.setLore(list);
 		  advi.setItemMeta(meta);
 		  return advi;
-	}
-	
-	public ItemStack getAdv_Ent(){
-		  ItemStack adve = new ItemStack(Material.BOOK);
-		  ItemMeta meta = adve.getItemMeta();
-		  meta.setDisplayName("Advanced entity listener");
-		  
-		  ArrayList list = new ArrayList();
-		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Advanced-Listener.Entity")));
-		  meta.setLore(list);
-		  adve.setItemMeta(meta);
-		  return adve;
 	}
 	
 	public ItemStack getWorlds(){

@@ -1,8 +1,10 @@
 package ykt.BeYkeRYkt.LightSource.OtherListeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -15,22 +17,31 @@ import com.bergerkiller.bukkit.common.events.EntityRemoveFromServerEvent;
 
 public class EntityListener implements Listener {
 
+	
+	/**
+	 * REASON: MORREEEEE LAAGGGZZZZZ
+	 * 
+	 * 
+	 */
+			
+	
 	@EventHandler
 	public void onEntityMove(EntityMoveEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof LivingEntity) {
-			LivingEntity le = (LivingEntity) entity;
+		if (entity.getType().isAlive()) {
 
-			if(le.getLocation().getChunk().isLoaded()){
-			if (le.getFireTicks() > 0) {
+		for(Player players: entity.getWorld().getPlayers()){
+			
+			if(players.getLocation().distance(entity.getLocation()) <= Bukkit.getViewDistance() * 16){
+			if (entity.getFireTicks() > 0) {
 				if (event.getFromX() != event.getToX()
 						|| event.getFromY() != event.getToY()
 						|| event.getFromZ() != event.getToZ()) {
 
-					Location from = new Location(le.getWorld(),
+					Location from = new Location(entity.getWorld(),
 							event.getFromX(), event.getFromY(),
 							event.getFromZ());
-					Location to = new Location(le.getWorld(), event.getToX(),
+					Location to = new Location(entity.getWorld(), event.getToX(),
 							event.getToY(), event.getToZ());
 
 					LightAPI.deleteLightSource(from);
@@ -38,10 +49,19 @@ public class EntityListener implements Listener {
 
 				}
 			} else {
-				Location from = new Location(le.getWorld(), event.getFromX(),
+				Location from = new Location(entity.getWorld(), event.getFromX(),
 						event.getFromY(), event.getFromZ());
 				LightAPI.deleteLightSourceAndUpdate(from, UpdateLocationType.MOB_LOCATION);
 			}
+		
+			//View <
+		}else{
+			Location from = new Location(entity.getWorld(), event.getFromX(),
+					event.getFromY(), event.getFromZ());
+			LightAPI.deleteLightSourceAndUpdate(from, UpdateLocationType.MOB_LOCATION);
+		}
+			
+			
 		}
 		}
 	}
@@ -49,30 +69,26 @@ public class EntityListener implements Listener {
 	@EventHandler
 	public void onItemRemove(EntityRemoveEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof LivingEntity) {
-			LivingEntity le = (LivingEntity) entity;
-			Location loc = le.getLocation();
+		if (entity.getType().isAlive()) {
+			Location loc = entity.getLocation();
 
-			if(le.getLocation().getChunk().isLoaded()){
-			if (le.getFireTicks() > 0) {
+			if (entity.getFireTicks() > 0) {
 				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.MOB_LOCATION);
 			}
-			}
+			
 		}
 	}
 
 	@EventHandler
 	public void onItemRemoveFromServer(EntityRemoveFromServerEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof LivingEntity) {
-			LivingEntity le = (LivingEntity) entity;
-			Location loc = le.getLocation();
+		if (entity.getType().isAlive()) {
+           Location loc = entity.getLocation();
 
-			if(le.getLocation().getChunk().isLoaded()){
-			if (le.getFireTicks() > 0) {
+			if (entity.getFireTicks() > 0) {
 				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.MOB_LOCATION);
 			}
-			}
+			
 		}
 	}
 }

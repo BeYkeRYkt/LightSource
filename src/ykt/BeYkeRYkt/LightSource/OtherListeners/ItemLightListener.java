@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.UpdateLocationType;
 
 import com.bergerkiller.bukkit.common.events.EntityMoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
@@ -27,7 +26,6 @@ public class ItemLightListener implements Listener {
 			Item item_entity = (Item) entity;
 			ItemStack item = item_entity.getItemStack();
 
-			if(item_entity.getLocation().getChunk().isLoaded()){
 			
 			if (item != null && ItemManager.isTorchLight(item)) {
 				if (event.getFromX() != event.getToX()
@@ -42,10 +40,9 @@ public class ItemLightListener implements Listener {
 
 					LightAPI.deleteLightSource(from);
 					LightAPI.createLightSource(to,
-							ItemManager.getLightLevel(item), UpdateLocationType.ITEM_LOCATION);
+							ItemManager.getLightLevel(item));
 				}
 			}
-		}
 		}
 	}
 
@@ -57,11 +54,11 @@ public class ItemLightListener implements Listener {
 			ItemStack item = item_entity.getItemStack();
 			Location loc = item_entity.getLocation();
 
-			if(item_entity.getLocation().getChunk().isLoaded()){
+
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdate(loc,UpdateLocationType.ITEM_LOCATION);
+				LightAPI.deleteLightSourceAndUpdate(loc);
 			}
-			}
+			
 		}
 	}
 
@@ -73,11 +70,10 @@ public class ItemLightListener implements Listener {
 			ItemStack item = item_entity.getItemStack();
 			Location loc = item_entity.getLocation();
 
-			if(item_entity.getLocation().getChunk().isLoaded()){
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSourceAndUpdate(loc, UpdateLocationType.ITEM_LOCATION);
+				LightAPI.deleteLightSourceAndUpdate(loc);
 			}
-			}
+			
 		}
 	}
 
@@ -88,7 +84,7 @@ public class ItemLightListener implements Listener {
 		ItemStack item = entity.getItemStack();
 
 		if (item != null && ItemManager.isTorchLight(item)) {
-			LightAPI.deleteLightSourceAndUpdate(entity.getLocation(), UpdateLocationType.ITEM_LOCATION);
+			LightAPI.deleteLightSourceAndUpdate(entity.getLocation());
 			LightSource.getInstance().getTorchPlayers().add(event.getPlayer().getName());
 		}
 	}

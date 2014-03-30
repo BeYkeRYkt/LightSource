@@ -5,9 +5,6 @@ import org.bukkit.World;
 
 public interface NMSInterface {
 
-	public enum UpdateLocationType{
-		PLAYER_LOCATION, MOB_LOCATION, ITEM_LOCATION; 
-	}
 	public void recalculateBlockLighting(World world, int x, int y, int z);
 
 	
@@ -19,7 +16,7 @@ public interface NMSInterface {
 	 * @param level
 	 *            - the new light level.
 	 */
-	public void createLightSource(Location loc, int level, UpdateLocationType type);
+	public void createLightSource(Location loc, int level);
 
 	/**
 	 * Destroy light with level at a location (Update)
@@ -27,11 +24,9 @@ public interface NMSInterface {
 	 * @param loc
 	 *            - location to the block that was updated.
 	 */
-	public void deleteLightSourceAndUpdate(Location loc, UpdateLocationType type);
+	public void deleteLightSourceAndUpdate(Location loc);
 
 	
-	
-	//FOR ALL
 	/**
 	 * Gets all the chunks touching/diagonal to the chunk the location is in and
 	 * updates players with them.
@@ -43,7 +38,7 @@ public interface NMSInterface {
 	 * @param type
 	 *            - Update light type
 	 */
-	public void updateChunk(World world, Location loc, UpdateLocationType type);
+	public void updateChunk(World world, Location loc);
 	
 	
 	/**
@@ -53,5 +48,6 @@ public interface NMSInterface {
 	 *            - which block to update.
 	 */
 	public void deleteLightSource(Location loc);
+
 
 }

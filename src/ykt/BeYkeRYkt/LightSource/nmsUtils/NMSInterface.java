@@ -25,6 +25,29 @@ public interface NMSInterface {
 	 *            - location to the block that was updated.
 	 */
 	public void deleteLightSourceAndUpdate(Location loc);
+	
+	
+	/**
+	 * Create light with level at a location.
+	 * 
+	 * @param loc
+	 *            - which block to update.
+	 * @param level
+	 *            - the new light level.
+	 *            
+	 * @param blocklevel
+	 *            - the block lightlevel
+	 */
+	public void createLightSourceStatic(Location loc, int level);
+	
+	
+	/**
+	 * Destroy light with level at a location (Update)
+	 * 
+	 * @param loc
+	 *            - location to the block that was updated.
+	 */
+	public void deleteLightSourceStatic(Location loc);
 
 	
 	/**

@@ -6,3 +6,5 @@ author: BeYkeRYkt
 commands:
    ls:
       description: Main command
+   light:
+      description: Main command for static lights

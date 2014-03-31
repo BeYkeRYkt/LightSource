@@ -76,6 +76,7 @@ public class MainCommand implements CommandExecutor{
 					  if(player.hasPermission("lightsource.admin")){
 					  LightSource.getInstance().reloadConfig();
 					  LightSource.getInstance().onDisable();
+					  LightSource.getInstance().onLoad();
 					  LightSource.getInstance().onEnable();
 					  player.sendMessage(ChatColor.GREEN +"Plugin successfully restarted!");
 					  }else{

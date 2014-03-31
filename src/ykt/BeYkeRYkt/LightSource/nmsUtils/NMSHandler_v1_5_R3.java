@@ -46,24 +46,40 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 	@Override
 	public void createLightSource(Location loc, int level) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
 
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
+		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);
+		
+		Location newloc = new Location(loc.getWorld(), x, y,z);
 
-		updateChunk(loc.getWorld(), loc);
+		updateChunk(loc.getWorld(), newloc);
 	}
 
 	@Override
 	public void deleteLightSource(Location loc) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		
-		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
+		
+		nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
 	}
 
 	@Override
 	public void deleteLightSourceAndUpdate(Location loc) {
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
+		
+		Location newloc = new Location(loc.getWorld(), x, y, z);
+		
 		deleteLightSource(loc);
-
-		updateChunk(loc.getWorld(), loc);
+		
+		updateChunk(loc.getWorld(), newloc);
 	}
 	
 	public Block getAdjacentAirBlock(Block block) {
@@ -100,7 +116,9 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 			}
 			
 			}
-			}
+			}	
+			
+			
 			Block adjacent = getAdjacentAirBlock(loc.getBlock());
 
 			recalculateBlockLighting(world, adjacent.getX(), adjacent.getY(),adjacent.getZ());
@@ -122,5 +140,35 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 			nmsplayers.playerConnection.sendPacket(packet);
 			}
 		}
+	}
+
+
+	@Override
+	public void createLightSourceStatic(Location loc, int level) {
+		// TODO Auto-generated method stub
+		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		int blocklevel = loc.getBlock().getLightLevel();
+
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
+
+		updateChunk(loc.getWorld(), loc);
+		
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), blocklevel);
+	}
+
+
+	@Override
+	public void deleteLightSourceStatic(Location loc) {
+	       deleteLightSource(loc);
+			WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		   
+		   loc.getBlock().setType(loc.getBlock().getType());
+		   for(int x=-2; x <=2; x++){
+			   for(int z=-2; z<=2; z++){
+				   loc.getBlock().getRelative(x, 0, z).setType(loc.getBlock().getRelative(x, 0, z).getType());
+			   }
+		   }
+
+		   updateChunk(loc.getWorld(), loc);      
 	}
 }

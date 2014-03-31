@@ -3,15 +3,11 @@ package ykt.BeYkeRYkt.LightSource.nmsUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_5_R3.ChunkCoordIntPair;
 import net.minecraft.server.v1_7_R1.Chunk;
-import net.minecraft.server.v1_7_R1.Entity;
-import net.minecraft.server.v1_7_R1.EntityHuman;
+import net.minecraft.server.v1_7_R1.ChunkCoordIntPair;
 import net.minecraft.server.v1_7_R1.EntityPlayer;
 import net.minecraft.server.v1_7_R1.EnumSkyBlock;
-import net.minecraft.server.v1_7_R1.IWorldAccess;
 import net.minecraft.server.v1_7_R1.PacketPlayOutMapChunk;
-import net.minecraft.server.v1_7_R1.PlayerChunkMap;
 import net.minecraft.server.v1_7_R1.WorldServer;
 
 import org.bukkit.Bukkit;
@@ -30,7 +26,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 
 	/**
 	 * 
-	 * BETA STAGE №1
+	 * BETA STAGE №6 !!
 	 * 
 	 * @author BeYkeRYkt
 	 */
@@ -38,36 +34,52 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 	
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
 			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
-
+	
 	@Override
 	public void recalculateBlockLighting(World world, int x, int y, int z) {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-		nmsWorld.t(x, y, z);
+		nmsWorld.A(x, y, z);
 	}
 
-	
 	
 	//LOCATION
 	@Override
 	public void createLightSource(Location loc, int level) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
 
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
+		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);
+		
+		Location newloc = new Location(loc.getWorld(), x, y,z);
 
-		updateChunk(loc.getWorld(), loc);
+		updateChunk(loc.getWorld(), newloc);
 	}
 
 	@Override
 	public void deleteLightSource(Location loc) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-		nmsWorld.c(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
+		
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
+		
+		nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
 	}
 
 	@Override
 	public void deleteLightSourceAndUpdate(Location loc) {
+		int x = loc.getBlockX();
+		int y = loc.getBlockY() + 1;
+		int z = loc.getBlockZ();
+		
+		Location newloc = new Location(loc.getWorld(), x, y, z);
+		
 		deleteLightSource(loc);
-
-		updateChunk(loc.getWorld(), loc);
+		
+		updateChunk(loc.getWorld(), newloc);
 	}
 	
 	public Block getAdjacentAirBlock(Block block) {
@@ -86,7 +98,6 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 		return block;
 	}
 
-	
 	@Override
 	public void updateChunk(World world, Location loc){
 		for(Player player : world.getPlayers()){
@@ -105,7 +116,9 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			}
 			
 			}
-			}
+			}	
+			
+			
 			Block adjacent = getAdjacentAirBlock(loc.getBlock());
 
 			recalculateBlockLighting(world, adjacent.getX(), adjacent.getY(),adjacent.getZ());
@@ -127,72 +140,35 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			nmsplayers.playerConnection.sendPacket(packet);
 			}
 		}
-}
+	}
 
-	private static IWorldAccess countLightUpdates(final org.bukkit.World world,
-			final PlayerChunkMap map) {
-		return new IWorldAccess() {
-			@Override
-			public void a(int x, int y, int z) {
-				map.flagDirty(x, y, z);
-			}
 
-			@Override
-			public void b(int x, int y, int z) {
-				map.flagDirty(x, y, z);
-			}
+	@Override
+	public void createLightSourceStatic(Location loc, int level) {
+		// TODO Auto-generated method stub
+		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		int blocklevel = loc.getBlock().getLightLevel();
 
-			@Override
-			public void b(int arg0, int arg1, int arg2, int arg3, int arg4) {
-			}
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
 
-			@Override
-			public void a(EntityHuman arg0, int arg1, int arg2, int arg3,
-					int arg4, int arg5) {
-			}
+		updateChunk(loc.getWorld(), loc);
+		
+		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), blocklevel);
+	}
 
-			@Override
-			public void a(int minX, int minY, int minZ, int maxX, int maxY,
-					int maxZ) {
-			}
 
-			@Override
-			public void a(int arg0, int arg1, int arg2, int arg3, int arg4) {
-			}
+	@Override
+	public void deleteLightSourceStatic(Location loc) {
+	       deleteLightSource(loc);
+			WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		   
+		   loc.getBlock().setType(loc.getBlock().getType());
+		   for(int x=-2; x <=2; x++){
+			   for(int z=-2; z<=2; z++){
+				   loc.getBlock().getRelative(x, 0, z).setType(loc.getBlock().getRelative(x, 0, z).getType());
+			   }
+		   }
 
-			@Override
-			public void a(String arg0, double arg1, double arg2, double arg3,
-					float arg4, float arg5) {
-			}
-
-			@Override
-			public void a(EntityHuman arg0, String arg1, double arg2,
-					double arg3, double arg4, float arg5, float arg6) {
-			}
-
-			@Override
-			public void a(String arg0, double arg1, double arg2, double arg3,
-					double arg4, double arg5, double arg6) {
-			}
-
-			@Override
-			public void a(String arg0, int arg1, int arg2, int arg3) {
-			}
-
-			@Override
-			public void a(Entity arg0) {
-			}
-
-			@Override
-			public void b(Entity arg0) {
-			}
-
-			@Override
-			public void b() {
-				// TODO Auto-generated method stub
-				
-			}
-
-		};
+		   updateChunk(loc.getWorld(), loc);      
 	}
 }

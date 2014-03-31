@@ -14,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.LightCommand;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.MainCommand;
 
@@ -101,6 +103,7 @@ public class GUIListener implements Listener{
 				}else if(cmd.getReload().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					  LightSource.getInstance().reloadConfig();
 					  LightSource.getInstance().onDisable();
+					  LightSource.getInstance().onLoad();
 					  LightSource.getInstance().onEnable();
 					  
 					  player.closeInventory();
@@ -133,6 +136,54 @@ public class GUIListener implements Listener{
 				event.setCancelled(true);
 				
 				//Other's gui
+			}else if("LightCreator".equals(name)){
+				
+				LightCommand cmd = new LightCommand();
+				if(cmd.getCreate().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+					player.closeInventory();
+					
+					CustomGUIMenu menu = new CustomGUIMenu("LightLevels", 18);
+					
+					menu.addItem(cmd.getLightLevel(1), 0);
+					menu.addItem(cmd.getLightLevel(2), 1);
+					menu.addItem(cmd.getLightLevel(3), 2);
+					menu.addItem(cmd.getLightLevel(4), 3);
+					menu.addItem(cmd.getLightLevel(5), 4);
+					menu.addItem(cmd.getLightLevel(6), 5);
+					menu.addItem(cmd.getLightLevel(7), 6);
+					menu.addItem(cmd.getLightLevel(8), 7);
+					menu.addItem(cmd.getLightLevel(9), 8);
+					menu.addItem(cmd.getLightLevel(10), 9);
+					menu.addItem(cmd.getLightLevel(11), 10);
+					menu.addItem(cmd.getLightLevel(12), 11);
+					menu.addItem(cmd.getLightLevel(13), 12);
+					menu.addItem(cmd.getLightLevel(14), 13);
+					menu.addItem(cmd.getLightLevel(15), 14);
+					
+					player.openInventory(menu.getInventory());
+					
+				}else if(cmd.getDelete().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+					LightAPI.deleteLightSourceStatic(player.getLocation());
+					player.closeInventory();
+					player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
+				}
+				
+				event.setCancelled(true);
+				
+			}else if("LightLevels".equals(name)){
+				if(clicked.getType() == Material.GLOWSTONE_DUST){
+				if(clicked.hasItemMeta()){
+				if(clicked.getItemMeta().hasDisplayName()){
+
+					LightAPI.createLightSourceStatic(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
+					
+					player.closeInventory();
+					player.sendMessage(ChatColor.GREEN + "Light successfully created!");
+				}
+				}
+				}
+				
+				event.setCancelled(true);
 			}else if("Worlds".equals(name)){
 				for(World worlds : Bukkit.getWorlds()){
 					if(worlds.getName().equals(clicked.getItemMeta().getDisplayName())){

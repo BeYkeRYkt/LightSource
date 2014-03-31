@@ -128,7 +128,7 @@ public class RadiusTorchListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
-		if(pLocations.containsKey(event.getPlayer())) return;
+		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
 		if (LightSource.getInstance().getTorchPlayers()
@@ -140,19 +140,18 @@ public class RadiusTorchListener implements Listener {
 
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		if(pLocations.containsKey(event.getPlayer())) return;
+		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			pLocations.remove(event.getPlayer().getName());
 		}
 
 	}
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if(pLocations.containsKey(event.getEntity())) return;
+		if(!pLocations.containsKey(event.getEntity())) return;
 		Location loc = pLocations.get(event.getEntity().getName());
 
 		if (LightSource.getInstance().getTorchPlayers()
@@ -165,7 +164,7 @@ public class RadiusTorchListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if(pLocations.containsKey(event.getPlayer())) return;
+		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
 		if (LightSource.getInstance().getTorchPlayers()
@@ -179,7 +178,7 @@ public class RadiusTorchListener implements Listener {
 
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event) {
-		if(pLocations.containsKey(event.getPlayer())) return;
+		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
 		if (LightSource.getInstance().getTorchPlayers()
@@ -193,13 +192,12 @@ public class RadiusTorchListener implements Listener {
 
 	@EventHandler
 	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-		if(pLocations.containsKey(event.getPlayer())) return;
+		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
-			pLocations.remove(event.getPlayer().getName());
 		}
 
 	}
@@ -212,7 +210,6 @@ public class RadiusTorchListener implements Listener {
 				.contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
-			pLocations.remove(event.getPlayer().getName());
 		}
 	}
 

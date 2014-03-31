@@ -62,10 +62,33 @@ public class LightAPI{
      * Delete light with level at a location. (Not update)
      * @param loc - which block to update.
      */
+    public static void deleteLightSourceStatic(Location loc){
+    	nms.deleteLightSourceStatic(loc);
+    }
+
+    /**
+     * Create light with level at a location. 
+     * @param loc - which block to update.
+     * @param level - the new light level.
+     */
+    public static void createLightSourceStatic(Location loc, int level) {
+
+    	nms.createLightSourceStatic(loc, level);
+    	
+        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+        LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
+        }
+    }
+
+    
+    /**
+     * Delete light with level at a location. (Not update)
+     * @param loc - which block to update.
+     */
     public static void deleteLightSource(Location loc){
     	nms.deleteLightSource(loc);
     }
-
+    
     
 	/**
 	* Destroy light with level at a location (Update)

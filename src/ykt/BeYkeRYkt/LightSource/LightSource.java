@@ -36,7 +36,7 @@ public class LightSource extends JavaPlugin {
 	private HeadManager hm;
 	private LightAPI api;
 	private boolean gui;
-    private ItemLightListener ill= new ItemLightListener();
+    private ItemLightListener ill;
     
     
     @Override
@@ -45,7 +45,7 @@ public class LightSource extends JavaPlugin {
 		this.api = new LightAPI();
 		this.hm = new HeadManager();
 		this.im = new ItemManager();
-
+		this.ill = new ItemLightListener();
     }
     
 	@Override
@@ -103,7 +103,10 @@ public class LightSource extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
 		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.OP));
+		Bukkit.getPluginManager().addPermission(new Permission("lightsource.hidden", PermissionDefault.OP));
+		
 		getCommand("ls").setExecutor(new MainCommand());
+		getCommand("light").setExecutor(new LightCommand());
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		}
 	}
@@ -157,52 +160,49 @@ public class LightSource extends JavaPlugin {
 	public void onDisable() {
 		
 		Bukkit.getPluginManager().removePermission("lightsource.admin");
+		Bukkit.getPluginManager().removePermission("lightsource.hidden");
 		
 		if(!this.getConfig().getBoolean("Radius-mode")){
 			
 		for(Player players : Bukkit.getOnlinePlayers()){
 			LightAPI.deleteLightSourceAndUpdate(players.getLocation().getBlock().getLocation());
+			this.getLogger().info("Deleted all lights!");
 		}
 		
 		}else if(this.getConfig().getBoolean("Radius-mode")){
-		if(!RadiusHeadListener.getLocations().isEmpty()){
-			RadiusHeadDeleteLight();
-		}
-	    }
+			for(Player players : Bukkit.getOnlinePlayers()){
 				
-		HandlerList.unregisterAll(this);
+				if(!RadiusHeadListener.getLocations().isEmpty()){
+				Location loc = RadiusHeadListener.getLocations().get(players.getName());
+				LightAPI.deleteLightSourceAndUpdate(loc);
+				RadiusHeadListener.getLocations().clear();
+				}
+				
+				if(!RadiusTorchListener.getLocations().isEmpty()){
+				Location loc = RadiusTorchListener.getLocations().get(players.getName());
+				LightAPI.deleteLightSourceAndUpdate(loc);
+				RadiusTorchListener.getLocations().clear();
+				}
+				
+				this.getLogger().info("Deleted all lights!");
+			}
+	    }
+						
+		
+		hm.getList().clear();
+		im.getList().clear();
+			
+		this.hm = null;
+		this.im = null;
 		
 		this.torch.clear();
 		this.head.clear();
 		this.api = null;
 		this.gui = false;
 		
-		hm.getList().clear();
-		im.getList().clear();
+		HandlerList.unregisterAll(this);
+	}
 		
-		this.hm = null;
-		this.im = null;
-	}
-
-	private void RadiusHeadDeleteLight(){
-		for(Player players : Bukkit.getOnlinePlayers()){
-			Location loc = RadiusHeadListener.getLocations().get(players.getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
-			
-			if(!RadiusTorchListener.getLocations().isEmpty()){
-			RadiusTorchDeleteLight();
-			}
-			}
-	}
-	
-	private void RadiusTorchDeleteLight(){
-		for(Player players : Bukkit.getOnlinePlayers()){
-			Location loc = RadiusTorchListener.getLocations().get(players.getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
-		}
-	}
-	
-	
 	public static LightSource getInstance() {
 		return plugin;
 	}

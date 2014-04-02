@@ -31,7 +31,7 @@ public class ItemManager {
 			
 			Material material = Material.getMaterial(getConfig().getSourceConfig().getString(str + ".material"));
 			int level = getConfig().getSourceConfig().getInt(str + ".lightlevel");
-
+			
 			CustomItemLight item = new CustomItemLight(name, material, level);
 
 			addLightSource(item, str);

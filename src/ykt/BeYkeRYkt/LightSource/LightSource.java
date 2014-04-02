@@ -3,9 +3,13 @@ package ykt.BeYkeRYkt.LightSource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+
+import net.gravitydevelopment.updater.Updater;
+import net.gravitydevelopment.updater.Updater.UpdateResult;
+import net.gravitydevelopment.updater.Updater.UpdateType;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +31,7 @@ import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusTorchListener;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
 import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
 
-public class LightSource extends JavaPlugin {
+public class LightSource extends JavaPlugin{
 
 	private static LightSource plugin;
 	private ArrayList<String> torch = new ArrayList<String>();
@@ -46,13 +50,9 @@ public class LightSource extends JavaPlugin {
 		this.hm = new HeadManager();
 		this.im = new ItemManager();
 		this.ill = new ItemLightListener();
-    }
-    
-	@Override
-	public void onEnable() {
-		if(api.getNMSHandler() != null){
+		
+		
 		PluginDescriptionFile pdfFile = getDescription();
-
 		try {
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -63,7 +63,7 @@ public class LightSource extends JavaPlugin {
 				fc.addDefault("Debug", false);
 				fc.addDefault("Enable-GUI", true);
 				fc.addDefault("Radius-mode", true);
-				fc.addDefault("Radius-update", 6.0);
+				fc.addDefault("Radius-update", 4.0);
 				fc.addDefault("Advanced-Listener.TorchLight", false);
 
 				List<World> worlds = getServer().getWorlds();
@@ -77,10 +77,17 @@ public class LightSource extends JavaPlugin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		createExampleTorch();
 		createExampleHead();
-
+		
+    }
+    
+	@Override
+	public void onEnable() {
+		if(api.getNMSHandler() != null){
+			PluginDescriptionFile pdfFile = getDescription();
+			
 		getItemManager().loadItems();
 		getHeadManager().loadItems();
 
@@ -93,6 +100,7 @@ public class LightSource extends JavaPlugin {
 		}
 		
 		
+		
 		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
 
 			registerAdvancedItemListener(true);
@@ -101,13 +109,19 @@ public class LightSource extends JavaPlugin {
 
 		this.gui = getConfig().getBoolean("Enable-GUI");	
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-
-		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.OP));
-		Bukkit.getPluginManager().addPermission(new Permission("lightsource.hidden", PermissionDefault.OP));
+		
+		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.FALSE));
+		Bukkit.getPluginManager().addPermission(new Permission("lightsource.hidden", PermissionDefault.FALSE));
 		
 		getCommand("ls").setExecutor(new MainCommand());
 		getCommand("light").setExecutor(new LightCommand());
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
+		
+		Updater updater = new Updater(this, 77176, this.getFile(), UpdateType.NO_DOWNLOAD, true);
+		if(updater.getResult() == UpdateResult.UPDATE_AVAILABLE){
+			LightSource.getInstance().getLogger().info("New version available! " + updater.getLatestName());
+			Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[LightSource]" + "New version available! " + updater.getLatestName() + " for " + updater.getLatestGameVersion());
+		}
 		}
 	}
 
@@ -150,6 +164,7 @@ public class LightSource extends JavaPlugin {
 				fc.options().copyDefaults(true);
 				getHeadManager().getConfig().saveSourceConfig();
 				fc.options().copyDefaults(false);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

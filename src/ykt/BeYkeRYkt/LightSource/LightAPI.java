@@ -3,11 +3,11 @@ package ykt.BeYkeRYkt.LightSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_5_R3;
 import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_6_R3;
 import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_7_R1;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_7_R2;
 import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface;
 
 
@@ -33,6 +33,9 @@ public class LightAPI{
     	}else if(this.version.startsWith("1.7.2")){
     		this.nms = new NMSHandler_v1_7_R1();
     		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.2! Using NMSHandler for 1.7.2.");
+    	}else if(this.version.startsWith("1.7.5")){
+    		this.nms = new NMSHandler_v1_7_R2();
+    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.5! Using NMSHandler for 1.7.5.");
     	}else{
     		LightSource.getInstance().getLogger().info("Unsupported version of the server. Off.");
     		Bukkit.getPluginManager().disablePlugin(LightSource.getInstance());

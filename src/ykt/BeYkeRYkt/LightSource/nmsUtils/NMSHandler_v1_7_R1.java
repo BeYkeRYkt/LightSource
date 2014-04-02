@@ -38,7 +38,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 	@Override
 	public void recalculateBlockLighting(World world, int x, int y, int z) {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-		nmsWorld.A(x, y, z);
+		nmsWorld.t(x, y, z);
 	}
 
 	
@@ -48,14 +48,12 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		
 		int x = loc.getBlockX();
-		int y = loc.getBlockY() + 1;
+		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 
 		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);
-		
-		Location newloc = new Location(loc.getWorld(), x, y,z);
 
-		updateChunk(loc.getWorld(), newloc);
+		updateChunk(loc.getWorld(), loc);
 	}
 
 	@Override
@@ -63,7 +61,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		
 		int x = loc.getBlockX();
-		int y = loc.getBlockY() + 1;
+		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 		
 		nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
@@ -71,15 +69,9 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 
 	@Override
 	public void deleteLightSourceAndUpdate(Location loc) {
-		int x = loc.getBlockX();
-		int y = loc.getBlockY() + 1;
-		int z = loc.getBlockZ();
-		
-		Location newloc = new Location(loc.getWorld(), x, y, z);
-		
 		deleteLightSource(loc);
 		
-		updateChunk(loc.getWorld(), newloc);
+		updateChunk(loc.getWorld(), loc);
 	}
 	
 	public Block getAdjacentAirBlock(Block block) {

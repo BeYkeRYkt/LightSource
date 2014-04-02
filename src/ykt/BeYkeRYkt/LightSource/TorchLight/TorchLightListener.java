@@ -183,11 +183,12 @@ public class TorchLightListener implements Listener {
 	@EventHandler
 	public void onPlayerDropLight(PlayerDropItemEvent event) {
 		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			
+			if(event.getPlayer().getItemInHand().getAmount() < 1){
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getTorchPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
+			}
 		}
 	}
 

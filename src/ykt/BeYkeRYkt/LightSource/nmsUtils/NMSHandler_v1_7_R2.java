@@ -3,26 +3,26 @@ package ykt.BeYkeRYkt.LightSource.nmsUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_6_R3.Chunk;
-import net.minecraft.server.v1_6_R3.ChunkCoordIntPair;
-import net.minecraft.server.v1_6_R3.EntityPlayer;
-import net.minecraft.server.v1_6_R3.EnumSkyBlock;
-import net.minecraft.server.v1_6_R3.Packet51MapChunk;
-import net.minecraft.server.v1_6_R3.WorldServer;
+import net.minecraft.server.v1_7_R2.Chunk;
+import net.minecraft.server.v1_7_R2.ChunkCoordIntPair;
+import net.minecraft.server.v1_7_R2.EntityPlayer;
+import net.minecraft.server.v1_7_R2.EnumSkyBlock;
+import net.minecraft.server.v1_7_R2.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_7_R2.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 
 
-public class NMSHandler_v1_6_R3 implements NMSInterface {
+public class NMSHandler_v1_7_R2 implements NMSInterface {
 
 	/**
 	 * 
@@ -38,7 +38,7 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 	@Override
 	public void recalculateBlockLighting(World world, int x, int y, int z) {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-		nmsWorld.A(x, y, z);
+		nmsWorld.t(x, y, z);
 	}
 
 	
@@ -64,18 +64,11 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 		
-		//Location delete = new Location(loc.getWorld(), x, y, z);
-		//Material blockMaterial = delete.getBlock().getType();
-		//byte blockData = delete.getBlock().getData();
-		//delete.getBlock().setType(blockMaterial);
-		//delete.getBlock().setData(blockData);
-		
 		nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
 	}
 
 	@Override
 	public void deleteLightSourceAndUpdate(Location loc) {
-
 		deleteLightSource(loc);
 		
 		updateChunk(loc.getWorld(), loc);
@@ -133,9 +126,9 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 		for (int k = 0; k < i; ++k) {
 			Chunk chunk = (Chunk) list.get(k);
 			
-			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.x, chunk.z);
+			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.locX, chunk.locZ);
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
-			Packet51MapChunk packet = new Packet51MapChunk(chunk, false, '\uffff');
+			PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(chunk, false, '\uffff');
 			nmsplayers.playerConnection.sendPacket(packet);
 			}
 		}

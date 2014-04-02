@@ -206,10 +206,11 @@ public class RadiusTorchListener implements Listener {
 	public void onPlayerDropLight(PlayerDropItemEvent event) {
 		if(pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(event.getPlayer().getItemInHand().getAmount() < 1){
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
+			}
 		}
 	}
 

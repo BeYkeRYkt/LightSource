@@ -117,6 +117,7 @@ public class LightCommand implements CommandExecutor{
 		  ArrayList list = new ArrayList();
 		  list.add(ChatColor.GOLD + "Light level");
 		  meta.setLore(list);
+		  adve.setAmount(level);
 		  adve.setItemMeta(meta);
 		  return adve;
 	}

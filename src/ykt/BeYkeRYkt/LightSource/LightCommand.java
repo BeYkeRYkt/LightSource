@@ -85,7 +85,7 @@ public class LightCommand implements CommandExecutor{
 	}
 	
 	public ItemStack getCreate(){
-		  ItemStack adve = new ItemStack(Material.REDSTONE_LAMP_ON);
+		  ItemStack adve = new ItemStack(Material.GLOWSTONE);
 		  ItemMeta meta = adve.getItemMeta();
 		  meta.setDisplayName("Create light");
 		  

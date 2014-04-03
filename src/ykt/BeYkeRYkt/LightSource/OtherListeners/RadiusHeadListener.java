@@ -51,8 +51,7 @@ public class RadiusHeadListener implements Listener {
 					LightAPI.createLightSource(event.getTo(),HeadManager.getLightLevel(item));
 					pLocations.put(player.getName(), event.getTo());
 				}
-			} else if (item != null && !HeadManager.isHeadLamp(item)
-					|| item == null || item.getType() == Material.AIR) {
+			} else if (item != null && !HeadManager.isHeadLamp(item) || item == null || item.getType() == Material.AIR) {
 				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
 				LightSource.getInstance().getHeadPlayers().remove(player.getName());
 				pLocations.remove(player.getName());
@@ -71,13 +70,11 @@ public class RadiusHeadListener implements Listener {
 			            pLocations.put(player.getName(), event.getFrom());
 			        }
 
-				LightAPI.createLightSource(player.getLocation(),
-						HeadManager.getLightLevel(item));
+				LightAPI.createLightSource(event.getFrom(),HeadManager.getLightLevel(item));
 				LightSource.getInstance().getHeadPlayers().add(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
-					LightSource.getInstance().getLogger()
-							.info("Player added to the group");
+					LightSource.getInstance().getLogger().info("Player added to the group");
 				}
 			
 			}

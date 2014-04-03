@@ -23,15 +23,7 @@ import org.bukkit.entity.Player;
 
 
 public class NMSHandler_v1_7_R2 implements NMSInterface {
-
-	/**
-	 * 
-	 * BETA STAGE №6 !!
-	 * 
-	 * @author BeYkeRYkt
-	 */
-	
-	
+		
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
 			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 	
@@ -130,6 +122,7 @@ public class NMSHandler_v1_7_R2 implements NMSInterface {
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
 			PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(chunk, false, '\uffff');
 			nmsplayers.playerConnection.sendPacket(packet);
+			chunk.initLighting();
 			}
 		}
 	}

@@ -134,6 +134,7 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
 			Packet51MapChunk packet = new Packet51MapChunk(chunk, false, '\uffff');
 			nmsplayers.playerConnection.sendPacket(packet);
+			chunk.initLighting();
 			}
 		}
 	}

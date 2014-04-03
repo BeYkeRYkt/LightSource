@@ -49,13 +49,12 @@ public class RadiusTorchListener implements Listener {
 			      double d = pLocations.get(player.getName()).distance(event.getTo());
 			      if (d >= LightSource.getInstance().getConfig().getDouble("Radius-update")) {
 					LightAPI.deleteLightSource(pLocations.get(player.getName()));
-					LightAPI.createLightSource(event.getTo(),
-							ItemManager.getLightLevel(item));
+					LightAPI.createLightSource(event.getTo(),ItemManager.getLightLevel(item));
 					pLocations.put(player.getName(), event.getTo());
 			      }
 			      
 			}else if (item != null && !ItemManager.isTorchLight(item)|| item == null) {
-
+				
 				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
 				pLocations.remove(player.getName());
@@ -72,7 +71,7 @@ public class RadiusTorchListener implements Listener {
 			            pLocations.put(player.getName(), event.getFrom());
 			        }
 				
-					LightAPI.createLightSource(event.getTo(),ItemManager.getLightLevel(item));
+					LightAPI.createLightSource(event.getFrom(),ItemManager.getLightLevel(item));
 					LightSource.getInstance().getTorchPlayers().add(player.getName());
 					
 					if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -111,6 +110,7 @@ public class RadiusTorchListener implements Listener {
 			if (item != null && !ItemManager.isTorchLight(item) || item == null|| item.getType() == Material.AIR) {
 				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
+				pLocations.remove(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 					LightSource.getInstance().getLogger()
@@ -131,8 +131,7 @@ public class RadiusTorchListener implements Listener {
 		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -157,7 +156,6 @@ public class RadiusTorchListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers()
 				.contains(event.getEntity().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			pLocations.remove(event.getEntity().getName());
 		}
 
 	}
@@ -167,8 +165,7 @@ public class RadiusTorchListener implements Listener {
 		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
@@ -181,8 +178,7 @@ public class RadiusTorchListener implements Listener {
 		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
 
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
@@ -194,12 +190,10 @@ public class RadiusTorchListener implements Listener {
 	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
 		if(!pLocations.containsKey(event.getPlayer())) return;
 		Location loc = pLocations.get(event.getPlayer().getName());
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 		}
-
 	}
 
 	@EventHandler

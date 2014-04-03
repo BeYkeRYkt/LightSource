@@ -60,6 +60,7 @@ public class LightSource extends JavaPlugin{
 						"LightSource v" + pdfFile.getVersion()
 								+ " Configuration" + "\nHave fun :3"
 								+ "\nby BeYkeRYkt");
+				fc.addDefault("Enable-updater", false);
 				fc.addDefault("Debug", false);
 				fc.addDefault("Enable-GUI", true);
 				fc.addDefault("Radius-mode", true);
@@ -100,7 +101,6 @@ public class LightSource extends JavaPlugin{
 		}
 		
 		
-		
 		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
 
 			registerAdvancedItemListener(true);
@@ -117,11 +117,14 @@ public class LightSource extends JavaPlugin{
 		getCommand("light").setExecutor(new LightCommand());
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
+		
+		if(this.getConfig().getBoolean("Enable-updater")){
 		Updater updater = new Updater(this, 77176, this.getFile(), UpdateType.NO_DOWNLOAD, true);
 		if(updater.getResult() == UpdateResult.UPDATE_AVAILABLE){
-			LightSource.getInstance().getLogger().info("New version available! " + updater.getLatestName());
 			Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[LightSource]" + "New version available! " + updater.getLatestName() + " for " + updater.getLatestGameVersion());
 		}
+		}
+		
 		}
 	}
 
@@ -181,8 +184,9 @@ public class LightSource extends JavaPlugin{
 			
 		for(Player players : Bukkit.getOnlinePlayers()){
 			LightAPI.deleteLightSourceAndUpdate(players.getLocation().getBlock().getLocation());
-			this.getLogger().info("Deleted all lights!");
 		}
+		
+		this.getLogger().info("Deleted all lights!");
 		
 		}else if(this.getConfig().getBoolean("Radius-mode")){
 			for(Player players : Bukkit.getOnlinePlayers()){
@@ -199,8 +203,8 @@ public class LightSource extends JavaPlugin{
 				RadiusTorchListener.getLocations().clear();
 				}
 				
-				this.getLogger().info("Deleted all lights!");
 			}
+			this.getLogger().info("Deleted all lights!");
 	    }
 						
 		

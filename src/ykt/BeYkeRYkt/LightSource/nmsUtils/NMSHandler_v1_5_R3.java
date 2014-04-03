@@ -48,7 +48,7 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		
 		int x = loc.getBlockX();
-		int y = loc.getBlockY() + 1;
+		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 
 		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);

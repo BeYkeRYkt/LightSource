@@ -84,11 +84,9 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
-
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getHeadPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -96,10 +94,9 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getHeadPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -107,11 +104,9 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if(!pLocations.containsKey(event.getEntity())) return;
-		Location loc = pLocations.get(event.getEntity().getName());
-
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getEntity().getName())) {
+		if (LightSource.getInstance().getHeadPlayers().contains(event.getEntity().getName())) {
+			if(!pLocations.containsKey(event.getEntity())) return;
+			Location loc = pLocations.get(event.getEntity().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -119,14 +114,11 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
-
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getHeadPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getHeadPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
 		}
 
@@ -134,14 +126,13 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
 
 		if (LightSource.getInstance().getHeadPlayers()
 				.contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getHeadPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
 		}
 
@@ -149,25 +140,11 @@ public class RadiusHeadListener implements Listener {
 
 	@EventHandler
 	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getHeadPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer().getName());
-		}
-	}
-
-	@EventHandler
-	public void onPlayerDropLight(PlayerDropItemEvent event) {
-		if(!pLocations.containsKey(event.getPlayer())) return;
-		Location loc = pLocations.get(event.getPlayer().getName());
-		if (LightSource.getInstance().getHeadPlayers()
-				.contains(event.getPlayer().getName())) {
-			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getHeadPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getHeadPlayers().remove(event.getPlayer().getName());
 		}
 	}
 }

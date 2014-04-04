@@ -51,8 +51,15 @@ public class LightSource extends JavaPlugin{
 		this.im = new ItemManager();
 		this.ill = new ItemLightListener();
 		
-		
+		createExampleTorch();
+		createExampleHead();
+    }
+    
+	@Override
+	public void onEnable() {
+		if(api.getNMSHandler() != null){
 		PluginDescriptionFile pdfFile = getDescription();
+
 		try {
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -79,16 +86,6 @@ public class LightSource extends JavaPlugin{
 			e.printStackTrace();
 		}
 		
-		createExampleTorch();
-		createExampleHead();
-		
-    }
-    
-	@Override
-	public void onEnable() {
-		if(api.getNMSHandler() != null){
-			PluginDescriptionFile pdfFile = getDescription();
-			
 		getItemManager().loadItems();
 		getHeadManager().loadItems();
 
@@ -115,6 +112,7 @@ public class LightSource extends JavaPlugin{
 		
 		getCommand("ls").setExecutor(new MainCommand());
 		getCommand("light").setExecutor(new LightCommand());
+		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
 		

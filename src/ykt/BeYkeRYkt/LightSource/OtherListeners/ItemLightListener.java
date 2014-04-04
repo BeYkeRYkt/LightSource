@@ -85,7 +85,6 @@ public class ItemLightListener implements Listener {
 
 		if (item != null && ItemManager.isTorchLight(item)) {
 			LightAPI.deleteLightSourceAndUpdate(entity.getLocation());
-			LightSource.getInstance().getTorchPlayers().add(event.getPlayer().getName());
 		}
 	}
 

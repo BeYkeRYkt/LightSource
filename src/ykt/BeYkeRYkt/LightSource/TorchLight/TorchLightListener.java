@@ -1,5 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.TorchLight;
 
+import java.util.HashMap;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,6 +23,12 @@ import ykt.BeYkeRYkt.LightSource.LightSource;
 
 public class TorchLightListener implements Listener {
 
+	private static HashMap<String, Location> pLocations = new HashMap<String, Location>();
+	
+	public static HashMap<String, Location>getLocations(){
+		return pLocations;
+	}
+	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -32,19 +40,23 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 
 			if (item != null && ItemManager.isTorchLight(item)) {
-				if (event.getFrom().getBlock().getLocation().getBlockX() != event.getTo().getBlock().getLocation().getBlockX()
-					|| event.getFrom().getBlock().getLocation().getBlockY() != event.getTo().getBlock().getLocation().getBlockY()
-						|| event.getFrom().getBlock().getLocation().getBlockZ() != event.getTo().getBlock().getLocation().getBlockZ()) {
-					LightAPI.deleteLightSource(event.getFrom().getBlock().getLocation());
-					
-					LightAPI.createLightSource(event.getTo().getBlock().getLocation(),
-							ItemManager.getLightLevel(item));
-				}
+				
+			      if (!pLocations.containsKey(player.getName())) {
+			            pLocations.put(player.getName(), event.getFrom());
+			        }
+				
+			      double d = pLocations.get(player.getName()).distance(event.getTo());
+			      if (d >= LightSource.getInstance().getConfig().getDouble("Radius-update")) {
+					LightAPI.deleteLightSource(pLocations.get(player.getName()));
+					LightAPI.createLightSource(event.getTo(),ItemManager.getLightLevel(item));
+					pLocations.put(player.getName(), event.getTo());
+			      }
+			      
 			}else if (item != null && !ItemManager.isTorchLight(item)|| item == null) {
-
-				LightAPI.deleteLightSource(event.getFrom().getBlock().getLocation());
-				LightAPI.deleteLightSourceAndUpdate(event.getTo().getBlock().getLocation());
+				
+				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
+				pLocations.remove(player.getName());
 				
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 					LightSource.getInstance().getLogger()
@@ -53,16 +65,18 @@ public class TorchLightListener implements Listener {
 			}
 		}else{
 			if (item != null && ItemManager.isTorchLight(item)) {
-				if (event.getFrom().getBlock().getLocation().getBlockX() != event.getTo().getBlock().getLocation().getBlockX()
-					|| event.getFrom().getBlock().getLocation().getBlockY() != event.getTo().getBlock().getLocation().getBlockY()
-						|| event.getFrom().getBlock().getLocation().getBlockZ() != event.getTo().getBlock().getLocation().getBlockZ()) {					
-					LightAPI.createLightSource(event.getTo().getBlock().getLocation(),ItemManager.getLightLevel(item));
+				
+			      if (!pLocations.containsKey(player.getName())) {
+			            pLocations.put(player.getName(), event.getFrom());
+			        }
+				
+					LightAPI.createLightSource(event.getFrom(),ItemManager.getLightLevel(item));
 					LightSource.getInstance().getTorchPlayers().add(player.getName());
 					
 					if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 						LightSource.getInstance().getLogger()
 								.info("Player added to the group");
-					}
+					
 				}
 			}
 		}
@@ -73,7 +87,7 @@ public class TorchLightListener implements Listener {
 	public void onItemHeldChange(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
 		ItemStack item = player.getInventory().getItem(event.getNewSlot());
-		Location loc = player.getLocation().getBlock().getLocation();
+		Location loc = player.getLocation();
 
 		if (LightSource.getInstance().getConfig().getBoolean("Worlds." + event.getPlayer().getWorld().getName()) || event.getPlayer().isOp()){
 		
@@ -82,6 +96,7 @@ public class TorchLightListener implements Listener {
 		if (!LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && ItemManager.isTorchLight(item)) {
 				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
+				pLocations.put(player.getName(), loc);
 				LightSource.getInstance().getTorchPlayers().add(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -92,8 +107,9 @@ public class TorchLightListener implements Listener {
 
 		} else if (LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && !ItemManager.isTorchLight(item) || item == null|| item.getType() == Material.AIR) {
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
+				pLocations.remove(player.getName());
 
 				if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
 					LightSource.getInstance().getLogger()
@@ -101,8 +117,9 @@ public class TorchLightListener implements Listener {
 				}
 
 			} else if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSource(loc);
+				LightAPI.deleteLightSource(pLocations.get(player.getName()));
 				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
+				pLocations.put(player.getName(), loc);
 			}
 		}
 	}
@@ -110,10 +127,9 @@ public class TorchLightListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
-
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -121,10 +137,9 @@ public class TorchLightListener implements Listener {
 
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
-
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -132,10 +147,9 @@ public class TorchLightListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		Location loc = event.getEntity().getLocation().getBlock().getLocation();
-
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getEntity().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getEntity().getName())) {
+			if(!pLocations.containsKey(event.getEntity())) return;
+			Location loc = pLocations.get(event.getEntity().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 		}
 
@@ -143,49 +157,44 @@ public class TorchLightListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
-
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getTorchPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
+			pLocations.remove(event.getPlayer().getName());
 		}
 
 	}
 
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getTorchPlayers()
-					.remove(event.getPlayer().getName());
+			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
+			pLocations.remove(event.getPlayer().getName());
 		}
 
 	}
 
 	@EventHandler
 	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
-
-		if (LightSource.getInstance().getTorchPlayers()
-				.contains(event.getPlayer().getName())) {
+		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
-			LightSource.getInstance().getTorchPlayers()
-					.remove(event.getPlayer().getName());
 		}
-
 	}
 
 	@EventHandler
 	public void onPlayerDropLight(PlayerDropItemEvent event) {
-		Location loc = event.getPlayer().getLocation().getBlock().getLocation();
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
-			
 			if(event.getPlayer().getItemInHand().getAmount() < 1){
+			if(!pLocations.containsKey(event.getPlayer())) return;
+			Location loc = pLocations.get(event.getPlayer().getName());
 			LightAPI.deleteLightSourceAndUpdate(loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			}

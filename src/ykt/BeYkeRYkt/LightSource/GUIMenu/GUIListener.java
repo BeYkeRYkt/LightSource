@@ -2,6 +2,8 @@ package ykt.BeYkeRYkt.LightSource.GUIMenu;
 
 import java.util.ArrayList;
 
+import net.gravitydevelopment.updater.Updater;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,8 +20,17 @@ import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightCommand;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.MainCommand;
+import ykt.BeYkeRYkt.LightSource.UpdateContainer;
 
 public class GUIListener implements Listener{
+	
+	
+	/**
+	 * 
+	 * FOR GUI
+	 * 
+	 *
+	 */
 	
 	@EventHandler
 	public void onStandartClick(InventoryClickEvent event){
@@ -108,6 +119,20 @@ public class GUIListener implements Listener{
 					  
 					  player.closeInventory();
 					  player.sendMessage(ChatColor.GREEN +"Plugin successfully restarted!");
+				}else if(cmd.getUpdate().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+					  if(LightSource.getInstance().getConfig().getBoolean("Enable-updater")){
+						if(UpdateContainer.update){
+						Updater updater = new Updater(LightSource.getInstance(), UpdateContainer.id, UpdateContainer.file, Updater.UpdateType.NO_VERSION_CHECK, true);
+						player.sendMessage(ChatColor.GREEN + "Downloading new update, check your console.");
+						player.closeInventory();
+						}else{
+						  player.sendMessage(ChatColor.YELLOW + "No new updates");
+						  player.closeInventory();
+						}
+						}else{
+					      player.sendMessage(ChatColor.RED + "System updates disabled. Turn it in the plugin settings");
+					      player.closeInventory();
+						}			
 				}else if(cmd.getWorlds().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					player.closeInventory();
 					

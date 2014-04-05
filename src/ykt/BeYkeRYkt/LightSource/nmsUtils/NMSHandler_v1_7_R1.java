@@ -129,6 +129,7 @@ public class NMSHandler_v1_7_R1 implements NMSInterface {
 			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.locX, chunk.locZ);
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
 			PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(chunk, false, '\uffff');
+			//packet.lowPriority = true; removed
 			nmsplayers.playerConnection.sendPacket(packet);
 			chunk.initLighting();
 			}

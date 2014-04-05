@@ -62,11 +62,15 @@ public class LightAPI{
 
     
     /**
-     * Delete light with level at a location. (Not update)
+     * Delete light with level at a location.
      * @param loc - which block to update.
      */
     public static void deleteLightSourceStatic(Location loc){
     	nms.deleteLightSourceStatic(loc);
+    	
+        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+            LightSource.getInstance().getLogger().info("Deleted light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
+         }
     }
 
     /**
@@ -109,7 +113,6 @@ public class LightAPI{
 	* Gets all the chunks touching/diagonal to the chunk the location is in and updates players with them.
 	* @param loc - location to the block that was updated.
 	* @param nmsWorld - world
-	* @param type - Update light type
 	*/
     public static void updateChunk(World world, Location loc) {
 

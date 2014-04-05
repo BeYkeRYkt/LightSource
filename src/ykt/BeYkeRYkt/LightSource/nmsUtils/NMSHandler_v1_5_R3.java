@@ -21,7 +21,6 @@ import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 
-
 public class NMSHandler_v1_5_R3 implements NMSInterface {
 
 	/**
@@ -133,6 +132,9 @@ public class NMSHandler_v1_5_R3 implements NMSInterface {
 			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.x, chunk.z);
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
 			Packet51MapChunk packet = new Packet51MapChunk(chunk, false, '\uffff');
+			//Experimental
+			packet.lowPriority = true;
+			//end
 			nmsplayers.playerConnection.sendPacket(packet);
 			chunk.initLighting();
 			}

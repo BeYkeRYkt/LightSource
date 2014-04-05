@@ -1,5 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.OtherListeners;
 
+import java.util.HashMap;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -16,8 +18,14 @@ import com.bergerkiller.bukkit.common.events.EntityMoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveFromServerEvent;
 
-public class ItemLightListener implements Listener {
+public class RadiusItemLightListener implements Listener {
 
+	private static HashMap<Integer, Location> loc = new HashMap<Integer, Location>();
+	
+	public static HashMap<Integer, Location> getLocations(){
+		return loc;
+	}
+	
 	@EventHandler
 	public void onItemMove(EntityMoveEvent event) {
 		Entity entity = event.getEntity();
@@ -28,19 +36,19 @@ public class ItemLightListener implements Listener {
 
 			
 			if (item != null && ItemManager.isTorchLight(item)) {
-				if (event.getFromX() != event.getToX()
-						|| event.getFromY() != event.getToY()
-						|| event.getFromZ() != event.getToZ()) {
-
-					Location from = new Location(item_entity.getWorld(),
-							event.getFromX(), event.getFromY(),
-							event.getFromZ());
-					Location to = new Location(item_entity.getWorld(),
-							event.getToX(), event.getToY(), event.getToZ());
-
-					LightAPI.deleteLightSource(from);
-					LightAPI.createLightSource(to,
-							ItemManager.getLightLevel(item));
+				if (event.getFromX() != event.getToX()|| event.getFromY() != event.getToY()|| event.getFromZ() != event.getToZ()) {
+					Location from = new Location(item_entity.getWorld(),event.getFromX(), event.getFromY(),event.getFromZ());
+					Location to = new Location(item_entity.getWorld(),event.getToX(), event.getToY(), event.getToZ());
+					
+				      if (!loc.containsKey(item_entity.getEntityId())) {
+				            loc.put(item_entity.getEntityId(), from);
+				      }
+				    double d = loc.get(item_entity.getEntityId()).distance(to);
+				    if (d >= LightSource.getInstance().getConfig().getDouble("Radius-update")) {
+					LightAPI.deleteLightSource(loc.get(item_entity.getEntityId()));
+					LightAPI.createLightSource(to,ItemManager.getLightLevel(item));
+					loc.put(item_entity.getEntityId(), to);
+				   }
 				}
 			}
 		}
@@ -52,10 +60,10 @@ public class ItemLightListener implements Listener {
 		if (entity instanceof Item) {
 			Item item_entity = (Item) entity;
 			ItemStack item = item_entity.getItemStack();
-			Location loc = item_entity.getLocation();
 
 
 			if (item != null && ItemManager.isTorchLight(item)) {
+				Location loc = this.loc.get(item_entity.getEntityId());
 				LightAPI.deleteLightSourceAndUpdate(loc);
 			}
 			
@@ -68,9 +76,9 @@ public class ItemLightListener implements Listener {
 		if (entity instanceof Item) {
 			Item item_entity = (Item) entity;
 			ItemStack item = item_entity.getItemStack();
-			Location loc = item_entity.getLocation();
 
 			if (item != null && ItemManager.isTorchLight(item)) {
+				Location loc = this.loc.get(item_entity.getEntityId());
 				LightAPI.deleteLightSourceAndUpdate(loc);
 			}
 			
@@ -84,7 +92,7 @@ public class ItemLightListener implements Listener {
 		ItemStack item = entity.getItemStack();
 
 		if (item != null && ItemManager.isTorchLight(item)) {
-			LightAPI.deleteLightSourceAndUpdate(entity.getLocation());
+			LightAPI.deleteLightSourceAndUpdate(this.loc.get(entity.getEntityId()));
 		}
 	}
 

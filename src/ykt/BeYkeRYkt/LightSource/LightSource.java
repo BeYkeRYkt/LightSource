@@ -4,12 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.gravitydevelopment.updater.Updater;
-import net.gravitydevelopment.updater.Updater.UpdateResult;
-import net.gravitydevelopment.updater.Updater.UpdateType;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,9 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ykt.BeYkeRYkt.LightSource.GUIMenu.GUIListener;
 import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadLampListener;
 import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadManager;
-import ykt.BeYkeRYkt.LightSource.OtherListeners.ItemLightListener;
-import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusHeadListener;
-import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusTorchListener;
+import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusItemLightListener;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
 import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
 
@@ -40,7 +33,7 @@ public class LightSource extends JavaPlugin{
 	private HeadManager hm;
 	private LightAPI api;
 	private boolean gui;
-    private ItemLightListener ill;
+    private RadiusItemLightListener ill;
     
     
     @Override
@@ -49,7 +42,7 @@ public class LightSource extends JavaPlugin{
 		this.api = new LightAPI();
 		this.hm = new HeadManager();
 		this.im = new ItemManager();
-		this.ill = new ItemLightListener();
+		this.ill = new RadiusItemLightListener();
 		
 		createExampleTorch();
 		createExampleHead();
@@ -67,10 +60,9 @@ public class LightSource extends JavaPlugin{
 						"LightSource v" + pdfFile.getVersion()
 								+ " Configuration" + "\nHave fun :3"
 								+ "\nby BeYkeRYkt");
-				fc.addDefault("Enable-updater", false);
+				fc.addDefault("Enable-updater", true);
 				fc.addDefault("Debug", false);
 				fc.addDefault("Enable-GUI", true);
-				fc.addDefault("Radius-mode", true);
 				fc.addDefault("Radius-update", 4.0);
 				fc.addDefault("Advanced-Listener.TorchLight", false);
 
@@ -89,39 +81,34 @@ public class LightSource extends JavaPlugin{
 		getItemManager().loadItems();
 		getHeadManager().loadItems();
 
-		if(this.getConfig().getBoolean("Radius-mode")){
-			Bukkit.getPluginManager().registerEvents(new RadiusTorchListener(), this);
-			Bukkit.getPluginManager().registerEvents(new RadiusHeadListener(), this);
-		}else{
+		//Events
 		Bukkit.getPluginManager().registerEvents(new TorchLightListener(), this);
 		Bukkit.getPluginManager().registerEvents(new HeadLampListener(), this);
-		}
 		
 		
 		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
-
 			registerAdvancedItemListener(true);
-
 		}
-
 		this.gui = getConfig().getBoolean("Enable-GUI");	
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 		
+		
+		
+		//Permissions and commands
 		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.FALSE));
 		Bukkit.getPluginManager().addPermission(new Permission("lightsource.hidden", PermissionDefault.FALSE));
 		
 		getCommand("ls").setExecutor(new MainCommand());
 		getCommand("light").setExecutor(new LightCommand());
 		
-		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
-		
-		
+		//Update
 		if(this.getConfig().getBoolean("Enable-updater")){
-		Updater updater = new Updater(this, 77176, this.getFile(), UpdateType.NO_DOWNLOAD, true);
-		if(updater.getResult() == UpdateResult.UPDATE_AVAILABLE){
-			Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[LightSource]" + "New version available! " + updater.getLatestName() + " for " + updater.getLatestGameVersion());
+			this.getLogger().info("Enabling update system...");
+			new UpdateContainer(this.getFile());
 		}
-		}
+		
+		
+		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
 		}
 	}
@@ -178,30 +165,21 @@ public class LightSource extends JavaPlugin{
 		Bukkit.getPluginManager().removePermission("lightsource.admin");
 		Bukkit.getPluginManager().removePermission("lightsource.hidden");
 		
-		if(!this.getConfig().getBoolean("Radius-mode")){
-			
-		for(Player players : Bukkit.getOnlinePlayers()){
-			LightAPI.deleteLightSourceAndUpdate(players.getLocation().getBlock().getLocation());
-		}
-		
-		this.getLogger().info("Deleted all lights!");
-		
-		}else if(this.getConfig().getBoolean("Radius-mode")){
+
 			for(Player players : Bukkit.getOnlinePlayers()){
 				
-				if(!RadiusHeadListener.getLocations().isEmpty()){
-				Location loc = RadiusHeadListener.getLocations().get(players.getName());
+				if(!HeadLampListener.getLocations().isEmpty()){
+				Location loc = HeadLampListener.getLocations().get(players.getName());
 				LightAPI.deleteLightSourceAndUpdate(loc);
-				RadiusHeadListener.getLocations().clear();
+				HeadLampListener.getLocations().clear();
 				}
 				
-				if(!RadiusTorchListener.getLocations().isEmpty()){
-				Location loc = RadiusTorchListener.getLocations().get(players.getName());
+				if(!TorchLightListener.getLocations().isEmpty()){
+				Location loc = TorchLightListener.getLocations().get(players.getName());
 				LightAPI.deleteLightSourceAndUpdate(loc);
-				RadiusTorchListener.getLocations().clear();
+				TorchLightListener.getLocations().clear();
 				}
 				
-			}
 			this.getLogger().info("Deleted all lights!");
 	    }
 						

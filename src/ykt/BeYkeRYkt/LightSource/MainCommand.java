@@ -2,6 +2,8 @@ package ykt.BeYkeRYkt.LightSource;
 
 import java.util.ArrayList;
 
+import net.gravitydevelopment.updater.Updater;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -31,6 +33,7 @@ public class MainCommand implements CommandExecutor{
 					player.sendMessage("- /ls world [worldName] " + ChatColor.GREEN + "[true/false]" + ChatColor.YELLOW +"- Enabling/Disaling lighting for world.");
 					player.sendMessage("- /ls gui [true/false]" + ChatColor.YELLOW +"- Enabling/Disabling GUI Menu");
 					player.sendMessage("- /ls debug [true/false]" + ChatColor.YELLOW +"- Enabling/Disabling debug mode");
+					player.sendMessage("- /ls update " + ChatColor.YELLOW +"- Update plugin");	
 					player.sendMessage("- /ls reload " + ChatColor.YELLOW +"- Reload plugin");
 				}
 				//Args >1
@@ -49,6 +52,21 @@ public class MainCommand implements CommandExecutor{
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
+				  }else if(args[0].equalsIgnoreCase("update")){
+					  if(player.hasPermission("lightsource.admin")){
+						  if(LightSource.getInstance().getConfig().getBoolean("Enable-updater")){
+						  if(UpdateContainer.update){
+						  Updater updater = new Updater(LightSource.getInstance(), UpdateContainer.id, UpdateContainer.file, Updater.UpdateType.NO_VERSION_CHECK, true);
+						  player.sendMessage(ChatColor.GREEN + "Downloading new update, check your console.");
+						  }else{
+							  player.sendMessage(ChatColor.YELLOW + "No new updates");
+						  }
+						  }else{
+							  player.sendMessage(ChatColor.RED + "System updates disabled. Turn it in the plugin settings");
+						  }
+						  }else{
+							  player.sendMessage(ChatColor.RED + "You do not have permission");
+						  }  
 				  }else
 				  if(args[0].equalsIgnoreCase("info")){
 
@@ -110,6 +128,12 @@ public class MainCommand implements CommandExecutor{
 						  }else{
 							  player.sendMessage(ChatColor.RED + "You do not have permission");
 						  }
+				  }else if(args[0].equalsIgnoreCase("update")){
+					  if(player.hasPermission("lightsource.admin")){
+						  player.sendMessage(ChatColor.RED + "Too many arguments.");
+					  }else{
+						  player.sendMessage(ChatColor.RED + "You do not have permission");
+					  }
 				  }else
 					  if(args[0].equalsIgnoreCase("info")){
 						  player.sendMessage(ChatColor.RED + "Too many arguments.");
@@ -159,6 +183,12 @@ public class MainCommand implements CommandExecutor{
 							  }else{
 								  player.sendMessage(ChatColor.RED + "You do not have permission");
 							  }
+					  }else if(args[0].equalsIgnoreCase("update")){
+						  if(player.hasPermission("lightsource.admin")){
+							  player.sendMessage(ChatColor.RED + "Too many arguments.");
+						  }else{
+							  player.sendMessage(ChatColor.RED + "You do not have permission");
+						  }
 					  }else
 					  if(args[0].equalsIgnoreCase("info")){
 						  player.sendMessage(ChatColor.RED + "Too many arguments.");
@@ -203,6 +233,12 @@ public class MainCommand implements CommandExecutor{
 							  }else{
 								  player.sendMessage(ChatColor.RED + "You do not have permission");
 							  }
+					  }else if(args[0].equalsIgnoreCase("update")){
+						  if(player.hasPermission("lightsource.admin")){
+							  player.sendMessage(ChatColor.RED + "Too many arguments.");
+						  }else{
+							  player.sendMessage(ChatColor.RED + "You do not have permission");
+						  }
 					  }else
 					  if(args[0].equalsIgnoreCase("info")){
 							  player.sendMessage(ChatColor.RED + "Too many arguments.");
@@ -243,8 +279,8 @@ public class MainCommand implements CommandExecutor{
 					  menu.addItem(getWorlds(), 2);
 					  menu.addItem(getDebug(), 3);
 					  menu.addItem(getGUIEnable(), 4);
-					  menu.addItem(getReload(), 5);
-					  
+					  menu.addItem(getUpdate(), 5);
+					  menu.addItem(getReload(), 6);
 				  }
 				
 				  player.openInventory(menu.getInventory());
@@ -328,6 +364,18 @@ public class MainCommand implements CommandExecutor{
 		  ArrayList list = new ArrayList();
 		  list.add(ChatColor.GOLD + "Status: ");
 		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Debug")));
+		  meta.setLore(list);
+		  adve.setItemMeta(meta);
+		  return adve;
+	}
+	
+	public ItemStack getUpdate(){
+		  ItemStack adve = new ItemStack(Material.DIAMOND);
+		  ItemMeta meta = adve.getItemMeta();
+		  meta.setDisplayName("Update");
+		  
+		  ArrayList list = new ArrayList();
+		  list.add(ChatColor.GOLD + "Check and download update");
 		  meta.setLore(list);
 		  adve.setItemMeta(meta);
 		  return adve;

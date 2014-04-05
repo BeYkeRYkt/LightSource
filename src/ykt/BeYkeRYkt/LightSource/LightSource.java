@@ -180,6 +180,7 @@ public class LightSource extends JavaPlugin{
 				TorchLightListener.getLocations().clear();
 				}
 				
+			registerAdvancedItemListener(false);
 			this.getLogger().info("Deleted all lights!");
 	    }
 						
@@ -241,7 +242,13 @@ public class LightSource extends JavaPlugin{
 				int view = Bukkit.getViewDistance() * 16;
 				for(Entity entity: players.getNearbyEntities(view, view, view)){
 					if(entity instanceof Item){
-					LightAPI.deleteLightSourceAndUpdate(entity.getLocation().getBlock().getLocation());
+					Item item = (Item) entity;
+					if(item != null && ItemManager.isTorchLight(item.getItemStack())){
+					if(!RadiusItemLightListener.getLocations().isEmpty()){
+					Location loc = RadiusItemLightListener.getLocations().get(item.getEntityId());
+					LightAPI.deleteLightSourceAndUpdate(loc);
+					}
+					}
 					}
 				}
 			}

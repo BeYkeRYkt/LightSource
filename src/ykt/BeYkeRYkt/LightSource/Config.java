@@ -10,8 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Config {
 
-	public FileConfiguration customConfig;
-	public File customFile;
+	private FileConfiguration customConfig;
+	private File customFile;
 	private String name;
 
 	public Config(String name) {

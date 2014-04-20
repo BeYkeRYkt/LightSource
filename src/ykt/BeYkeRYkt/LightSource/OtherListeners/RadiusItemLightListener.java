@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 import com.bergerkiller.bukkit.common.events.EntityMoveEvent;
 import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
@@ -33,7 +34,6 @@ public class RadiusItemLightListener implements Listener {
 		if (entity instanceof Item) {
 			Item item_entity = (Item) entity;
 			ItemStack item = item_entity.getItemStack();
-
 			
 			if (item != null && ItemManager.isTorchLight(item)) {
 				if (event.getFromX() != event.getToX()|| event.getFromY() != event.getToY()|| event.getFromZ() != event.getToZ()) {
@@ -45,8 +45,8 @@ public class RadiusItemLightListener implements Listener {
 				      }
 				    double d = loc.get(item_entity.getEntityId()).distance(to);
 				    if (d >= LightSource.getInstance().getConfig().getDouble("Radius-update")) {
-					LightAPI.deleteLightSource(loc.get(item_entity.getEntityId()));
-					LightAPI.createLightSource(to,ItemManager.getLightLevel(item));
+					LightAPI.deleteLightSource(LightType.DYNAMIC, loc.get(item_entity.getEntityId()));
+					LightAPI.createLightSource(LightType.DYNAMIC, to,ItemManager.getLightLevel(item));
 					loc.put(item_entity.getEntityId(), to);
 				   }
 				}
@@ -64,7 +64,7 @@ public class RadiusItemLightListener implements Listener {
 
 			if (item != null && ItemManager.isTorchLight(item)) {
 				Location loc = this.loc.get(item_entity.getEntityId());
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 			}
 			
 		}
@@ -79,7 +79,7 @@ public class RadiusItemLightListener implements Listener {
 
 			if (item != null && ItemManager.isTorchLight(item)) {
 				Location loc = this.loc.get(item_entity.getEntityId());
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 			}
 			
 		}
@@ -92,7 +92,7 @@ public class RadiusItemLightListener implements Listener {
 		ItemStack item = entity.getItemStack();
 
 		if (item != null && ItemManager.isTorchLight(item)) {
-			LightAPI.deleteLightSourceAndUpdate(this.loc.get(entity.getEntityId()));
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, this.loc.get(entity.getEntityId()));
 		}
 	}
 

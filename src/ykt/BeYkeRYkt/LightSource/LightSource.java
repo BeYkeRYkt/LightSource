@@ -23,6 +23,7 @@ import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadManager;
 import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusItemLightListener;
 import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
 import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 public class LightSource extends JavaPlugin{
 
@@ -43,9 +44,6 @@ public class LightSource extends JavaPlugin{
 		this.hm = new HeadManager();
 		this.im = new ItemManager();
 		this.ill = new RadiusItemLightListener();
-		
-		createExampleTorch();
-		createExampleHead();
     }
     
 	@Override
@@ -78,8 +76,8 @@ public class LightSource extends JavaPlugin{
 			e.printStackTrace();
 		}
 		
-		getItemManager().loadItems();
-		getHeadManager().loadItems();
+		createExampleHead();
+		createExampleTorch();
 
 		//Events
 		Bukkit.getPluginManager().registerEvents(new TorchLightListener(), this);
@@ -89,10 +87,9 @@ public class LightSource extends JavaPlugin{
 		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
 			registerAdvancedItemListener(true);
 		}
+		
 		this.gui = getConfig().getBoolean("Enable-GUI");	
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-		
-		
 		
 		//Permissions and commands
 		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.FALSE));
@@ -100,13 +97,18 @@ public class LightSource extends JavaPlugin{
 		
 		getCommand("ls").setExecutor(new MainCommand());
 		getCommand("light").setExecutor(new LightCommand());
+				
+		
+		//Items
+		getHeadManager().loadItems();
+		getItemManager().loadItems();
+		
 		
 		//Update
 		if(this.getConfig().getBoolean("Enable-updater")){
 			this.getLogger().info("Enabling update system...");
 			new UpdateContainer(this.getFile());
 		}
-		
 		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
@@ -115,8 +117,8 @@ public class LightSource extends JavaPlugin{
 
 	public void createExampleTorch() {
 		try {
-			FileConfiguration fc = getItemManager().getConfig()
-					.getSourceConfig();
+			FileConfiguration fc = getItemManager().getConfig().getSourceConfig();
+			
 			if (!new File(getDataFolder(), "TorchLight.yml").exists()) {				
 				fc.addDefault("DEMO.name", null);
 				fc.addDefault("DEMO.material", "TORCH");
@@ -141,8 +143,8 @@ public class LightSource extends JavaPlugin{
 
 	public void createExampleHead() {
 		try {
-			FileConfiguration fc = getHeadManager().getConfig()
-					.getSourceConfig();
+			FileConfiguration fc = getHeadManager().getConfig().getSourceConfig();
+			
 			if (!new File(getDataFolder(), "HeadLamp.yml").exists()) {
 
 				fc.addDefault("DEMO.name", null);
@@ -152,8 +154,8 @@ public class LightSource extends JavaPlugin{
 				fc.options().copyDefaults(true);
 				getHeadManager().getConfig().saveSourceConfig();
 				fc.options().copyDefaults(false);
-
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -170,13 +172,13 @@ public class LightSource extends JavaPlugin{
 				
 				if(!HeadLampListener.getLocations().isEmpty()){
 				Location loc = HeadLampListener.getLocations().get(players.getName());
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
 				HeadLampListener.getLocations().clear();
 				}
 				
 				if(!TorchLightListener.getLocations().isEmpty()){
 				Location loc = TorchLightListener.getLocations().get(players.getName());
-				LightAPI.deleteLightSourceAndUpdate(loc);
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
 				TorchLightListener.getLocations().clear();
 				}
 				
@@ -229,7 +231,7 @@ public class LightSource extends JavaPlugin{
 	
 	public void registerAdvancedItemListener(boolean flag){
 		if(flag){
-		if (Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
+		if (Bukkit.getPluginManager().getPlugin("BKCommonLib") != null && Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
 			this.getLogger().info("Found BKCommonLib! Enabling Advanced item listener!");
 			Bukkit.getPluginManager().registerEvents(ill, this);
 		} else {
@@ -246,7 +248,7 @@ public class LightSource extends JavaPlugin{
 					if(item != null && ItemManager.isTorchLight(item.getItemStack())){
 					if(!RadiusItemLightListener.getLocations().isEmpty()){
 					Location loc = RadiusItemLightListener.getLocations().get(item.getEntityId());
-					LightAPI.deleteLightSourceAndUpdate(loc);
+					LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
 					}
 					}
 					}

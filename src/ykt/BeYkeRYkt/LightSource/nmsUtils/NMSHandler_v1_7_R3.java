@@ -3,12 +3,12 @@ package ykt.BeYkeRYkt.LightSource.nmsUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_6_R3.Chunk;
-import net.minecraft.server.v1_6_R3.ChunkCoordIntPair;
-import net.minecraft.server.v1_6_R3.EntityPlayer;
-import net.minecraft.server.v1_6_R3.EnumSkyBlock;
-import net.minecraft.server.v1_6_R3.Packet51MapChunk;
-import net.minecraft.server.v1_6_R3.WorldServer;
+import net.minecraft.server.v1_7_R3.Chunk;
+import net.minecraft.server.v1_7_R3.ChunkCoordIntPair;
+import net.minecraft.server.v1_7_R3.EntityPlayer;
+import net.minecraft.server.v1_7_R3.EnumSkyBlock;
+import net.minecraft.server.v1_7_R3.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_7_R3.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,9 +16,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
@@ -26,15 +26,15 @@ import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 
 
-public class NMSHandler_v1_6_R3 implements NMSInterface {
-	
+public class NMSHandler_v1_7_R3 implements NMSInterface {
+		
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
 			BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 	
 	@Override
 	public void recalculateBlockLighting(World world, int x, int y, int z) {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-		nmsWorld.A(x, y, z);
+		nmsWorld.t(x, y, z);
 	}
 
 	
@@ -52,7 +52,7 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 		
 		updateChunk(loc.getWorld(), loc);
 		
-		if(type == LightType.STATIC){		
+		if(type == LightType.STATIC){
 		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, oldLevel);	
 		}
 		
@@ -71,6 +71,7 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 		byte blockData = delete.getBlock().getData();
 		delete.getBlock().setType(blockMaterial);
 		delete.getBlock().setData(blockData);
+		
 		
 		if(type == LightType.STATIC){
 		   for(int x=-2; x <=2; x++){
@@ -123,8 +124,10 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 			if(!cs.contains(chunk)){	
 			cs.add(chunk);
 			}
+			
 			}
 			}	
+			
 			
 			Block adjacent = getAdjacentAirBlock(loc.getBlock());
 
@@ -132,7 +135,6 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 			
 			sendPackets(cs, nmsplayers);
 			}
-			
 		}
 	}
 	
@@ -142,18 +144,17 @@ public class NMSHandler_v1_6_R3 implements NMSInterface {
 		for (int k = 0; k < i; ++k) {
 			Chunk chunk = (Chunk) list.get(k);
 			
-			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.x, chunk.z);
+			ChunkCoordIntPair coord = new ChunkCoordIntPair(chunk.locX, chunk.locZ);
 			if(!nmsplayers.chunkCoordIntPairQueue.contains(coord)){
-			Packet51MapChunk packet = new Packet51MapChunk(chunk, false, '\uffff');
+			PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(chunk, false, '\uffff');
+			//packet.lowPriority = true; removed
 			nmsplayers.playerConnection.sendPacket(packet);
-			//Experimental
-			packet.lowPriority = true;
-			//end
 			chunk.initLighting();
 			
 	        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-	            LightSource.getInstance().getLogger().info("Sending update for chunk: X=" + chunk.x + " Z=" + chunk.z);
+	            LightSource.getInstance().getLogger().info("Sending update for chunk: X=" + chunk.locX + " Z=" + chunk.locZ);
 	         }
+			
 			}
 		}
 	}

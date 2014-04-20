@@ -14,12 +14,8 @@ public class ItemManager {
 
 	private static ArrayList<CustomItemLight> list = new ArrayList<CustomItemLight>();
 	private static LightSource plugin = LightSource.getInstance();
-	private Config conf;
-
-	public ItemManager() {
-		this.conf = new Config("TorchLight");
-	}
-
+	private Config conf = new Config("TorchLight");
+	
 	public void loadItems() {
 		for (String str : getConfig().getSourceConfig().getKeys(false)) {
 			

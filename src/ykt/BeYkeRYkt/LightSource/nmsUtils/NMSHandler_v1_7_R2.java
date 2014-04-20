@@ -12,6 +12,7 @@ import net.minecraft.server.v1_7_R2.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,6 +20,9 @@ import org.bukkit.craftbukkit.v1_7_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 
 
@@ -36,32 +40,54 @@ public class NMSHandler_v1_7_R2 implements NMSInterface {
 	
 	//LOCATION
 	@Override
-	public void createLightSource(Location loc, int level) {
+	public void createLightSource(LightType type, Location loc, int level) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
+		int oldLevel = loc.getBlock().getLightLevel();
 		
 		int x = loc.getBlockX();
 		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 
 		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);
-
+		
 		updateChunk(loc.getWorld(), loc);
+		
+		if(type == LightType.STATIC){
+		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, oldLevel);	
+		}
+		
 	}
 
 	@Override
-	public void deleteLightSource(Location loc) {
+	public void deleteLightSource(LightType type, Location loc) {
 		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
 		
-		int x = loc.getBlockX();
-		int y = loc.getBlockY();
-		int z = loc.getBlockZ();
+		int locx = loc.getBlockX();
+		int locy = loc.getBlockY();
+		int locz = loc.getBlockZ();
 		
-		nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
+		Location delete = new Location(loc.getWorld(), locx, locy, locz);
+		Material blockMaterial = delete.getBlock().getType();
+		byte blockData = delete.getBlock().getData();
+		delete.getBlock().setType(blockMaterial);
+		delete.getBlock().setData(blockData);
+		
+		
+		if(type == LightType.STATIC){
+		   for(int x=-2; x <=2; x++){
+			   for(int z=-2; z<=2; z++){
+				   loc.getBlock().getRelative(x, 0, z).setType(loc.getBlock().getRelative(x, 0, z).getType());
+			   }
+		   }
+		}
+		
+		//nmsWorld.c(EnumSkyBlock.BLOCK, x, y, z);
+		
 	}
 
 	@Override
-	public void deleteLightSourceAndUpdate(Location loc) {
-		deleteLightSource(loc);
+	public void deleteLightSourceAndUpdate(LightType type, Location loc) {
+		deleteLightSource(type, loc);
 		
 		updateChunk(loc.getWorld(), loc);
 	}
@@ -124,37 +150,12 @@ public class NMSHandler_v1_7_R2 implements NMSInterface {
 			//packet.lowPriority = true; removed
 			nmsplayers.playerConnection.sendPacket(packet);
 			chunk.initLighting();
+			
+	        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+	            LightSource.getInstance().getLogger().info("Sending update for chunk: X=" + chunk.locX + " Z=" + chunk.locZ);
+	         }
+			
 			}
 		}
-	}
-
-
-	@Override
-	public void createLightSourceStatic(Location loc, int level) {
-		// TODO Auto-generated method stub
-		WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-		int blocklevel = loc.getBlock().getLightLevel();
-
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), level);
-
-		updateChunk(loc.getWorld(), loc);
-		
-		nmsWorld.b(EnumSkyBlock.BLOCK, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), blocklevel);
-	}
-
-
-	@Override
-	public void deleteLightSourceStatic(Location loc) {
-	       deleteLightSource(loc);
-			WorldServer nmsWorld = ((CraftWorld) loc.getWorld()).getHandle();
-		   
-		   loc.getBlock().setType(loc.getBlock().getType());
-		   for(int x=-2; x <=2; x++){
-			   for(int z=-2; z<=2; z++){
-				   loc.getBlock().getRelative(x, 0, z).setType(loc.getBlock().getRelative(x, 0, z).getType());
-			   }
-		   }
-
-		   updateChunk(loc.getWorld(), loc);      
 	}
 }

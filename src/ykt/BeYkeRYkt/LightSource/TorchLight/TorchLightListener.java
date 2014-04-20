@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 public class TorchLightListener implements Listener {
 
@@ -38,7 +39,6 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getHeadPlayers().contains(player.getName()))
 			return;
 		if (LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
-
 			if (item != null && ItemManager.isTorchLight(item)) {
 				
 			      if (!pLocations.containsKey(player.getName())) {
@@ -47,14 +47,14 @@ public class TorchLightListener implements Listener {
 				
 			      double d = pLocations.get(player.getName()).distance(event.getTo());
 			      if (d >= LightSource.getInstance().getConfig().getDouble("Radius-update")) {
-					LightAPI.deleteLightSource(pLocations.get(player.getName()));
-					LightAPI.createLightSource(event.getTo(),ItemManager.getLightLevel(item));
+					LightAPI.deleteLightSource(LightType.DYNAMIC, pLocations.get(player.getName()));
+					LightAPI.createLightSource(LightType.DYNAMIC, event.getTo(),ItemManager.getLightLevel(item));
 					pLocations.put(player.getName(), event.getTo());
 			      }
 			      
 			}else if (item != null && !ItemManager.isTorchLight(item)|| item == null) {
 				
-				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
 				pLocations.remove(player.getName());
 				
@@ -70,7 +70,7 @@ public class TorchLightListener implements Listener {
 			            pLocations.put(player.getName(), event.getFrom());
 			        }
 				
-					LightAPI.createLightSource(event.getFrom(),ItemManager.getLightLevel(item));
+					LightAPI.createLightSource(LightType.DYNAMIC, event.getFrom(),ItemManager.getLightLevel(item));
 					LightSource.getInstance().getTorchPlayers().add(player.getName());
 					
 					if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
@@ -95,7 +95,7 @@ public class TorchLightListener implements Listener {
 			return;
 		if (!LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
+				LightAPI.createLightSource(LightType.DYNAMIC, loc, ItemManager.getLightLevel(item));
 				pLocations.put(player.getName(), loc);
 				LightSource.getInstance().getTorchPlayers().add(player.getName());
 
@@ -107,7 +107,7 @@ public class TorchLightListener implements Listener {
 
 		} else if (LightSource.getInstance().getTorchPlayers().contains(player.getName())) {
 			if (item != null && !ItemManager.isTorchLight(item) || item == null|| item.getType() == Material.AIR) {
-				LightAPI.deleteLightSourceAndUpdate(pLocations.get(player.getName()));
+				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, pLocations.get(player.getName()));
 				LightSource.getInstance().getTorchPlayers().remove(player.getName());
 				pLocations.remove(player.getName());
 
@@ -117,8 +117,8 @@ public class TorchLightListener implements Listener {
 				}
 
 			} else if (item != null && ItemManager.isTorchLight(item)) {
-				LightAPI.deleteLightSource(pLocations.get(player.getName()));
-				LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
+				LightAPI.deleteLightSource(LightType.DYNAMIC, pLocations.get(player.getName()));
+				LightAPI.createLightSource(LightType.DYNAMIC, loc, ItemManager.getLightLevel(item));
 				pLocations.put(player.getName(), loc);
 			}
 		}
@@ -130,7 +130,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 		}
 
 	}
@@ -140,7 +140,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 		}
 
 	}
@@ -150,7 +150,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getEntity().getName())) {
 			if(!pLocations.containsKey(event.getEntity())) return;
 			Location loc = pLocations.get(event.getEntity().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 		}
 
 	}
@@ -160,7 +160,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
 		}
@@ -173,7 +173,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			pLocations.remove(event.getPlayer().getName());
 		}
@@ -185,7 +185,7 @@ public class TorchLightListener implements Listener {
 		if (LightSource.getInstance().getTorchPlayers().contains(event.getPlayer().getName())) {
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class TorchLightListener implements Listener {
 			if(event.getPlayer().getItemInHand().getAmount() < 1){
 			if(!pLocations.containsKey(event.getPlayer())) return;
 			Location loc = pLocations.get(event.getPlayer().getName());
-			LightAPI.deleteLightSourceAndUpdate(loc);
+			LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC, loc);
 			LightSource.getInstance().getTorchPlayers().remove(event.getPlayer().getName());
 			}
 		}

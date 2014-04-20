@@ -14,11 +14,7 @@ public class HeadManager {
 
 	private static ArrayList<CustomHeadLight> list = new ArrayList<CustomHeadLight>();
 	private static LightSource plugin = LightSource.getInstance();
-	private Config conf;
-
-	public HeadManager() {
-		this.conf = new Config("HeadLamp");
-	}
+	private Config conf = new Config("HeadLamp");
 
 	public void loadItems() {
 		for (String str : getConfig().getSourceConfig().getKeys(false)) {
@@ -26,7 +22,7 @@ public class HeadManager {
 			
 			if(name != null){
 				name = ChatColor.translateAlternateColorCodes('&', name);
-				}
+			}
 			
 			Material material = Material.getMaterial(getConfig()
 					.getSourceConfig().getString(str + ".material"));

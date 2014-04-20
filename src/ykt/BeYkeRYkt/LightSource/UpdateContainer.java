@@ -70,6 +70,9 @@ public class UpdateContainer implements Listener{
 			double newDouble = Double.valueOf(newVersion);
 			
 			if(oldDouble > newDouble){
+				LightSource.getInstance().getLogger().info("WARNING! You are using an unofficial version LightSource. Please download this plugin page BukkitDev.");
+				return false;
+			}else if(oldDouble == newDouble){
 				return false;
 			}
 		}

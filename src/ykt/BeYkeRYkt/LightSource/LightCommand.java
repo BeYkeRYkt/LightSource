@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import ykt.BeYkeRYkt.LightSource.GUIMenu.CustomGUIMenu;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 public class LightCommand implements CommandExecutor{
 	@Override
@@ -35,7 +36,7 @@ public class LightCommand implements CommandExecutor{
 							  player.sendMessage(ChatColor.RED + "Need more arguments!");
 							  player.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.WHITE + "Creating a light in your location");
 						}else if(args[0].equalsIgnoreCase("delete")){
-							LightAPI.deleteLightSourceStatic(player.getLocation());
+							LightAPI.deleteLightSourceAndUpdate(LightType.STATIC, player.getLocation());
 							player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
 						}else{
 							  player.sendMessage(ChatColor.RED +"Unknown command.");
@@ -48,7 +49,7 @@ public class LightCommand implements CommandExecutor{
 						if(args[0].equalsIgnoreCase("create")){
 							int lightblock = player.getLocation().getBlock().getLightLevel();
 							
-							LightAPI.createLightSourceStatic(player.getLocation(), Integer.parseInt(args[1]));
+							LightAPI.createLightSource(LightType.STATIC,player.getLocation(), Integer.parseInt(args[1]));
 							player.sendMessage(ChatColor.GREEN + "Light successfully created!");
 						}else if(args[0].equalsIgnoreCase("delete")){
 							  player.sendMessage(ChatColor.RED + "Too many arguments!");

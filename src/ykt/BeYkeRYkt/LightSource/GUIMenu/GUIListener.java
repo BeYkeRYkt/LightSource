@@ -21,6 +21,7 @@ import ykt.BeYkeRYkt.LightSource.LightCommand;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.MainCommand;
 import ykt.BeYkeRYkt.LightSource.UpdateContainer;
+import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 public class GUIListener implements Listener{
 	
@@ -29,7 +30,6 @@ public class GUIListener implements Listener{
 	 * 
 	 * FOR GUI
 	 * 
-	 *
 	 */
 	
 	@EventHandler
@@ -41,7 +41,9 @@ public class GUIListener implements Listener{
 		
 		if(clicked != null && clicked.getType() != Material.AIR){
 			if(LightSource.getInstance().getName().equals(name)){
+				
 				MainCommand cmd = new MainCommand();
+				
 				if(cmd.getAdv_Item().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					if(clicked.getItemMeta().getLore().contains("true")){
                       LightSource.getInstance().getConfig().set("Advanced-Listener.TorchLight", false);
@@ -188,7 +190,7 @@ public class GUIListener implements Listener{
 					player.openInventory(menu.getInventory());
 					
 				}else if(cmd.getDelete().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
-					LightAPI.deleteLightSourceStatic(player.getLocation());
+					LightAPI.deleteLightSourceAndUpdate(LightType.STATIC, player.getLocation());
 					player.closeInventory();
 					player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
 				}
@@ -200,7 +202,7 @@ public class GUIListener implements Listener{
 				if(clicked.hasItemMeta()){
 				if(clicked.getItemMeta().hasDisplayName()){
 
-					LightAPI.createLightSourceStatic(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
+					LightAPI.createLightSource(LightType.STATIC, player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
 					
 					player.closeInventory();
 					player.sendMessage(ChatColor.GREEN + "Light successfully created!");

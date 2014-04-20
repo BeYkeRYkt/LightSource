@@ -1,6 +1,7 @@
 package ykt.BeYkeRYkt.LightSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import ykt.BeYkeRYkt.LightSource.GUIMenu.GUIListener;
 import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadLampListener;
@@ -108,6 +110,14 @@ public class LightSource extends JavaPlugin{
 		if(this.getConfig().getBoolean("Enable-updater")){
 			this.getLogger().info("Enabling update system...");
 			new UpdateContainer(this.getFile());
+		}
+		
+		//mcstats
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
 		}
 		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");

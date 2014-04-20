@@ -22,7 +22,6 @@ import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
 
 
 public class NMSHandler_v1_5_R3 implements NMSInterface {

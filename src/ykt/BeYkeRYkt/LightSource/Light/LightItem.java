@@ -1,30 +1,30 @@
-package ykt.BeYkeRYkt.LightSource.TorchLight;
+package ykt.BeYkeRYkt.LightSource.Light;
 
 import org.bukkit.Material;
 
-public class CustomItemLight {
+public class LightItem {
 
 	private String name;
 	private Material material;
 	private int light;
 
-	public CustomItemLight(String name, Material material, int lightlevel) {
+	public LightItem(String name, Material material, int lightlevel) {
 		this.name = name;
 		this.material = material;
 		this.light = lightlevel;
 	}
 
-	// Имя
+	//Name
 	public String getName() {
 		return name;
 	}
 
-	// Материал
+	//Material
 	public Material getMaterial() {
 		return material;
 	}
 
-	// Уровень света
+	//LightLevel
 	public int getLevelLight() {
 		return light;
 	}

@@ -1,23 +1,28 @@
 package ykt.BeYkeRYkt.LightSource;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_5_R3;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_6_R3;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_7_R1;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_7_R2;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSHandler_v1_7_R3;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+
+import ykt.BeYkeRYkt.LightSource.Light.Light;
+import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R1;
+import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R2;
+import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R3;
+import ykt.BeYkeRYkt.LightSource.NMS.NMSInterface;
 
 
 public class LightAPI{	
 
     private String version = null;
     private static NMSInterface nms;
-    
+    private static ArrayList<Light> list = new ArrayList<Light>();
+
     public LightAPI(){
     	this.version = Bukkit.getBukkitVersion();
 	    this.version = this.version.substring(0, 6);
@@ -26,26 +31,47 @@ public class LightAPI{
     }
     
     private void initNMS(){
-    	if(this.version.startsWith("1.5.2")){
-    		this.nms = new NMSHandler_v1_5_R3();
-    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.5.2! Using NMSHandler for 1.5.2.");
-    	}else if(this.version.startsWith("1.6.4")){
-    		this.nms = new NMSHandler_v1_6_R3();
-    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.6.4! Using NMSHandler for 1.6.4");
-    	}else if(this.version.startsWith("1.7.2")){
-    		this.nms = new NMSHandler_v1_7_R1();
+    	if(this.version.startsWith("1.7.2")){
+    		nms = new NMSHandler_v1_7_R1();
     		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.2! Using NMSHandler for 1.7.2.");
     	}else if(this.version.startsWith("1.7.5")){
-    		this.nms = new NMSHandler_v1_7_R2();
+    		nms = new NMSHandler_v1_7_R2();
     		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.5! Using NMSHandler for 1.7.5.");
-    	}else if(this.version.startsWith("1.7.8")){
-    		this.nms = new NMSHandler_v1_7_R3();
-    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.8! Using NMSHandler for 1.7.8.");
+    	}else if(this.version.startsWith("1.7.8") || this.version.startsWith("1.7.9")){
+    		nms = new NMSHandler_v1_7_R3();
+    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.8/9! Using NMSHandler for 1.7.8/9.");
     	}else{
-    		LightSource.getInstance().getLogger().info("Unsupported version of the server. Off.");
+    		LightSource.getInstance().getLogger().info("Sorry. Your MC server not supported this plugin.");
     		Bukkit.getPluginManager().disablePlugin(LightSource.getInstance());
     	}
     }
+    
+	public static Light checkEntityID(Entity entity){
+		int index;
+		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
+		Light lights = LightAPI.getSources().get(index);
+		if(entity.getEntityId() == lights.getOwner().getEntityId()){
+			return lights;
+		}
+		}
+		return null;
+	}
+
+	public static Map<Chunk, Location> getChunksForUpdate(){
+		Map<Chunk, Location> chunks = new HashMap<Chunk, Location>();
+		int index;
+		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
+		Light lights = LightAPI.getSources().get(index);
+
+		for(Chunk chunk : lights.getChunks()){
+			if(!chunks.containsKey(chunk)){
+			chunks.put(chunk, lights.getLocation());
+			}
+		  }
+	    }
+		
+		return chunks;
+	}
 	
 	public NMSInterface getNMSHandler(){
 		return nms;
@@ -56,43 +82,70 @@ public class LightAPI{
      * @param loc - which block to update.
      * @param level - the new light level.
      */
-    public static void createLightSource(LightType type, Location loc, int level) {
+    public static void createLightSource(Location loc, int level) {
 
-    	nms.createLightSource(type, loc, level);
+    	nms.createLightSource(loc, level);
     	
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-        LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
-        }
+        //if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+        //LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
+        //}
     }
     
     /**
      * Delete light with level at a location. (Not update)
      * @param loc - which block to update.
      */
-    public static void deleteLightSource(LightType type, Location loc){
-    	nms.deleteLightSource(type, loc);
+    public static void deleteLightSource(Location loc){
+    	nms.deleteLightSource(loc);
     }
-    
-    
-	/**
-	* Destroy light with level at a location (Update)
-	* @param loc - location to the block that was updated.
-	*/
-    public static void deleteLightSourceAndUpdate(LightType type, Location loc){
-
-    	nms.deleteLightSourceAndUpdate(type, loc);
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-           LightSource.getInstance().getLogger().info("Deleted light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
-        }
-    }  
     
 	/**
 	* Gets all the chunks touching/diagonal to the chunk the location is in and updates players with them.
-	* @param loc - location to the block that was updated.
-	* @param nmsWorld - world
+	* @param chunk - Bukkit chunk
+	* @param loc - Location for update
 	*/
-    public static void updateChunk(World world, Location loc) {
+    public static void updateChunk(Location loc, Chunk chunk) {
+    	nms.updateChunk(loc, chunk);
+    }
 
-    	nms.updateChunk(world, loc);
-    }		 
+    public static void updateAllChunks(){
+    	long startTime = System.currentTimeMillis();
+		for(Entry<Chunk, Location> chunks:getChunksForUpdate().entrySet()){
+			updateChunk(chunks.getValue(), chunks.getKey());
+		}
+
+		long endTime = System.currentTimeMillis();
+        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
+    	LightSource.getInstance().getLogger().info("Chunks amount: " + getChunksForUpdate().size());
+    	LightSource.getInstance().getLogger().info("Packets(One player): " + 1 * getChunksForUpdate().size());
+    	LightSource.getInstance().getLogger().info("Packets(all): " + 1 * getChunksForUpdate().size() * LightAPI.getSources().size());
+		LightSource.getInstance().getLogger().info("Sending time : " + (endTime - startTime) + " ms!");
+        }
+    }
+    
+	/**
+	 * @return the list
+	 */
+	public static ArrayList<Light> getSources() {
+		return list;
+	}
+	
+	public static void addSource(Light light){
+		getSources().add(light);
+	}
+	
+	public static void removeSource(Light light){
+		getSources().remove(light);
+	}
+	
+	public static Light getSource(Location loc){
+		for(Light light : getSources()){
+			if(light.getLocation().getBlockX() == loc.getBlockX()
+					&& light.getLocation().getBlockY() == loc.getBlockY()
+					&& light.getLocation().getBlockZ() == loc.getBlockZ()){
+				return light;
+			}
+		}
+		return null;
+	}
 }

@@ -2,57 +2,41 @@ package ykt.BeYkeRYkt.LightSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
-import ykt.BeYkeRYkt.LightSource.GUIMenu.GUIListener;
-import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadLampListener;
-import ykt.BeYkeRYkt.LightSource.HeadLamp.HeadManager;
-import ykt.BeYkeRYkt.LightSource.OtherListeners.RadiusItemLightListener;
-import ykt.BeYkeRYkt.LightSource.TorchLight.ItemManager;
-import ykt.BeYkeRYkt.LightSource.TorchLight.TorchLightListener;
-import ykt.BeYkeRYkt.LightSource.nmsUtils.NMSInterface.LightType;
+import ykt.BeYkeRYkt.LightSource.GUIMenu.Menus;
+import ykt.BeYkeRYkt.LightSource.Light.ItemManager;
+import ykt.BeYkeRYkt.LightSource.Light.Light;
+import ykt.BeYkeRYkt.LightSource.Listeners.GUIListener;
+import ykt.BeYkeRYkt.LightSource.Listeners.MainListener;
+
 
 public class LightSource extends JavaPlugin{
 
 	private static LightSource plugin;
-	private ArrayList<String> torch = new ArrayList<String>();
-	private ArrayList<String> head = new ArrayList<String>();
-	private ItemManager im;
-	private HeadManager hm;
 	private LightAPI api;
-	private boolean gui;
-    private RadiusItemLightListener ill;
-    
-    
-    @Override
-    public void onLoad(){
-		this.plugin = this;
-		this.api = new LightAPI();
-		this.hm = new HeadManager();
-		this.im = new ItemManager();
-		this.ill = new RadiusItemLightListener();
-    }
-    
+	private int taskId = 0;
+	private ItemManager manager;
+	
 	@Override
 	public void onEnable() {
+		plugin = this;
+		api = new LightAPI();
 		if(api.getNMSHandler() != null){
 		PluginDescriptionFile pdfFile = getDescription();
-
+		manager = new ItemManager();
+		
 		try {
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -60,11 +44,12 @@ public class LightSource extends JavaPlugin{
 						"LightSource v" + pdfFile.getVersion()
 								+ " Configuration" + "\nHave fun :3"
 								+ "\nby BeYkeRYkt");
+				fc.addDefault("PlayerLight", true);
+				fc.addDefault("EntityLight", false);
+				fc.addDefault("ItemLight", false);
 				fc.addDefault("Enable-updater", true);
 				fc.addDefault("Debug", false);
-				fc.addDefault("Enable-GUI", true);
-				fc.addDefault("Radius-update", 4.0);
-				fc.addDefault("Advanced-Listener.TorchLight", false);
+				fc.addDefault("RadiusSendPackets", 64);
 
 				List<World> worlds = getServer().getWorlds();
 				for (World world : worlds) {
@@ -78,39 +63,7 @@ public class LightSource extends JavaPlugin{
 			e.printStackTrace();
 		}
 		
-		createExampleHead();
-		createExampleTorch();
-
-		//Events
-		Bukkit.getPluginManager().registerEvents(new TorchLightListener(), this);
-		Bukkit.getPluginManager().registerEvents(new HeadLampListener(), this);
-		
-		
-		if (this.getConfig().getBoolean("Advanced-Listener.TorchLight")) {
-			registerAdvancedItemListener(true);
-		}
-		
-		this.gui = getConfig().getBoolean("Enable-GUI");	
-		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-		
-		//Permissions and commands
-		Bukkit.getPluginManager().addPermission(new Permission("lightsource.admin", PermissionDefault.FALSE));
-		Bukkit.getPluginManager().addPermission(new Permission("lightsource.hidden", PermissionDefault.FALSE));
-		
-		getCommand("ls").setExecutor(new MainCommand());
-		getCommand("light").setExecutor(new LightCommand());
-				
-		
-		//Items
-		getHeadManager().loadItems();
-		getItemManager().loadItems();
-		
-		
-		//Update
-		if(this.getConfig().getBoolean("Enable-updater")){
-			this.getLogger().info("Enabling update system...");
-			new UpdateContainer(this.getFile());
-		}
+		loadItems();
 		
 		//mcstats
 		try {
@@ -120,155 +73,119 @@ public class LightSource extends JavaPlugin{
 		    // Failed to submit the stats :-(
 		}
 		
+		//Update
+		if(this.getConfig().getBoolean("Enable-updater")){
+			this.getLogger().info("Enabling update system...");
+			new UpdateContainer(this.getFile());
+		}
+				
+		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
+		Bukkit.getPluginManager().registerEvents(new MainListener(), this);
+		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
+		//Start Runnable --> DoGzzz old tests light system for my server ;P
+		taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new LightTask(), 0L, 5L).getTaskId();
 		}
 	}
 
-	public void createExampleTorch() {
-		try {
-			FileConfiguration fc = getItemManager().getConfig().getSourceConfig();
-			
-			if (!new File(getDataFolder(), "TorchLight.yml").exists()) {				
-				fc.addDefault("DEMO.name", null);
-				fc.addDefault("DEMO.material", "TORCH");
-				fc.addDefault("DEMO.lightlevel", 14);
-
-				fc.addDefault("Redstone.name", "REDSTONE_TEST");
-				fc.addDefault("Redstone.material", "REDSTONE_TORCH_ON");
-				fc.addDefault("Redstone.lightlevel", 8);
-				
-				fc.addDefault("COLOR_TEST.name", "&4TEST");
-				fc.addDefault("COLOR_TEST.material", "LAVA_BUCKET");
-				fc.addDefault("COLOR_TEST.lightlevel", 10);
-				
-				fc.options().copyDefaults(true);
-				getItemManager().getConfig().saveSourceConfig();
-				fc.options().copyDefaults(false);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void createExampleHead() {
-		try {
-			FileConfiguration fc = getHeadManager().getConfig().getSourceConfig();
-			
-			if (!new File(getDataFolder(), "HeadLamp.yml").exists()) {
-
-				fc.addDefault("DEMO.name", null);
-				fc.addDefault("DEMO.material", "GLOWSTONE");
-				fc.addDefault("DEMO.lightlevel", 10);
-
-				fc.options().copyDefaults(true);
-				getHeadManager().getConfig().saveSourceConfig();
-				fc.options().copyDefaults(false);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	
+	public void loadItems(){
+		createExampleItems();
+		getItemManager().loadItems();
 	}
 
 	@Override
 	public void onDisable() {
-		
-		Bukkit.getPluginManager().removePermission("lightsource.admin");
-		Bukkit.getPluginManager().removePermission("lightsource.hidden");
-		
-
-			for(Player players : Bukkit.getOnlinePlayers()){
-				
-				if(!HeadLampListener.getLocations().isEmpty()){
-				Location loc = HeadLampListener.getLocations().get(players.getName());
-				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
-				HeadLampListener.getLocations().clear();
-				}
-				
-				if(!TorchLightListener.getLocations().isEmpty()){
-				Location loc = TorchLightListener.getLocations().get(players.getName());
-				LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
-				TorchLightListener.getLocations().clear();
-				}
-				
-			registerAdvancedItemListener(false);
-			this.getLogger().info("Deleted all lights!");
-	    }
-						
-		
-		hm.getList().clear();
-		im.getList().clear();
-			
-		this.hm = null;
-		this.im = null;
-		
-		this.torch.clear();
-		this.head.clear();
-		this.api = null;
-		this.gui = false;
-		
+		Bukkit.getScheduler().cancelTask(taskId);
+		ItemManager.getList().clear();
 		HandlerList.unregisterAll(this);
+		int index;
+		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
+		    Light light = LightAPI.getSources().get(index);
+			LightAPI.deleteLightSource(light.getLocation());
+			//LightAPI.updateChunk(light.getLocation().getWorld(),light.getLocation());
+		    light.updateChunks();
+			LightAPI.getSources().remove(light);
+		}
+		api = null;
 	}
+	
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if(sender instanceof Player){
+			Player player = (Player) sender;
+			
+			if(cmd.getName().equalsIgnoreCase("ls")){
+				Menus.openMainMenu(player);
+			}
+		}
+		return true;
+	}
+	
+	public int getTaskId(){
+		return taskId;
+	}
+	
+	public void createExampleItems() {
+		try {
+			FileConfiguration fc = getItemManager().getConfig();
+			
+			if (!new File(getDataFolder(), "Items.yml").exists()) {			
+				
+				fc.addDefault("Lava.material", "LAVA");
+				fc.addDefault("Lava.lightlevel", 15);
+				
+				fc.addDefault("StationLava.material", "STATIONARY_LAVA");
+				fc.addDefault("StationLava.lightlevel", 15);
+				
+				fc.addDefault("Fire.material", "FIRE");
+				fc.addDefault("Fire.lightlevel", 115);
+				
+				fc.addDefault("Jack.material", "JACK_O_LATERN");
+				fc.addDefault("Jack.lightlevel", 15);
+				
+				fc.addDefault("LavaBucket.material", "LAVA_BUCKET");
+				fc.addDefault("LavaBucket.lightlevel", 15);
+				
+				fc.addDefault("Torch.material", "TORCH");
+				fc.addDefault("Torch.lightlevel", 14);
+				
+				fc.addDefault("Glowstone.material", "GLOWSTONE");
+				fc.addDefault("Glowstone.lightlevel", 14);
+				
+				fc.addDefault("BlazeRod.material", "BLAZE_ROD");
+				fc.addDefault("BlazeRod.lightlevel", 5);
+				
+				fc.addDefault("Redstone.material", "REDSTONE_TORCH_ON");
+				fc.addDefault("Redstone.lightlevel", 9);
+				
+				fc.options().copyDefaults(true);
+				getItemManager().saveConfig();
+				fc.options().copyDefaults(false);
+				getItemManager().reloadConfig();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 		
 	public static LightSource getInstance() {
 		return plugin;
-	}
-
-	public ArrayList<String> getTorchPlayers() {
-		return torch;
-	}
-
-	public ArrayList<String> getHeadPlayers() {
-		return head;
-	}
-
-	public HeadManager getHeadManager() {
-		return hm;
-	}
-
-	public ItemManager getItemManager() {
-		return im;
 	}
 
 	public LightAPI getAPI() {
 		return api;
 	}
 
-	public boolean getGUI() {
-		return gui;
-	}
-	
-	public void registerAdvancedItemListener(boolean flag){
-		if(flag){
-		if (Bukkit.getPluginManager().getPlugin("BKCommonLib") != null && Bukkit.getPluginManager().getPlugin("BKCommonLib").isEnabled()) {
-			this.getLogger().info("Found BKCommonLib! Enabling Advanced item listener!");
-			Bukkit.getPluginManager().registerEvents(ill, this);
-		} else {
-			this.getLogger().info("To work needed BKCommonLib. Advanced listener does not include.");
-		}
-		}else if(!flag){
-			this.getLogger().info("Disabling Advanced listener for items");
-			
-			for(Player players: Bukkit.getOnlinePlayers()){
-				int view = Bukkit.getViewDistance() * 16;
-				for(Entity entity: players.getNearbyEntities(view, view, view)){
-					if(entity instanceof Item){
-					Item item = (Item) entity;
-					if(item != null && ItemManager.isTorchLight(item.getItemStack())){
-					if(!RadiusItemLightListener.getLocations().isEmpty()){
-					Location loc = RadiusItemLightListener.getLocations().get(item.getEntityId());
-					LightAPI.deleteLightSourceAndUpdate(LightType.DYNAMIC,loc);
-					}
-					}
-					}
-				}
-			}
-			HandlerList.unregisterAll(ill);
-		}
+	/**
+	 * @return the manager
+	 */
+	public ItemManager getItemManager() {
+		return manager;
 	}
 
-	public void setGUI(boolean parseBoolean) {
-		this.gui = parseBoolean;
-	}
 }

@@ -1,13 +1,11 @@
-package ykt.BeYkeRYkt.LightSource.nmsUtils;
+package ykt.BeYkeRYkt.LightSource.NMS;
 
+
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 public interface NMSInterface {
-	
-	public enum LightType{
-		STATIC, DYNAMIC;
-	}
 	
 	
 	/**
@@ -27,25 +25,16 @@ public interface NMSInterface {
 	 * @param loc - which block to update.
 	 * @param level - the new light level.
 	 */
-	public void createLightSource(LightType type, Location loc, int level);
-
-	/**
-	 * Destroy light with level at a location (Update)
-	 * 
-	 * @param LightType - LightType for light update
-	 * 
-	 * @param loc - location to the block that was updated.
-	 */
-	public void deleteLightSourceAndUpdate(LightType type, Location loc);
+	public void createLightSource(Location loc, int level);
 	
 	/**
 	 * Gets all the chunks touching/diagonal to the chunk the location is in and
 	 * updates players with them.
 	 * 
-	 * @param loc - location to the block that was updated.
-	 * @param nmsWorld - world
+	 * @param Chunk - Bukkit chunk	
+	 * @param loc - Location for update 
 	 */
-	public void updateChunk(World world, Location loc);
+	public void updateChunk(Location loc, Chunk chunk);
 	
 	
 	/**
@@ -55,7 +44,9 @@ public interface NMSInterface {
 	 * 
 	 * @param loc - which block to update.
 	 */
-	public void deleteLightSource(LightType type, Location loc);
+	public void deleteLightSource(Location loc);
+
+
 
 
 }

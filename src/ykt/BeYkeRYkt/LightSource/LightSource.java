@@ -38,8 +38,7 @@ public class LightSource extends JavaPlugin{
 		if(api.getNMSHandler() != null){
 		PluginDescriptionFile pdfFile = getDescription();
 		manager = new ItemManager();
-		config = new LightConfig();
-		
+
 		try {
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -84,6 +83,8 @@ public class LightSource extends JavaPlugin{
 				
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 		Bukkit.getPluginManager().registerEvents(new MainListener(), this);
+		
+		config = new LightConfig();
 		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		

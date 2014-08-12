@@ -13,6 +13,7 @@ import ykt.BeYkeRYkt.LightSource.Light.Light;
 import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R1;
 import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R2;
 import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R3;
+import ykt.BeYkeRYkt.LightSource.NMS.NMSHandler_v1_7_R4;
 import ykt.BeYkeRYkt.LightSource.NMS.NMSInterface;
 
 
@@ -39,6 +40,9 @@ public class LightAPI{
     	}else if(this.version.startsWith("1.7.8") || this.version.startsWith("1.7.9")){
     		nms = new NMSHandler_v1_7_R3();
     		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.8/9! Using NMSHandler for 1.7.8/9.");
+    	}else if(this.version.startsWith("1.7.10")){
+    		nms = new NMSHandler_v1_7_R4();
+    		LightSource.getInstance().getLogger().info("Founded CraftBukkit/Spigot 1.7.10! Using NMSHandler for 1.7.10.");
     	}else{
     		LightSource.getInstance().getLogger().info("Sorry. Your MC server not supported this plugin.");
     		Bukkit.getPluginManager().disablePlugin(LightSource.getInstance());

@@ -28,6 +28,8 @@ public class LightSource extends JavaPlugin{
 	private LightAPI api;
 	private int taskId = 0;
 	private ItemManager manager;
+    private StaggeredRunnable run;
+    private LightConfig config;
 	
 	@Override
 	public void onEnable() {
@@ -36,6 +38,7 @@ public class LightSource extends JavaPlugin{
 		if(api.getNMSHandler() != null){
 		PluginDescriptionFile pdfFile = getDescription();
 		manager = new ItemManager();
+		config = new LightConfig();
 		
 		try {
 			FileConfiguration fc = getConfig();
@@ -57,7 +60,7 @@ public class LightSource extends JavaPlugin{
 				}
 				fc.options().copyDefaults(true);
 				saveConfig();
-				fc.options().copyDefaults(false);
+				//fc.options().copyDefaults(false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,7 +77,7 @@ public class LightSource extends JavaPlugin{
 		}
 		
 		//Update
-		if(this.getConfig().getBoolean("Enable-updater")){
+		if(config.isUpdater()){
 			this.getLogger().info("Enabling update system...");
 			new UpdateContainer(this.getFile());
 		}
@@ -86,6 +89,11 @@ public class LightSource extends JavaPlugin{
 		
 		//Start Runnable --> DoGzzz old tests light system for my server ;P
 		taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new LightTask(), 0L, 5L).getTaskId();
+		
+		//TESTED
+		run = new StaggeredRunnable(LightSource.getInstance(), LightAPI.getChunksForUpdate());
+		run.start();
+		
 		}
 	}
 
@@ -97,7 +105,8 @@ public class LightSource extends JavaPlugin{
 
 	@Override
 	public void onDisable() {
-		Bukkit.getScheduler().cancelTask(taskId);
+		Bukkit.getScheduler().cancelTasks(this);
+		//Bukkit.getScheduler().cancelTask(taskId);
 		ItemManager.getList().clear();
 		HandlerList.unregisterAll(this);
 		int index;
@@ -108,6 +117,7 @@ public class LightSource extends JavaPlugin{
 		    light.updateChunks();
 			LightAPI.getSources().remove(light);
 		}
+		config.save();
 		api = null;
 	}
 	
@@ -126,6 +136,10 @@ public class LightSource extends JavaPlugin{
 	
 	public int getTaskId(){
 		return taskId;
+	}
+	
+	public LightConfig getDB(){
+		return config;
 	}
 	
 	public void createExampleItems() {

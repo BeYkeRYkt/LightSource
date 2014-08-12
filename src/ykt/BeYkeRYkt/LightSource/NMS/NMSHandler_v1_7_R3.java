@@ -60,16 +60,10 @@ public class NMSHandler_v1_7_R3 implements NMSInterface {
 
 	@Override
 	public void updateChunk(Location loc, org.bukkit.Chunk chunk){
-		long startTime = System.currentTimeMillis();
-
 		Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
 		PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, '\uffff');
 
 		((CraftServer) Bukkit.getServer()).getServer().getPlayerList().sendPacketNearby(loc.getX(), loc.getY(), loc.getZ(), LightSource.getInstance().getConfig().getInt("RadiusSendPackets"), ((CraftWorld) loc.getWorld()).getHandle().dimension, packet);
-		long endTime = System.currentTimeMillis();
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-		LightSource.getInstance().getLogger().info("Sending time : " + (endTime - startTime) + " ms!");
-        }
 	}
 	
 	public Block getAdjacentAirBlock(Block block) {

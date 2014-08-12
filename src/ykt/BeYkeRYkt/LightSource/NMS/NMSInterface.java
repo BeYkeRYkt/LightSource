@@ -31,7 +31,7 @@ public interface NMSInterface {
 	 * Gets all the chunks touching/diagonal to the chunk the location is in and
 	 * updates players with them.
 	 * 
-	 * @param Chunk - Bukkit chunk	
+	 * @param Chunk - Bukkit chunk
 	 * @param loc - Location for update 
 	 */
 	public void updateChunk(Location loc, Chunk chunk);

@@ -18,7 +18,6 @@ import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 
 
-
 public class NMSHandler_v1_7_R2 implements NMSInterface {
 	
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
@@ -47,7 +46,7 @@ public class NMSHandler_v1_7_R2 implements NMSInterface {
 	}
 
 	@Override
-	public void deleteLightSource(Location loc) {
+	public void deleteLightSource(Location loc){
 		
 		int x = loc.getBlockX();
 		int y = loc.getBlockY();
@@ -63,7 +62,7 @@ public class NMSHandler_v1_7_R2 implements NMSInterface {
 		Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
 		PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, '\uffff');
 
-		((CraftServer) Bukkit.getServer()).getServer().getPlayerList().sendPacketNearby(loc.getX(), loc.getY(), loc.getZ(), LightSource.getInstance().getConfig().getInt("RadiusSendPackets"), ((CraftWorld) loc.getWorld()).getHandle().dimension, packet);
+		((CraftServer) Bukkit.getServer()).getServer().getPlayerList().sendPacketNearby(loc.getX(), loc.getY(), loc.getZ(), LightSource.getInstance().getConfig().getInt("RadiusSendPackets"), ((CraftWorld) loc.getWorld()).getHandle().dimension, packet);  
 	}
 	
 	public Block getAdjacentAirBlock(Block block) {

@@ -3,7 +3,6 @@ package ykt.BeYkeRYkt.LightSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -108,20 +107,21 @@ public class LightAPI{
     	nms.updateChunk(loc, chunk);
     }
 
-    public static void updateAllChunks(){
-    	long startTime = System.currentTimeMillis();
-		for(Entry<Chunk, Location> chunks:getChunksForUpdate().entrySet()){
-			updateChunk(chunks.getValue(), chunks.getKey());
-		}
+    //public static void updateAllChunks(){
+		//for(Entry<Chunk, Location> chunks:getChunksForUpdate().entrySet()){
+			//updateChunk(chunks.getValue(), chunks.getKey());
+		//}
+    	
+    	//if(run == null){
+    		//run = new StaggeredRunnable(LightSource.getInstance(), getChunksForUpdate());
+    		//run.start();
+    	//}
 
-		long endTime = System.currentTimeMillis();
-        if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-    	LightSource.getInstance().getLogger().info("Chunks amount: " + getChunksForUpdate().size());
-    	LightSource.getInstance().getLogger().info("Packets(One player): " + 1 * getChunksForUpdate().size());
-    	LightSource.getInstance().getLogger().info("Packets(all): " + 1 * getChunksForUpdate().size() * LightAPI.getSources().size());
-		LightSource.getInstance().getLogger().info("Sending time : " + (endTime - startTime) + " ms!");
-        }
-    }
+    	//if(!run.running){
+    	//run.setList(getChunksForUpdate());
+    	//}
+    	
+    //}
     
 	/**
 	 * @return the list

@@ -24,6 +24,18 @@ import ykt.BeYkeRYkt.LightSource.Light.Light;
 
 public class MainListener implements Listener{
 		
+	//@EventHandler
+	//public void onEntitySpawn(CreatureSpawnEvent event){
+		//if(ItemManager.isLightSource(event.getEntity().getEquipment().getItemInHand())){
+		    //LightAPI.deleteLightSource(event.getLocation());
+		    //LightAPI.updateChunk(event.getLocation(), event.getLocation().getChunk());
+		//}else
+		//if(ItemManager.isLightSource(event.getEntity().getEquipment().getHelmet())){
+		    //LightAPI.deleteLightSource(event.getLocation());
+		    //LightAPI.updateChunk(event.getLocation(), event.getLocation().getChunk());
+		//}
+	//}
+	
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event){
 		for(Light light: LightAPI.getSources()){
@@ -52,7 +64,7 @@ public class MainListener implements Listener{
 		ItemStack item = player.getInventory().getItem(event.getNewSlot());
 		Location loc = player.getLocation();
 
-		if (LightSource.getInstance().getConfig().getBoolean("Worlds." + event.getPlayer().getWorld().getName()) || LightSource.getInstance().getConfig().getBoolean("PlayerLight")){
+		if (LightSource.getInstance().getDB().getWorld(event.getPlayer().getWorld().getName()) && LightSource.getInstance().getDB().isPlayerLight()){
 			if (item != null && ItemManager.isLightSource(item)) {
 			Light light = new Light(player, loc);
 			LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
@@ -60,7 +72,6 @@ public class MainListener implements Listener{
 			LightAPI.addSource(light);
 			}else if(item == null || item != null && ItemManager.isLightSource(item)){
 			if(LightAPI.checkEntityID(event.getPlayer()) != null){
-			//Light light = LightAPI.getSource(loc);
 			LightAPI.deleteLightSource(loc);
 			}
 			}

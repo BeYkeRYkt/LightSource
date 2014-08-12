@@ -26,8 +26,8 @@ public class LightTask extends BukkitRunnable{
 			//end
 			
 			
-			if (LightSource.getInstance().getConfig().getBoolean("PlayerLight")){
-				if (LightSource.getInstance().getConfig().getBoolean("Worlds." + lights.getOwner().getWorld().getName())){
+			if (LightSource.getInstance().getDB().isPlayerLight()){
+				if (LightSource.getInstance().getDB().getWorld(lights.getOwner().getWorld().getName())){
 			if(lights.getOwner() instanceof Player){
 				Player entity = (Player) lights.getOwner();
 				if(!entity.isDead()){
@@ -66,8 +66,8 @@ public class LightTask extends BukkitRunnable{
 				}
 			}
 			
-			if (LightSource.getInstance().getConfig().getBoolean("EntityLight")){
-				if (LightSource.getInstance().getConfig().getBoolean("Worlds." + lights.getOwner().getWorld().getName())){
+			if (LightSource.getInstance().getDB().isEntityLight()){
+				if (LightSource.getInstance().getDB().getWorld(lights.getOwner().getWorld().getName())){
 					if(lights.getOwner() instanceof LivingEntity && !(lights.getOwner() instanceof Player)){
 						LivingEntity entity = (LivingEntity) lights.getOwner();
 						if(!entity.isDead()){
@@ -106,8 +106,8 @@ public class LightTask extends BukkitRunnable{
 			
 			
 			
-			if (LightSource.getInstance().getConfig().getBoolean("ItemLight")){
-				if (LightSource.getInstance().getConfig().getBoolean("Worlds." + lights.getOwner().getWorld().getName())){
+			if (LightSource.getInstance().getDB().isItemLight()){
+				if (LightSource.getInstance().getDB().getWorld(lights.getOwner().getWorld().getName())){
 		             if(lights.getOwner() instanceof Item){
 		 				Item entity = (Item) lights.getOwner();
 		 				ItemStack item = entity.getItemStack();
@@ -138,7 +138,7 @@ public class LightTask extends BukkitRunnable{
 			}
 		}
 			
-		LightAPI.updateAllChunks();
+		//LightAPI.updateAllChunks();
 	}
 		
 				//Others enities
@@ -147,13 +147,13 @@ public class LightTask extends BukkitRunnable{
 					Player player = onlinePlayers[i];
 										
 					
-					int radius = LightSource.getInstance().getConfig().getInt("RadiusSendPackets");
+					int radius = LightSource.getInstance().getDB().getRadius();
 					List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
 					for (int j = 0; j < nearbyEntities.size(); j++) {
 						Entity ent = nearbyEntities.get(j);
 						
-						if (LightSource.getInstance().getConfig().getBoolean("PlayerLight")){
-							if (LightSource.getInstance().getConfig().getBoolean("Worlds." + ent.getWorld().getName())){
+						if (LightSource.getInstance().getDB().isPlayerLight()){
+							if (LightSource.getInstance().getDB().getWorld(ent.getWorld().getName())){
 						if(ent instanceof Player){
 							Player entity = (Player) ent;
 							if(LightAPI.checkEntityID(entity) == null){
@@ -171,8 +171,8 @@ public class LightTask extends BukkitRunnable{
 						}
 						}	
 						
-						if (LightSource.getInstance().getConfig().getBoolean("EntityLight")){
-							if (LightSource.getInstance().getConfig().getBoolean("Worlds." + ent.getWorld().getName())){
+						if (LightSource.getInstance().getDB().isEntityLight()){
+							if (LightSource.getInstance().getDB().getWorld(ent.getWorld().getName())){
 								if(ent instanceof LivingEntity  && !(ent instanceof Player)){
 									LivingEntity le = (LivingEntity) ent;	
 
@@ -193,8 +193,8 @@ public class LightTask extends BukkitRunnable{
 							}
 						}
 						
-						if (LightSource.getInstance().getConfig().getBoolean("ItemLight")){
-							if (LightSource.getInstance().getConfig().getBoolean("Worlds." + ent.getWorld().getName())){
+						if (LightSource.getInstance().getDB().isItemLight()){
+							if (LightSource.getInstance().getDB().getWorld(ent.getWorld().getName())){
 								if(ent instanceof Item){
 									Item item = (Item) ent;
 									ItemStack stack = item.getItemStack();

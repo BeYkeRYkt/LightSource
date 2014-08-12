@@ -44,7 +44,7 @@ public class Icons{
 		  list.add(ChatColor.DARK_RED + "WARNING!");
 		  list.add(ChatColor.RED + "This option can cause colossal lags!");
 		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("EntityLight")));
+		  list.add(String.valueOf(LightSource.getInstance().getDB().isEntityLight()));
 		  meta.setLore(list);
 		  adve.setItemMeta(meta);
 		  return adve;
@@ -57,7 +57,7 @@ public class Icons{
 		  
 		  ArrayList<String> list = new ArrayList<String>();
 		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("PlayerLight")));
+		  list.add(String.valueOf(LightSource.getInstance().getDB().isPlayerLight()));
 		  meta.setLore(list);
 		  adve.setItemMeta(meta);
 		  return adve;
@@ -72,24 +72,24 @@ public class Icons{
 		  list.add(ChatColor.DARK_RED + "WARNING!");
 		  list.add(ChatColor.RED + "This option can cause colossal lags!");
 		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("ItemLight")));
+		  list.add(String.valueOf(LightSource.getInstance().getDB().isItemLight()));
 		  meta.setLore(list);
 		  adve.setItemMeta(meta);
 		  return adve;
 	}
 	
-	public static ItemStack getGUIEnable(){
-		  ItemStack adve = new ItemStack(Material.PAINTING);
-		  ItemMeta meta = adve.getItemMeta();
-		  meta.setDisplayName("GUI");
-		  
-		  ArrayList<String> list = new ArrayList<String>();
-		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Enable-GUI")));
-		  meta.setLore(list);
-		  adve.setItemMeta(meta);
-		  return adve;
-	}
+	//public static ItemStack getGUIEnable(){
+	//	  ItemStack adve = new ItemStack(Material.PAINTING);
+	//	  ItemMeta meta = adve.getItemMeta();
+	//	  meta.setDisplayName("GUI");
+	//	  
+	//	  ArrayList<String> list = new ArrayList<String>();
+	//	  list.add(ChatColor.GOLD + "Status: ");
+	//	  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Enable-GUI")));
+	//	  meta.setLore(list);
+	//	  adve.setItemMeta(meta);
+	//	  return adve;
+	//}
 	
 	public static ItemStack getDebug(){
 		  ItemStack adve = new ItemStack(Material.PAPER);
@@ -98,7 +98,7 @@ public class Icons{
 		  
 		  ArrayList<String> list = new ArrayList<String>();
 		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Debug")));
+		  list.add(String.valueOf(LightSource.getInstance().getDB().isDebug()));
 		  meta.setLore(list);
 		  adve.setItemMeta(meta);
 		  return adve;

@@ -67,6 +67,7 @@ public class MainListener implements Listener{
 		if (LightSource.getInstance().getDB().getWorld(event.getPlayer().getWorld().getName()) && LightSource.getInstance().getDB().isPlayerLight()){
 			if (item != null && ItemManager.isLightSource(item)) {
 			Light light = new Light(player, loc);
+			LightAPI.deleteLightSource(loc);
 			LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
 			light.updateChunks();
 			LightAPI.addSource(light);

@@ -52,6 +52,8 @@ public class LightSource extends JavaPlugin{
 				fc.addDefault("Enable-updater", true);
 				fc.addDefault("Debug", false);
 				fc.addDefault("RadiusSendPackets", 64);
+				fc.addDefault("Delay-before-starting-staggered-runnable-ticks", 5);
+				fc.addDefault("Delay-between-restarting-staggered-runnable-ticks", 5);
 
 				List<World> worlds = getServer().getWorlds();
 				for (World world : worlds) {
@@ -75,6 +77,8 @@ public class LightSource extends JavaPlugin{
 		    // Failed to submit the stats :-(
 		}
 		
+		config = new LightConfig();
+		
 		//Update
 		if(config.isUpdater()){
 			this.getLogger().info("Enabling update system...");
@@ -83,8 +87,6 @@ public class LightSource extends JavaPlugin{
 				
 		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 		Bukkit.getPluginManager().registerEvents(new MainListener(), this);
-		
-		config = new LightConfig();
 		
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		

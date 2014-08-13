@@ -52,8 +52,8 @@ public class StaggeredRunnable implements Runnable
         // reset whenever we call this method
         iteratorCount = 0;
  
-        long delay_before_starting = 5;
-        long delay_between_restarting = 5;
+        long delay_before_starting = LightSource.getInstance().getDB().getDelayStart();
+        long delay_between_restarting = LightSource.getInstance().getDB().getDelayRestart();
  
         // synchronous - thread safe
         this.taskId = this.myPlugin.getServer().getScheduler().runTaskTimer(this.myPlugin, this, delay_before_starting, delay_between_restarting).getTaskId();

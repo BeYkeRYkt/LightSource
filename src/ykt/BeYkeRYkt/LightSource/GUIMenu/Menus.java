@@ -17,7 +17,7 @@ public class Menus{
 	public static void openMainMenu(Player player){
 	CustomGUIMenu menu = new CustomGUIMenu(LightSource.getInstance().getName(), 9);
 	  
-	  if(player.hasPermission("lightsource.admin")){
+	  if(player.hasPermission("lightsource.admin") || player.isOp()){
 		  menu.addItem(Icons.getPlayerLight(), 0);	  
 		  menu.addItem(Icons.getEntityLight(), 1);
 		  menu.addItem(Icons.getItemLight(), 2);

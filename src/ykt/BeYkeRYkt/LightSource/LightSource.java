@@ -52,7 +52,7 @@ public class LightSource extends JavaPlugin{
 				fc.addDefault("Enable-updater", true);
 				fc.addDefault("Debug", false);
 				fc.addDefault("RadiusSendPackets", 64);
-				fc.addDefault("Delay-before-starting-staggered-runnable-ticks", 5);
+				fc.addDefault("Delay-before-starting-staggered-runnable-ticks", 0);
 				fc.addDefault("Delay-between-restarting-staggered-runnable-ticks", 5);
 
 				List<World> worlds = getServer().getWorlds();
@@ -61,7 +61,6 @@ public class LightSource extends JavaPlugin{
 				}
 				fc.options().copyDefaults(true);
 				saveConfig();
-				//fc.options().copyDefaults(false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,7 +90,7 @@ public class LightSource extends JavaPlugin{
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
 		//Start Runnable --> DoGzzz old tests light system for my server ;P
-		taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new LightTask(), 0L, 5L).getTaskId();
+		taskId = Bukkit.getScheduler().runTaskTimer(this, new LightTask(), 0L, 5L).getTaskId();
 		
 		//TESTED
 		run = new StaggeredRunnable(LightSource.getInstance(), LightAPI.getChunksForUpdate());
@@ -109,14 +108,12 @@ public class LightSource extends JavaPlugin{
 	@Override
 	public void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		//Bukkit.getScheduler().cancelTask(taskId);
 		ItemManager.getList().clear();
 		HandlerList.unregisterAll(this);
 		int index;
 		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
 		    Light light = LightAPI.getSources().get(index);
 			LightAPI.deleteLightSource(light.getLocation());
-			//LightAPI.updateChunk(light.getLocation().getWorld(),light.getLocation());
 		    light.updateChunks();
 			LightAPI.getSources().remove(light);
 		}

@@ -12,10 +12,11 @@ public class Light{
 	
 	private Entity owner;
 	private Location location;
+	private boolean needupdate = true;
 
 	public Light(Entity entity, Location loc){
 		this.owner = entity;
-		this.setLocation(loc);
+		this.location = loc;
 	}
 
 	/**
@@ -32,12 +33,26 @@ public class Light{
 		return location;
 	}
 
+	public void updateLight(Location location, int lightlevel){
+		if(getLocation().getBlockX() == location.getBlockX() && getLocation().getBlockY() == location.getBlockY() && getLocation().getBlockZ() == location.getBlockZ()){
+		if(needupdate){
+		setNeedUpdate(false);
+		}
+		
+		}else{
+		setNeedUpdate(true);
+		LightAPI.deleteLightSource(getLocation());
+		setLocation(location);
+		LightAPI.createLightSource(getLocation(), lightlevel);
+		}
+	}
+	
 	/**
 	 * @param location the location to set
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
-		}
+	}
 	
 	public ArrayList<Chunk> getChunks(){
 		ArrayList<Chunk> cs = new ArrayList<Chunk>();
@@ -57,5 +72,19 @@ public class Light{
 		for(Chunk chunk: getChunks()){
 			LightAPI.updateChunk(getLocation(), chunk);
 		}
+	}
+
+	/**
+	 * @return the needupdate
+	 */
+	public boolean isNeedUpdate() {
+		return needupdate;
+	}
+
+	/**
+	 * @param needupdate the needupdate to set
+	 */
+	public void setNeedUpdate(boolean needupdate) {
+		this.needupdate = needupdate;
 	}
 }

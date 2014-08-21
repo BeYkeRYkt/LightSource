@@ -127,11 +127,6 @@ public class ItemManager {
 
 			for (LightItem items : getList()) {
 				if (name.equals(items.getName()) && mat == items.getMaterial()) {
-
-					//if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
-						//LightSource.getInstance().getLogger().info("Light level :" + items.getLevelLight());
-					//}
-
 					return items.getLevelLight();// FOUND!
 				}
 			}
@@ -140,11 +135,6 @@ public class ItemManager {
 
 			for (LightItem items : getList()) {
 				if (items.getName() == null && mat == items.getMaterial()) {
-
-					//if (LightSource.getInstance().getConfig().getBoolean("Debug")) {
-						//LightSource.getInstance().getLogger().info("Light level :" + items.getLevelLight());
-					//}
-
 					return items.getLevelLight();// FOUND!
 				}
 			}

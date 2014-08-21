@@ -22,20 +22,7 @@ import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.Light.ItemManager;
 import ykt.BeYkeRYkt.LightSource.Light.Light;
 
-public class MainListener implements Listener{
-		
-	//@EventHandler
-	//public void onEntitySpawn(CreatureSpawnEvent event){
-		//if(ItemManager.isLightSource(event.getEntity().getEquipment().getItemInHand())){
-		    //LightAPI.deleteLightSource(event.getLocation());
-		    //LightAPI.updateChunk(event.getLocation(), event.getLocation().getChunk());
-		//}else
-		//if(ItemManager.isLightSource(event.getEntity().getEquipment().getHelmet())){
-		    //LightAPI.deleteLightSource(event.getLocation());
-		    //LightAPI.updateChunk(event.getLocation(), event.getLocation().getChunk());
-		//}
-	//}
-	
+public class MainListener implements Listener{	
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event){
 		for(Light light: LightAPI.getSources()){

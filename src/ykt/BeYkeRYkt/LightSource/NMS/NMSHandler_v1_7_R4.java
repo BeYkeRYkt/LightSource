@@ -18,7 +18,6 @@ import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 
 
-
 public class NMSHandler_v1_7_R4 implements NMSInterface {
 	
 	private static BlockFace[] SIDES = { BlockFace.UP, BlockFace.DOWN,
@@ -42,8 +41,8 @@ public class NMSHandler_v1_7_R4 implements NMSInterface {
 		
 		nmsWorld.b(EnumSkyBlock.BLOCK, x, y, z, level);
 		
-		Block adjacent = getAdjacentAirBlock(loc.getBlock());
-		recalculateBlockLighting(loc.getWorld(), adjacent.getX(), adjacent.getY(),adjacent.getZ());
+	    Block adjacent = getAdjacentAirBlock(loc.getBlock());
+	    recalculateBlockLighting(loc.getWorld(), adjacent.getX(), adjacent.getY(),adjacent.getZ());
 	}
 
 	@Override

@@ -66,12 +66,14 @@ public class LightAPI{
 		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
 		Light lights = LightAPI.getSources().get(index);
 
+		if(lights.isNeedUpdate()){
 		for(Chunk chunk : lights.getChunks()){
 			if(!chunks.containsKey(chunk)){
 			chunks.put(chunk, lights.getLocation());
 			}
 		  }
 	    }
+		}
 		
 		return chunks;
 	}
@@ -86,12 +88,7 @@ public class LightAPI{
      * @param level - the new light level.
      */
     public static void createLightSource(Location loc, int level) {
-
     	nms.createLightSource(loc, level);
-    	
-        //if(LightSource.getInstance().getConfig().getBoolean("Debug")){
-        //LightSource.getInstance().getLogger().info("Created light at location: X=" + loc.getBlockX() + " Y=" + loc.getBlockY() + " Z=" + loc.getBlockZ());
-        //}
     }
     
     /**
@@ -110,22 +107,6 @@ public class LightAPI{
     public static void updateChunk(Location loc, Chunk chunk) {
     	nms.updateChunk(loc, chunk);
     }
-
-    //public static void updateAllChunks(){
-		//for(Entry<Chunk, Location> chunks:getChunksForUpdate().entrySet()){
-			//updateChunk(chunks.getValue(), chunks.getKey());
-		//}
-    	
-    	//if(run == null){
-    		//run = new StaggeredRunnable(LightSource.getInstance(), getChunksForUpdate());
-    		//run.start();
-    	//}
-
-    	//if(!run.running){
-    	//run.setList(getChunksForUpdate());
-    	//}
-    	
-    //}
     
 	/**
 	 * @return the list

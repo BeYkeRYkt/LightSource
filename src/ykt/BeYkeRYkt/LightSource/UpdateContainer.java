@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import ykt.BeYkeRYkt.LightSource.gravitydevelopment.updater.Updater;
 import ykt.BeYkeRYkt.LightSource.gravitydevelopment.updater.Updater.ReleaseType;
@@ -29,28 +30,28 @@ public class UpdateContainer implements Listener{
 	public static String link = "";
 	public static int id = 77176;
 	public static File file = null;
-	private static final String delimiter = "^v|[\\s_-]v";
+	private static String delimiter = "^v|[\\s_-]v";
 	
 	public UpdateContainer(final File file){
-		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), new Runnable() {
+		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), new BukkitRunnable() {
 	        @Override
 	        public void run() {
-			Updater updater = new Updater(LightSource.getInstance(), id, file, Updater.UpdateType.NO_DOWNLOAD, false); // Start Updater but just do a version check
+			Updater updater = new Updater(LightSource.getInstance(), id, file, Updater.UpdateType.NO_DOWNLOAD, false);
 
-			name = updater.getLatestName(); // Get the latest name
-			version = updater.getLatestGameVersion(); // Get the latest game version
-			type = updater.getLatestType(); // Get the latest file's type
-			link = updater.getLatestFileLink(); // Get the latest link
+			name = updater.getLatestName();
+			version = updater.getLatestGameVersion();
+			type = updater.getLatestType();
+			link = updater.getLatestFileLink();
 			
 			if(checkUpdate(updater.getLatestName())){
-			update = updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE; // Determine if there is an update ready for us
+			update = updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE;
 			
 		    Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE +"An update is available: " + name + ", a " + type + " for " + version + " available at " + link);
 			}
 	        }
 	        }, 0, 432000);
 
-			UpdateContainer.file = file;
+		UpdateContainer.file = file;
 		
 		Bukkit.getPluginManager().registerEvents(this, LightSource.getInstance());
 	}
@@ -59,32 +60,42 @@ public class UpdateContainer implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 	  Player player = event.getPlayer();
-	  if(player.hasPermission("lightsource.admin") && UpdateContainer.update)
+	  if(player.hasPermission("lightsource.admin") && UpdateContainer.update || player.isOp() && UpdateContainer.update)
 	  {
 	    player.sendMessage(ChatColor.BLUE + "[LightSourceUpdater] " +"An update is available: " + UpdateContainer.name + ", a " + UpdateContainer.type + " for " + UpdateContainer.version + " available at " + UpdateContainer.link);
-	    // Will look like - An update is available: AntiCheat v1.5.9, a release for CB 1.6.2-R0.1 available at http://media.curseforge.com/XYZ
-	    player.sendMessage("Type /ls update if you would like to automatically update.");
 	  }
 	}
 	
 	
 	public boolean checkUpdate(String title){
-		String pluginVersion = LightSource.getInstance().getDescription().getVersion();
 		
-		if (title.split(delimiter).length == 2) {
-			String newVersion = title.split(delimiter)[1].split(" ")[0];
+		//Beta
+		String pluginVersion = LightSource.getInstance().getDescription().getVersion();
+		String remoteVersion = title.split(delimiter)[1].split(" ")[0];
+		if(title.split(delimiter).length == 2){
+			String[] parts = remoteVersion.split("\\.");
+			//New version
+			String new1 = parts[0];
+			String new2 = parts[1];
+			String new3 = parts[2];
+			int newMajor = Integer.valueOf(new1);
+			int newMinor = Integer.valueOf(new2);
+			int newVersion = Integer.valueOf(new3);
 			
-			double oldDouble = Double.valueOf(pluginVersion);
-			double newDouble = Double.valueOf(newVersion);
 			
-			if(oldDouble > newDouble){
-				LightSource.getInstance().getLogger().info("WARNING! You are using an unofficial version LightSource. Please download this plugin page BukkitDev.");
-				return false;
-			}else if(oldDouble == newDouble){
-				return false;
+			//Old version
+			String[] old = pluginVersion.split("\\.");
+			String old1 = old[0];
+			String old2 = old[1];
+			String old3 = old[2];
+			int oldMajor = Integer.valueOf(old1);
+			int oldMinor = Integer.valueOf(old2);
+			int oldVersion = Integer.valueOf(old3);
+			
+			if(newMajor > oldMajor || newMinor > oldMinor || newVersion > oldVersion){
+				return true;
 			}
 		}
-		
-		return true;
+		return false;
 	}
 }

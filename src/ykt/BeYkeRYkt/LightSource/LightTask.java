@@ -32,13 +32,9 @@ public class LightTask extends BukkitRunnable{
 				Player entity = (Player) lights.getOwner();
 				if(!entity.isDead()){
 				if(entity.getEquipment().getItemInHand() != null && ItemManager.isLightSource(entity.getEquipment().getItemInHand())){
-						LightAPI.deleteLightSource(lights.getLocation());
-						lights.setLocation(entity.getLocation());
-						LightAPI.createLightSource(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getItemInHand()));
+						lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getItemInHand()));
 				}else if(entity.getEquipment().getHelmet() != null && ItemManager.isLightSource(entity.getEquipment().getHelmet())){
-						LightAPI.deleteLightSource(lights.getLocation());
-						lights.setLocation(entity.getLocation());
-						LightAPI.createLightSource(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
+					lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
 				}else{
 					LightAPI.deleteLightSource(lights.getLocation());
 				    lights.updateChunks();
@@ -72,13 +68,9 @@ public class LightTask extends BukkitRunnable{
 						LivingEntity entity = (LivingEntity) lights.getOwner();
 						if(!entity.isDead()){
 						if(entity.getEquipment().getItemInHand() != null && ItemManager.isLightSource(entity.getEquipment().getItemInHand())){
-								LightAPI.deleteLightSource(lights.getLocation());
-								lights.setLocation(entity.getLocation());
-								LightAPI.createLightSource(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getItemInHand()));
+							lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getItemInHand()));
 						}else if(entity.getEquipment().getHelmet() != null && ItemManager.isLightSource(entity.getEquipment().getHelmet())){
-								LightAPI.deleteLightSource(lights.getLocation());
-								lights.setLocation(entity.getLocation());
-								LightAPI.createLightSource(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
+							lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
 						}else{
 							LightAPI.deleteLightSource(lights.getLocation());
 						    lights.updateChunks();
@@ -114,9 +106,7 @@ public class LightTask extends BukkitRunnable{
 		 				
 		 				if(!entity.isDead()){
 		 				if(ItemManager.isLightSource(item)){
-		 					LightAPI.deleteLightSource(lights.getLocation());
-		 					lights.setLocation(entity.getLocation());
-		 					LightAPI.createLightSource(entity.getLocation(), ItemManager.getLightLevel(item));
+		 					lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(item));
 		 				}
 		 				}else{
 		 					LightAPI.deleteLightSource(lights.getLocation());
@@ -138,7 +128,6 @@ public class LightTask extends BukkitRunnable{
 			}
 		}
 			
-		//LightAPI.updateAllChunks();
 	}
 		
 				//Others enities

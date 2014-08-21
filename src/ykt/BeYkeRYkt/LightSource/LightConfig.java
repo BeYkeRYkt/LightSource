@@ -14,7 +14,6 @@ public class LightConfig{
 	private int radius;
 	private int delaystart;
 	private int delayrestart;
-	//private List<World> worlds;
 	
 	public LightConfig(){
 		setPlayerLight(LightSource.getInstance().getConfig().getBoolean("PlayerLight"));

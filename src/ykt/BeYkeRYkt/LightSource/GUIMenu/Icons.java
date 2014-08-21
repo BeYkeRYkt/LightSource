@@ -78,19 +78,6 @@ public class Icons{
 		  return adve;
 	}
 	
-	//public static ItemStack getGUIEnable(){
-	//	  ItemStack adve = new ItemStack(Material.PAINTING);
-	//	  ItemMeta meta = adve.getItemMeta();
-	//	  meta.setDisplayName("GUI");
-	//	  
-	//	  ArrayList<String> list = new ArrayList<String>();
-	//	  list.add(ChatColor.GOLD + "Status: ");
-	//	  list.add(String.valueOf(LightSource.getInstance().getConfig().getBoolean("Enable-GUI")));
-	//	  meta.setLore(list);
-	//	  adve.setItemMeta(meta);
-	//	  return adve;
-	//}
-	
 	public static ItemStack getDebug(){
 		  ItemStack adve = new ItemStack(Material.PAPER);
 		  ItemMeta meta = adve.getItemMeta();

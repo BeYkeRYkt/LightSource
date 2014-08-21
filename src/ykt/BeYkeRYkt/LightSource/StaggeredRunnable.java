@@ -18,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 public class StaggeredRunnable implements Runnable
 {
     private final Plugin myPlugin;
-    //private Map<Chunk, Location> hugeList;
     private ArrayList<Chunk> chunks;
     private ArrayList<Location> locs;
     private boolean running = false;
@@ -32,7 +31,6 @@ public class StaggeredRunnable implements Runnable
     public StaggeredRunnable(Plugin myPlugin, Map<Chunk, Location> hugeList)
     {
         this.myPlugin = myPlugin;
-        //this.hugeList = hugeList;
         chunks = new ArrayList<Chunk>(hugeList.keySet());
         locs = new ArrayList<Location>(hugeList.values());
     }
@@ -49,24 +47,13 @@ public class StaggeredRunnable implements Runnable
  
     public void start()
     {
-        // reset whenever we call this method
         iteratorCount = 0;
  
         long delay_before_starting = LightSource.getInstance().getDB().getDelayStart();
         long delay_between_restarting = LightSource.getInstance().getDB().getDelayRestart();
- 
-        // synchronous - thread safe
         this.taskId = this.myPlugin.getServer().getScheduler().runTaskTimer(this.myPlugin, this, delay_before_starting, delay_between_restarting).getTaskId();
- 
-        // asynchronous - NOT thread safe
-        //this.taskId = this.myPlugin.getServer().getScheduler().runTaskTimerAsynchronously(this.myPlugin, this, delay_before_starting, delay_between_restarting).getTaskId();
- 
-        // Choose one or the other, not both.
-        // They are both here simply for the sake of completion.
     }
- 
-    // this example will stagger parsing a huge list
- 
+
     @Override
     public void run()
     {
@@ -74,16 +61,10 @@ public class StaggeredRunnable implements Runnable
     	running = true;
         iteratorCount = 0;
         long startTime = System.currentTimeMillis();
-        
-        // while the list isnt empty, and we havent exceeded matIteraternsPerTick....
-        // the loop will stop when it reaches 300 iterations OR the list becomes empty
-        // this ensures that the server will be happy clappy, not doing too much per tick.
   
         while (!this.chunks.isEmpty() && !this.locs.isEmpty() && iteratorCount < maxIterationsPerTick)
         {
-            // do something with this huge list...    
     		LightAPI.updateChunk(locs.get(0), chunks.get(0));
-            // remove the first element (will always be present if !isEmpty)
             chunks.remove(0);
             locs.remove(0);
  
@@ -94,25 +75,12 @@ public class StaggeredRunnable implements Runnable
         	
             if(LightSource.getInstance().getDB().isDebug()){
                 long endTime = System.currentTimeMillis();
-                
-            	//LightSource.getInstance().getLogger().info("Chunks amount: " + chunks.size());
-            	//LightSource.getInstance().getLogger().info("Packets(One player): " + 1 * chunks.size());
-            	//LightSource.getInstance().getLogger().info("Packets(all): " + 1 * chunks.size() * LightAPI.getSources().size());
                 long time = endTime - startTime;
         		LightSource.getInstance().getLogger().info("Sending time : " + time + " ms!");
             }
         	setList(LightAPI.getChunksForUpdate());
         	running = false;
         }
-        
-        // if our condition/result is met, cancel this task.
-        // this can be anything, it is just cancelling this repeating task when we have met a condition we are looking for.
-        
-        
-        //if (hugeList.isEmpty())
-        //{
-        //    this.myPlugin.getServer().getScheduler().cancelTask(this.taskId);
-        //}
     }
     	
     }

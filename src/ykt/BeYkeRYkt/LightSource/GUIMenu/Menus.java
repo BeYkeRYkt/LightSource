@@ -56,7 +56,7 @@ public class Menus{
 	public static void openLightCreatorMenu(Player player){
 		  CustomGUIMenu menu = new CustomGUIMenu("LightCreator", 9);
 		  
-		  if(player.hasPermission("lightsource.hidden")){
+		  if(player.hasPermission("lightsource.admin") || player.isOp()){
 			  menu.addItem(Icons.getCreate(), 0);
 			  menu.addItem(Icons.getDelete(), 1);
 			  

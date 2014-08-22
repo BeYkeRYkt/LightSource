@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.UpdateContainer;
 import ykt.BeYkeRYkt.LightSource.GUIMenu.Icons;
@@ -115,8 +116,38 @@ public class GUIListener implements Listener{
 				}
 				
 				event.setCancelled(true);
-				
 				//Other's gui
+			}
+			
+             if("LightCreator".equals(name)){
+				if(Icons.getCreate().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+					Menus.openLightLevelsMenu(player);
+					
+				}else if(Icons.getDelete().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+					LightAPI.deleteLightSource(player.getLocation());
+					LightAPI.updateChunk(player.getLocation(), player.getLocation().getChunk());
+					player.closeInventory();
+					player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
+				}
+				
+				event.setCancelled(true);
+			}
+			
+			if("LightLevels".equals(name)){
+				if(clicked.getType() == Material.GLOWSTONE_DUST){
+				if(clicked.hasItemMeta()){
+				if(clicked.getItemMeta().hasDisplayName()){
+					LightAPI.createLightSource(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
+					LightAPI.updateChunk(player.getLocation(), player.getLocation().getChunk());
+					LightAPI.createLightSource(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
+					
+					player.closeInventory();
+					player.sendMessage(ChatColor.GREEN + "Light successfully created!");
+				}
+				}
+				}
+				
+				event.setCancelled(true);
 			}
 			
 			if("Worlds".equals(name)){
@@ -128,7 +159,7 @@ public class GUIListener implements Listener{
 							  player.closeInventory();
 							  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
 						  }else if(clicked.getItemMeta().getLore().contains("false")){
-							LightSource.getInstance().getDB().setWorld(clicked.getItemMeta().getDisplayName(), true);
+							  LightSource.getInstance().getDB().setWorld(clicked.getItemMeta().getDisplayName(), true);
 								
 							  player.closeInventory();
 							  player.sendMessage(ChatColor.GREEN + "Settings are changed.");

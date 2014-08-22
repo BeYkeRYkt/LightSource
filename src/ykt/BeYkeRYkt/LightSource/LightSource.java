@@ -129,6 +129,8 @@ public class LightSource extends JavaPlugin{
 			
 			if(cmd.getName().equalsIgnoreCase("ls")){
 				Menus.openMainMenu(player);
+			}else if(cmd.getName().equalsIgnoreCase("light")){
+				Menus.openLightCreatorMenu(player);
 			}
 		}
 		return true;

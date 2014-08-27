@@ -10,20 +10,14 @@ public class LightConfig{
 	private boolean itemlight;
 	
 	private boolean updater;
-	private boolean debug;
-	private int radius;
-	private int delaystart;
-	private int delayrestart;
+	private int taskticks;
 	
 	public LightConfig(){
 		setPlayerLight(LightSource.getInstance().getConfig().getBoolean("PlayerLight"));
 		setEntityLight(LightSource.getInstance().getConfig().getBoolean("EntityLight"));
 		setItemLight(LightSource.getInstance().getConfig().getBoolean("ItemLight"));
 		setUpdater(LightSource.getInstance().getConfig().getBoolean("Enable-updater"));
-		setDebug(LightSource.getInstance().getConfig().getBoolean("Debug"));
-		setRadius(LightSource.getInstance().getConfig().getInt("RadiusSendPackets"));
-		setDelayStart(LightSource.getInstance().getConfig().getInt("Delay-before-starting-staggered-runnable-ticks"));
-		setDelayRestart(LightSource.getInstance().getConfig().getInt("Delay-between-restarting-staggered-runnable-ticks"));
+		setTaskTicks(LightSource.getInstance().getConfig().getInt("Task-delay-ticks"));
 	}
 
 	public void save(){
@@ -32,13 +26,10 @@ public class LightConfig{
 		fc.set("EntityLight", isEntityLight());
 		fc.set("ItemLight", isItemLight());
 		fc.set("Enable-updater", isUpdater());
-		fc.set("Debug", isDebug());
-		fc.set("RadiusSendPackets", getRadius());
-		fc.set("Delay-before-starting-staggered-runnable-ticks", getDelayStart());
-		fc.set("Delay-between-restarting-staggered-runnable-ticks", getDelayRestart());
+		fc.set("Task-delay-ticks", getTaskTicks());
 		LightSource.getInstance().saveConfig();
 	}
-	
+
 	/**
 	 * @return the playerlight
 	 */
@@ -94,34 +85,6 @@ public class LightConfig{
 	public void setUpdater(boolean updater) {
 		this.updater = updater;
 	}
-
-	/**
-	 * @return the debug
-	 */
-	public boolean isDebug() {
-		return debug;
-	}
-
-	/**
-	 * @param debug the debug to set
-	 */
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
-
-	/**
-	 * @return the radius
-	 */
-	public int getRadius() {
-		return radius;
-	}
-
-	/**
-	 * @param radius the radius to set
-	 */
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
 	
 	public boolean getWorld(String name){
 		return LightSource.getInstance().getConfig().getBoolean("Worlds." + name);
@@ -133,30 +96,16 @@ public class LightConfig{
 	}
 
 	/**
-	 * @return the delaystart
+	 * @return the taskticks
 	 */
-	public int getDelayStart() {
-		return delaystart;
+	public int getTaskTicks() {
+		return taskticks;
 	}
 
 	/**
-	 * @param delaystart the delaystart to set
+	 * @param taskticks the taskticks to set
 	 */
-	public void setDelayStart(int delaystart) {
-		this.delaystart = delaystart;
-	}
-
-	/**
-	 * @return the delayrestart
-	 */
-	public int getDelayRestart() {
-		return delayrestart;
-	}
-
-	/**
-	 * @param delayrestart the delayrestart to set
-	 */
-	public void setDelayRestart(int delayrestart) {
-		this.delayrestart = delayrestart;
+	public void setTaskTicks(int taskticks) {
+		this.taskticks = taskticks;
 	}
 }

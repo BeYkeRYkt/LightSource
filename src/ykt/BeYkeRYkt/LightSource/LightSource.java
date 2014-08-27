@@ -28,7 +28,6 @@ public class LightSource extends JavaPlugin{
 	private LightAPI api;
 	private int taskId = 0;
 	private ItemManager manager;
-    private StaggeredRunnable run;
     private LightConfig config;
 	
 	@Override
@@ -36,6 +35,7 @@ public class LightSource extends JavaPlugin{
 		plugin = this;
 		api = new LightAPI();
 		if(api.getNMSHandler() != null){
+		LightAPI.initWorlds();	
 		PluginDescriptionFile pdfFile = getDescription();
 		manager = new ItemManager();
 
@@ -50,10 +50,7 @@ public class LightSource extends JavaPlugin{
 				fc.addDefault("EntityLight", false);
 				fc.addDefault("ItemLight", false);
 				fc.addDefault("Enable-updater", true);
-				fc.addDefault("Debug", false);
-				fc.addDefault("RadiusSendPackets", 64);
-				fc.addDefault("Delay-before-starting-staggered-runnable-ticks", 0);
-				fc.addDefault("Delay-between-restarting-staggered-runnable-ticks", 5);
+				fc.addDefault("Task-delay-ticks", 5);
 
 				List<World> worlds = getServer().getWorlds();
 				for (World world : worlds) {
@@ -90,12 +87,7 @@ public class LightSource extends JavaPlugin{
 		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
 		
 		//Start Runnable --> DoGzzz old tests light system for my server ;P
-		taskId = Bukkit.getScheduler().runTaskTimer(this, new LightTask(), 0L, 5L).getTaskId();
-		
-		//TESTED
-		run = new StaggeredRunnable(LightSource.getInstance(), LightAPI.getChunksForUpdate());
-		run.start();
-		
+		taskId = Bukkit.getScheduler().runTaskTimer(this, new LightTask(), 0L, getDB().getTaskTicks()).getTaskId();		
 		}
 	}
 
@@ -107,6 +99,7 @@ public class LightSource extends JavaPlugin{
 
 	@Override
 	public void onDisable() {
+		getAPI().getNMSHandler().unloadWorlds();
 		Bukkit.getScheduler().cancelTasks(this);
 		ItemManager.getList().clear();
 		HandlerList.unregisterAll(this);
@@ -114,7 +107,6 @@ public class LightSource extends JavaPlugin{
 		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
 		    Light light = LightAPI.getSources().get(index);
 			LightAPI.deleteLightSource(light.getLocation());
-		    light.updateChunks();
 			LightAPI.getSources().remove(light);
 		}
 		config.save();
@@ -159,7 +151,7 @@ public class LightSource extends JavaPlugin{
 				fc.addDefault("Fire.material", "FIRE");
 				fc.addDefault("Fire.lightlevel", 115);
 				
-				fc.addDefault("Jack.material", "JACK_O_LATERN");
+				fc.addDefault("Jack.material", "JACK_O_LANTERN");
 				fc.addDefault("Jack.lightlevel", 15);
 				
 				fc.addDefault("LavaBucket.material", "LAVA_BUCKET");

@@ -37,20 +37,7 @@ public class GUIListener implements Listener{
 		if(clicked != null && clicked.getType() != Material.AIR){
 			if(LightSource.getInstance().getName().equals(name)){
 				
-               if(Icons.getDebug().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
-					if(clicked.getItemMeta().getLore().contains("true")){
-						  LightSource.getInstance().getDB().setDebug(false);
-							
-						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
-						  
-					  }else if(clicked.getItemMeta().getLore().contains("false")){						  
-						  LightSource.getInstance().getDB().setDebug(true);
-							
-						  player.closeInventory();
-						  player.sendMessage(ChatColor.GREEN + "Settings are changed.");
-					  }
-				}else if(Icons.getPlayerLight().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
+               if(Icons.getPlayerLight().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					if(clicked.getItemMeta().getLore().contains("true")){
 						  LightSource.getInstance().getDB().setPlayerLight(false);
 						  
@@ -125,7 +112,6 @@ public class GUIListener implements Listener{
 					
 				}else if(Icons.getDelete().getItemMeta().getDisplayName().equals(clicked.getItemMeta().getDisplayName())){
 					LightAPI.deleteLightSource(player.getLocation());
-					LightAPI.updateChunk(player.getLocation(), player.getLocation().getChunk());
 					player.closeInventory();
 					player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
 				}
@@ -137,9 +123,7 @@ public class GUIListener implements Listener{
 				if(clicked.getType() == Material.GLOWSTONE_DUST){
 				if(clicked.hasItemMeta()){
 				if(clicked.getItemMeta().hasDisplayName()){
-					LightAPI.createLightSource(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
-					LightAPI.updateChunk(player.getLocation(), player.getLocation().getChunk());
-					LightAPI.createLightSource(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()));
+					LightAPI.createLightSource(player.getLocation(), Integer.parseInt(clicked.getItemMeta().getDisplayName()), true);
 					
 					player.closeInventory();
 					player.sendMessage(ChatColor.GREEN + "Light successfully created!");

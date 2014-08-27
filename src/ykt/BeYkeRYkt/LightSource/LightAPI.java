@@ -1,8 +1,6 @@
 package ykt.BeYkeRYkt.LightSource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -59,24 +57,6 @@ public class LightAPI{
 		}
 		return null;
 	}
-
-	public static Map<Chunk, Location> getChunksForUpdate(){
-		Map<Chunk, Location> chunks = new HashMap<Chunk, Location>();
-		int index;
-		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
-		Light lights = LightAPI.getSources().get(index);
-
-		if(lights.isNeedUpdate()){
-		for(Chunk chunk : lights.getChunks()){
-			if(!chunks.containsKey(chunk)){
-			chunks.put(chunk, lights.getLocation());
-			}
-		  }
-	    }
-		}
-		
-		return chunks;
-	}
 	
 	public NMSInterface getNMSHandler(){
 		return nms;
@@ -86,13 +66,14 @@ public class LightAPI{
      * Create light with level at a location. 
      * @param loc - which block to update.
      * @param level - the new light level.
+     * @param flag - Static light ?
      */
-    public static void createLightSource(Location loc, int level) {
-    	nms.createLightSource(loc, level);
+    public static void createLightSource(Location loc, int level, boolean flag) {
+    	nms.createLightSource(loc, level, flag);
     }
     
     /**
-     * Delete light with level at a location. (Not update)
+     * Delete light with level at a location.
      * @param loc - which block to update.
      */
     public static void deleteLightSource(Location loc){
@@ -103,9 +84,19 @@ public class LightAPI{
 	* Gets all the chunks touching/diagonal to the chunk the location is in and updates players with them.
 	* @param chunk - Bukkit chunk
 	* @param loc - Location for update
+	* @deprecated - prost))
 	*/
+    @Deprecated
     public static void updateChunk(Location loc, Chunk chunk) {
-    	nms.updateChunk(loc, chunk);
+    	//nms.updateChunk(loc, chunk);
+    }
+    
+    public static void initWorlds(){
+    	nms.initWorlds();
+    }
+    
+    public static void unloadWorlds(){
+    	nms.unloadWorlds();
     }
     
 	/**

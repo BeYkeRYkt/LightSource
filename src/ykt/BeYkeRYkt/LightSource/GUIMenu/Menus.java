@@ -22,8 +22,7 @@ public class Menus{
 		  menu.addItem(Icons.getEntityLight(), 1);
 		  menu.addItem(Icons.getItemLight(), 2);
 		  menu.addItem(Icons.getWorlds(), 3);
-		  menu.addItem(Icons.getDebug(), 4);
-		  menu.addItem(Icons.getUpdate(), 5);
+		  menu.addItem(Icons.getUpdate(), 4);
 		  menu.addItem(Icons.getReload(), 8);
 	  }
 	

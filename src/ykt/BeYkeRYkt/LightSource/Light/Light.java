@@ -1,8 +1,5 @@
 package ykt.BeYkeRYkt.LightSource.Light;
 
-import java.util.ArrayList;
-
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
@@ -36,15 +33,17 @@ public class Light{
 	public void updateLight(Location location, int lightlevel){
 		if(getLocation().getBlockX() == location.getBlockX() && getLocation().getBlockY() == location.getBlockY() && getLocation().getBlockZ() == location.getBlockZ()){
 		if(needupdate){
-		setNeedUpdate(false);
+			LightAPI.createLightSource(getLocation(), lightlevel, true);
+			needupdate = false;
 		}
-		
 		}else{
-		setNeedUpdate(true);
-		LightAPI.deleteLightSource(getLocation());
-		setLocation(location);
-		LightAPI.createLightSource(getLocation(), lightlevel);
-		}
+			if(!needupdate){
+			needupdate = true;
+			}
+	        LightAPI.deleteLightSource(getLocation());
+			setLocation(location);
+			LightAPI.createLightSource(getLocation(), lightlevel, false);
+		}	
 	}
 	
 	/**
@@ -52,39 +51,5 @@ public class Light{
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
-	}
-	
-	public ArrayList<Chunk> getChunks(){
-		ArrayList<Chunk> cs = new ArrayList<Chunk>();
-		 
-		for(int x=-1; x<=1; x++) {
-		for(int z=-1; z<=1; z++) {
-		Chunk chunk = getLocation().clone().add(16 * x, 0, 16 * z).getChunk();
-		if(!cs.contains(chunk)){	
-		cs.add(chunk);
-		}
-		}
-		}
-		return cs;	
-	}
-	
-	public void updateChunks(){
-		for(Chunk chunk: getChunks()){
-			LightAPI.updateChunk(getLocation(), chunk);
-		}
-	}
-
-	/**
-	 * @return the needupdate
-	 */
-	public boolean isNeedUpdate() {
-		return needupdate;
-	}
-
-	/**
-	 * @param needupdate the needupdate to set
-	 */
-	public void setNeedUpdate(boolean needupdate) {
-		this.needupdate = needupdate;
 	}
 }

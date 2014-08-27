@@ -78,19 +78,6 @@ public class Icons{
 		  return adve;
 	}
 	
-	public static ItemStack getDebug(){
-		  ItemStack adve = new ItemStack(Material.PAPER);
-		  ItemMeta meta = adve.getItemMeta();
-		  meta.setDisplayName("Debug");
-		  
-		  ArrayList<String> list = new ArrayList<String>();
-		  list.add(ChatColor.GOLD + "Status: ");
-		  list.add(String.valueOf(LightSource.getInstance().getDB().isDebug()));
-		  meta.setLore(list);
-		  adve.setItemMeta(meta);
-		  return adve;
-	}
-	
 	public static ItemStack getUpdate(){
 		  ItemStack adve = new ItemStack(Material.DIAMOND);
 		  ItemMeta meta = adve.getItemMeta();

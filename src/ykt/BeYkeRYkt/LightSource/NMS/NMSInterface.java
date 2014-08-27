@@ -1,7 +1,5 @@
 package ykt.BeYkeRYkt.LightSource.NMS;
 
-
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -21,32 +19,42 @@ public interface NMSInterface {
 	/**
 	 * Create light with level at a location.
 	 * 
-	 * @param LightType - LightType for light update
 	 * @param loc - which block to update.
 	 * @param level - the new light level.
+	 * @param flag - Static light?
 	 */
-	public void createLightSource(Location loc, int level);
-	
-	/**
-	 * Gets all the chunks touching/diagonal to the chunk the location is in and
-	 * updates players with them.
-	 * 
-	 * @param Chunk - Bukkit chunk
-	 * @param loc - Location for update 
-	 */
-	public void updateChunk(Location loc, Chunk chunk);
+	public void createLightSource(Location loc, int level, boolean flag);
 	
 	
 	/**
-	 * Delete light with level at a location. (Not update)
-	 * 
-	 * @param LightType - LightType for light update
+	 * Delete light with level at a location.
 	 * 
 	 * @param loc - which block to update.
 	 */
 	public void deleteLightSource(Location loc);
-
-
-
-
+	
+	
+	/**
+	 * 
+	 * Initial Custom IWorldAccess
+	 * 
+	 */
+	public void initWorlds();
+	
+	/**
+	 * 
+	 * Unload Custom IWorldAccess from nmsWorld.class
+	 * 
+	 */
+	public void unloadWorlds();
+	
+	/**
+	 * 
+	 * Custom IWorldAccess for initWorlds();
+	 * from: https://gist.github.com/aadnk/5841942
+	 * Thanks aadnk!
+	 * 
+	 * @param world - Bukkit World
+	 */
+	public Object getLightIWorldAccess(World world);
 }

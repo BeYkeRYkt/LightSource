@@ -37,27 +37,23 @@ public class LightTask extends BukkitRunnable{
 					lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
 				}else{
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 				
 				}else{
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 			}
 			}else{
 				if(lights.getOwner() instanceof Player){
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 			}
 			}else{
 				if(lights.getOwner() instanceof Player){
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 			}
@@ -73,25 +69,21 @@ public class LightTask extends BukkitRunnable{
 							lights.updateLight(entity.getLocation(), ItemManager.getLightLevel(entity.getEquipment().getHelmet()));
 						}else{
 							LightAPI.deleteLightSource(lights.getLocation());
-						    lights.updateChunks();
 							LightAPI.getSources().remove(lights);
 						}
 						
 						}else{
 							LightAPI.deleteLightSource(lights.getLocation());
-						    lights.updateChunks();
 							LightAPI.getSources().remove(lights);
 						}
 					}
 				}else{
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);	
 				}
 			}else{
 				if(lights.getOwner() instanceof LivingEntity && !(lights.getOwner() instanceof Player)){
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 			}
@@ -110,19 +102,16 @@ public class LightTask extends BukkitRunnable{
 		 				}
 		 				}else{
 		 					LightAPI.deleteLightSource(lights.getLocation());
-						    lights.updateChunks();
 		 					LightAPI.getSources().remove(lights);
 		 				}
 		 			}
 				}else{
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);	
 				}
 			}else{
 				if(lights.getOwner() instanceof Item){
 					LightAPI.deleteLightSource(lights.getLocation());
-				    lights.updateChunks();
 					LightAPI.getSources().remove(lights);
 				}
 			}
@@ -136,7 +125,7 @@ public class LightTask extends BukkitRunnable{
 					Player player = onlinePlayers[i];
 										
 					
-					int radius = LightSource.getInstance().getDB().getRadius();
+					int radius = 64;
 					List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
 					for (int j = 0; j < nearbyEntities.size(); j++) {
 						Entity ent = nearbyEntities.get(j);

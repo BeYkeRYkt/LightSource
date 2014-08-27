@@ -29,7 +29,6 @@ public class MainListener implements Listener{
 			if(event.getChunk().getX() == light.getLocation().getChunk().getX()
 			&& event.getChunk().getZ() == light.getLocation().getChunk().getZ()){
 		    LightAPI.deleteLightSource(light.getLocation());
-		    light.updateChunks();
 			}
 		}
 	}
@@ -40,7 +39,6 @@ public class MainListener implements Listener{
 			if(event.getChunk().getX() == light.getLocation().getChunk().getX()
 			&& event.getChunk().getZ() == light.getLocation().getChunk().getZ()){
 		    LightAPI.deleteLightSource(light.getLocation());
-		    light.updateChunks();
 			}
 		}
 	}
@@ -55,8 +53,7 @@ public class MainListener implements Listener{
 			if (item != null && ItemManager.isLightSource(item)) {
 			Light light = new Light(player, loc);
 			LightAPI.deleteLightSource(loc);
-			LightAPI.createLightSource(loc, ItemManager.getLightLevel(item));
-			light.updateChunks();
+			LightAPI.createLightSource(loc, ItemManager.getLightLevel(item), false);
 			LightAPI.addSource(light);
 			}else if(item == null || item != null && ItemManager.isLightSource(item)){
 			if(LightAPI.checkEntityID(event.getPlayer()) != null){
@@ -71,7 +68,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getPlayer()) != null){
 		Light light = LightAPI.checkEntityID(event.getPlayer());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 	    LightAPI.removeSource(light);
 		}
 	}
@@ -81,7 +77,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getPlayer()) != null){
 		Light light = LightAPI.checkEntityID(event.getPlayer());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 	    LightAPI.removeSource(light);
 		}
 	}
@@ -91,7 +86,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getPlayer()) != null){
 		Light light = LightAPI.checkEntityID(event.getPlayer());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 		}
 	}
 	
@@ -101,8 +95,9 @@ public class MainListener implements Listener{
 		if(light.getOwner().getType() == EntityType.PLAYER){
 			Player player = (Player) light.getOwner();
 		if(player.getName().equals(event.getPlayer())){
+		if(player.getItemInHand().getAmount() <= 1){
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
+		}
 		}
 		}
 		}
@@ -113,7 +108,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getEntity()) != null){
 		Light light = LightAPI.checkEntityID(event.getEntity());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 		}
 	}
 	
@@ -122,7 +116,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getPlayer()) != null){
 		Light light = LightAPI.checkEntityID(event.getPlayer());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 		}
 	}
 	
@@ -131,7 +124,6 @@ public class MainListener implements Listener{
 		if(LightAPI.checkEntityID(event.getPlayer()) != null){
 		Light light = LightAPI.checkEntityID(event.getPlayer());
 	    LightAPI.deleteLightSource(light.getLocation());
-	    light.updateChunks();
 		}
 	}
 	

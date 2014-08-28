@@ -33,7 +33,7 @@ public class Light{
 	public void updateLight(Location location, int lightlevel){
 		if(getLocation().getBlockX() == location.getBlockX() && getLocation().getBlockY() == location.getBlockY() && getLocation().getBlockZ() == location.getBlockZ()){
 		if(needupdate){
-			LightAPI.createLightSource(getLocation(), lightlevel, true);
+			LightAPI.createLightSource(getLocation(), lightlevel, false);
 			needupdate = false;
 		}
 		}else{

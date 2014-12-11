@@ -1,56 +1,38 @@
 package ykt.BeYkeRYkt.LightSource;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
-import ykt.BeYkeRYkt.LightSource.GUIMenu.Menus;
-import ykt.BeYkeRYkt.LightSource.Light.ItemManager;
-import ykt.BeYkeRYkt.LightSource.Light.Light;
-import ykt.BeYkeRYkt.LightSource.Listeners.GUIListener;
-import ykt.BeYkeRYkt.LightSource.Listeners.MainListener;
-
-
-public class LightSource extends JavaPlugin{
+public class LightSource extends JavaPlugin {
 
 	private static LightSource plugin;
-	private LightAPI api;
-	private int taskId = 0;
-	private ItemManager manager;
-    private LightConfig config;
-	
+	private static LightAPI api;
+	private LSConfig db;
+
 	@Override
 	public void onEnable() {
-		plugin = this;
-		api = new LightAPI();
-		if(api.getNMSHandler() != null){
-		LightAPI.initWorlds();	
+		this.plugin = this;
+		this.api = new LightAPI();
 		PluginDescriptionFile pdfFile = getDescription();
-		manager = new ItemManager();
-
 		try {
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
-				fc.options().header(
-						"LightSource v" + pdfFile.getVersion()
-								+ " Configuration" + "\nHave fun :3"
-								+ "\nby BeYkeRYkt");
+				fc.options().header("LightSource v" + pdfFile.getVersion() + " Configuration" + "\nHave fun :3" + "\nby BeYkeRYkt" + "\nUpdate modes can be: SAVE, MAXIMUM and USER");
+				fc.addDefault("LightUpdateMode", "SAVE");
 				fc.addDefault("PlayerLight", true);
 				fc.addDefault("EntityLight", false);
 				fc.addDefault("ItemLight", false);
-				fc.addDefault("Enable-updater", true);
 				fc.addDefault("Task-delay-ticks", 5);
+				fc.addDefault("max-iterations-per-tick", 3);
 
 				List<World> worlds = getServer().getWorlds();
 				for (World world : worlds) {
@@ -62,138 +44,113 @@ public class LightSource extends JavaPlugin{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		loadItems();
-		
-		//mcstats
-		try {
-		    Metrics metrics = new Metrics(this);
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :-(
-		}
-		
-		config = new LightConfig();
-		
-		//Update
-		if(config.isUpdater()){
-			this.getLogger().info("Enabling update system...");
-			new UpdateContainer(this.getFile());
-		}
-				
-		Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-		Bukkit.getPluginManager().registerEvents(new MainListener(), this);
-		
-		this.getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is now enabled. Have fun.");
-		
-		//Start Runnable --> DoGzzz old tests light system for my server ;P
-		taskId = Bukkit.getScheduler().runTaskTimer(this, new LightTask(), 0L, getDB().getTaskTicks()).getTaskId();		
-		}
-	}
-
-	
-	public void loadItems(){
+		this.db = new LSConfig(this);
 		createExampleItems();
-		getItemManager().loadItems();
+		getAPI().init();
 	}
 
-	@Override
-	public void onDisable() {
-		getAPI().getNMSHandler().unloadWorlds();
-		Bukkit.getScheduler().cancelTasks(this);
-		ItemManager.getList().clear();
-		HandlerList.unregisterAll(this);
-		int index;
-		for(index = LightAPI.getSources().size() - 1; index >= 0; --index){
-		    Light light = LightAPI.getSources().get(index);
-			LightAPI.deleteLightSource(light.getLocation());
-			LightAPI.getSources().remove(light);
-		}
-		config.save();
-		api = null;
+	public static LightSource getInstance() {
+		return plugin;
 	}
-	
-	
+
+	public static LightAPI getAPI() {
+		return api;
+	}
+
+	public LSConfig getDB() {
+		return db;
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if(sender instanceof Player){
+		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			
-			if(cmd.getName().equalsIgnoreCase("ls")){
-				Menus.openMainMenu(player);
-			}else if(cmd.getName().equalsIgnoreCase("light")){
-				Menus.openLightCreatorMenu(player);
+			if (cmd.getName().equalsIgnoreCase("ls")) {
+				getAPI().getGUIManager().openMenu(player, getAPI().getGUIManager().getMenuFromId("mainMenu"));
+			} else if (cmd.getName().equalsIgnoreCase("light")) {
+				if (args.length == 0) {
+					// Menus.openLightCreatorMenu(player);
+				} else if (args.length == 1) {
+					if (args[0].equalsIgnoreCase("create")) {
+						player.sendMessage(ChatColor.RED + "Need more arguments!");
+						player.sendMessage(ChatColor.RED + "/light create [level 1-15]");
+					} else if (args[0].equalsIgnoreCase("delete")) {
+						// LightAPI.deleteLightSource(player.getLocation());
+						player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
+					}
+				} else if (args.length == 2) {
+					if (args[0].equalsIgnoreCase("create")) {
+						int lightlevel = Integer.parseInt(args[1]);
+						if (lightlevel <= 15) {
+							// LightAPI.createLightSource(player.getLocation(),
+							// lightlevel, true);
+							player.sendMessage(ChatColor.GREEN + "Light successfully created!");
+						} else {
+							player.sendMessage(ChatColor.RED + "Maximum 15 level!");
+							player.sendMessage(ChatColor.RED + "/light create [level 1-15]");
+						}
+					} else if (args[0].equalsIgnoreCase("delete")) {
+						// LightAPI.deleteLightSource(player.getLocation());
+						player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
+					}
+				} else {
+					// Menus.openLightCreatorMenu(player);
+				}
 			}
 		}
 		return true;
 	}
-	
-	public int getTaskId(){
-		return taskId;
-	}
-	
-	public LightConfig getDB(){
-		return config;
-	}
-	
+
+	@SuppressWarnings("static-access")
 	public void createExampleItems() {
 		try {
-			FileConfiguration fc = getItemManager().getConfig();
-			
-			if (!new File(getDataFolder(), "Items.yml").exists()) {			
-				
+			FileConfiguration fc = getAPI().getItemManager().getConfig();
+
+			if (!new File(getDataFolder(), "Items.yml").exists()) {
+
 				fc.addDefault("Lava.material", "LAVA");
 				fc.addDefault("Lava.lightlevel", 15);
-				
+				fc.addDefault("Lava.burnTime", -1);
+
 				fc.addDefault("StationLava.material", "STATIONARY_LAVA");
 				fc.addDefault("StationLava.lightlevel", 15);
-				
+				fc.addDefault("StationLava.burnTime", -1);
+
 				fc.addDefault("Fire.material", "FIRE");
 				fc.addDefault("Fire.lightlevel", 115);
-				
+				fc.addDefault("Fire.burnTime", -1);
+
 				fc.addDefault("Jack.material", "JACK_O_LANTERN");
 				fc.addDefault("Jack.lightlevel", 15);
-				
+				fc.addDefault("Jack.burnTime", 60);
+
 				fc.addDefault("LavaBucket.material", "LAVA_BUCKET");
 				fc.addDefault("LavaBucket.lightlevel", 15);
-				
+				fc.addDefault("LavaBucket.burnTime", 60);
+
 				fc.addDefault("Torch.material", "TORCH");
 				fc.addDefault("Torch.lightlevel", 14);
-				
+				fc.addDefault("Torch.burnTime", 60);
+
 				fc.addDefault("Glowstone.material", "GLOWSTONE");
 				fc.addDefault("Glowstone.lightlevel", 14);
-				
+				fc.addDefault("Glowstone.burnTime", -1);
+
 				fc.addDefault("BlazeRod.material", "BLAZE_ROD");
 				fc.addDefault("BlazeRod.lightlevel", 5);
-				
+				fc.addDefault("BlazeRod.burnTime", 30);
+
 				fc.addDefault("Redstone.material", "REDSTONE_TORCH_ON");
 				fc.addDefault("Redstone.lightlevel", 9);
-				
+				fc.addDefault("Redstone.burnTime", 20);
+
 				fc.options().copyDefaults(true);
-				getItemManager().saveConfig();
+				getAPI().getItemManager().saveConfig();
 				fc.options().copyDefaults(false);
-				getItemManager().reloadConfig();
+				getAPI().getItemManager().reloadConfig();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-		
-	public static LightSource getInstance() {
-		return plugin;
-	}
-
-	public LightAPI getAPI() {
-		return api;
-	}
-
-	/**
-	 * @return the manager
-	 */
-	public ItemManager getItemManager() {
-		return manager;
-	}
-
 }

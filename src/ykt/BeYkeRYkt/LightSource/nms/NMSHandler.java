@@ -6,13 +6,13 @@ import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
 
 public interface NMSHandler {
 
-	public void createLight(Location location, int light);
+    public void createLight(Location location, int light);
 
-	public void deleteLight(Location location);
+    public void deleteLight(Location location);
 
-	public void updateChunk(ChunkCoords chunk);
+    public void updateChunk(ChunkCoords chunk);
 
-	public void initWorlds();
+    public void initWorlds();
 
-	public void unloadWorlds();
+    public void unloadWorlds();
 }

@@ -1,7 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.sources;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
@@ -10,18 +10,18 @@ import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.items.LightItem;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
 
-public class PlayerSource extends Source {
+public class EntitySource extends Source {
 
-    public PlayerSource(Player entity, Location loc, LightItem item, ItemType type, ItemStack itemStack) {
+    public EntitySource(LivingEntity entity, Location loc, LightItem item, ItemType type, ItemStack itemStack) {
         super(entity, loc, item, type, itemStack);
     }
 
     @Override
     public void doTick() {
-        Player entity = (Player) getOwner();
+        LivingEntity entity = (LivingEntity) getOwner();
         Location newLocation = entity.getLocation();
 
-        if (LightSource.getInstance().getDB().isPlayerLight()) {
+        if (LightSource.getInstance().getDB().isEntityLight()) {
             if (LightSource.getInstance().getDB().getWorld(this.getOwner().getWorld().getName())) {
                 if (!entity.isDead()) {
                     if (entity.getEquipment().getItemInHand() != null && getItemStack().equals(entity.getEquipment().getItemInHand()) && ItemManager.isLightSource(entity.getEquipment().getItemInHand())) {
@@ -32,52 +32,30 @@ public class PlayerSource extends Source {
                         return;
                     } else {
                         LightAPI.deleteLight(this.getLocation());
-                        if (entity.getInventory().contains(getItemStack())) {
-                            // LightUtils.setFuelLore(getItemStack(),
-                            // getItem().getPercent());
-                            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                            storage.setData(String.valueOf(getItem().getBurnTime()));
-                            // entity.updateInventory();
-                        }
+                        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+                        storage.setData(String.valueOf(getItem().getBurnTime()));
                         LightAPI.getSourceManager().removeSource(this);
                         return;
                     }
                 } else {
                     LightAPI.deleteLight(this.getLocation());
-                    if (entity.getInventory().contains(getItemStack())) {
-                        // LightUtils.setFuelLore(getItemStack(),
-                        // getItem().getPercent());
-
-                        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                        storage.setData(String.valueOf(getItem().getBurnTime()));
-                        entity.updateInventory();
-                    }
+                    AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+                    storage.setData(String.valueOf(getItem().getBurnTime()));
                     LightAPI.getSourceManager().removeSource(this);
                     return;
                 }
             } else {
                 LightAPI.deleteLight(this.getLocation());
-                if (entity.getInventory().contains(getItemStack())) {
-                    // LightUtils.setFuelLore(getItemStack(),
-                    // getItem().getPercent());
-
-                    AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                    storage.setData(String.valueOf(getItem().getBurnTime()));
-                    entity.updateInventory();
-                }
+                AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+                storage.setData(String.valueOf(getItem().getBurnTime()));
                 LightAPI.getSourceManager().removeSource(this);
                 return;
             }
         } else {
             LightAPI.deleteLight(this.getLocation());
-            if (entity.getInventory().contains(getItemStack())) {
-                // LightUtils.setFuelLore(getItemStack(),
-                // getItem().getPercent());
 
-                AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                storage.setData(String.valueOf(getItem().getBurnTime()));
-                entity.updateInventory();
-            }
+            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+            storage.setData(String.valueOf(getItem().getBurnTime()));
             LightAPI.getSourceManager().removeSource(this);
             return;
         }
@@ -86,7 +64,7 @@ public class PlayerSource extends Source {
     @Override
     protected void removeItem() {
         // remove item
-        Player player = (Player) this.getOwner();
+        LivingEntity player = (LivingEntity) this.getOwner();
         ItemStack item = null;
         if (this.getType() == ItemType.HAND) {
             item = player.getEquipment().getItemInHand();
@@ -109,7 +87,6 @@ public class PlayerSource extends Source {
                 player.getEquipment().setHelmet(null);
             }
         }
-        player.updateInventory();
         // End
     }
 }

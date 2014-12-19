@@ -11,17 +11,17 @@ import ykt.BeYkeRYkt.LightSource.gui.Icon;
 
 public class About extends Icon {
 
-	public About() {
-		super("about", Material.BOOK);
-		setName(ChatColor.GREEN + "About");
-		getLore().add("");
-		getLore().add(ChatColor.WHITE + "Version: " + LightSource.getInstance().getDescription().getVersion());
-		getLore().add(ChatColor.WHITE + "Author: " + ChatColor.GREEN + LightSource.getInstance().getDescription().getAuthors().get(0));
-	}
+    public About() {
+        super("about", Material.BOOK);
+        setName(ChatColor.GREEN + "About");
+        getLore().add("");
+        getLore().add(ChatColor.WHITE + "Version: " + LightSource.getInstance().getDescription().getVersion());
+        getLore().add(ChatColor.WHITE + "Author: " + ChatColor.GREEN + LightSource.getInstance().getDescription().getAuthors().get(0));
+    }
 
-	@Override
-	public void onItemClick(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		player.playSound(player.getLocation(), Sound.HORSE_IDLE, 1, 1);
-	}
+    @Override
+    public void onItemClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        player.playSound(player.getLocation(), Sound.HORSE_IDLE, 1, 1);
+    }
 }

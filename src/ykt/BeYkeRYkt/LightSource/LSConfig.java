@@ -4,179 +4,216 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class LSConfig {
 
-	/**
-	 * Enum for fast configuration
-	 */
-	public enum UpdateMode {
-		/**
-		 * player light : true
-		 * entity light: false
-		 * item light: false
-		 * Task delay: 20
-		 * max-iterations-per-tick: 2
-		 */
-		SAVE,
+    /**
+     * Enum for fast configuration
+     */
+    public enum UpdateMode {
+        /**
+         * player light : true
+         * entity light: false
+         * item light: false
+         * Task delay: 20
+         * max-iterations-per-tick: 2
+         */
+        SAVE,
 
-		/**
-		 * player light : true
-		 * entity light: true
-		 * item light: true
-		 * Task delay: 4
-		 * max-iterations-per-tick: 5
-		 */
-		MAXIMUM,
+        /**
+         * player light : true
+         * entity light: true
+         * item light: true
+         * Task delay: 4
+         * max-iterations-per-tick: 5
+         */
+        MAXIMUM,
 
-		/**
-		 * player light : true
-		 * entity light: false
-		 * item light: false
-		 * Task delay: 15
-		 * max-iterations-per-tick: 3
-		 */
-		USER;
-	}
+        /**
+         * player light : true
+         * entity light: false
+         * item light: false
+         * Task delay: 15
+         * max-iterations-per-tick: 3
+         */
+        USER;
+    }
 
-	private LightSource plugin;
-	private boolean playerlight;
-	private boolean entitylight;
-	private boolean itemlight;
+    private LightSource plugin;
+    private boolean playerlight;
+    private boolean entitylight;
+    private boolean itemlight;
+    private boolean lightSourceDamage;
 
-	// private boolean updater;
-	private int taskticks;
-	private int maxIterationsPerTick;
+    // private boolean updater;
+    private int taskticks;
+    private int maxIterationsPerTick;
+    private int damageFire;
 
-	private UpdateMode strategyUpdate = UpdateMode.USER;
+    private UpdateMode strategyUpdate = UpdateMode.USER;
 
-	public LSConfig(LightSource plugin) {
-		this.plugin = plugin;
+    public LSConfig(LightSource plugin) {
+        this.plugin = plugin;
 
-		String mode = plugin.getConfig().getString("LightUpdateMode");
-		if (UpdateMode.valueOf(mode) != null) {
-			strategyUpdate = UpdateMode.valueOf(mode);
-		}
+        String mode = plugin.getConfig().getString("LightUpdateMode");
+        if (UpdateMode.valueOf(mode) != null) {
+            strategyUpdate = UpdateMode.valueOf(mode);
+        }
 
-		if (strategyUpdate == UpdateMode.SAVE) {
-			setPlayerLight(true);
-			setEntityLight(false);
-			setItemLight(false);
-			setTaskTicks(20);
-			setMaxIterationsPerTick(2);
-		} else if (strategyUpdate == UpdateMode.MAXIMUM) {
-			setPlayerLight(true);
-			setEntityLight(true);
-			setItemLight(true);
-			setTaskTicks(4);
-			setMaxIterationsPerTick(5);
-		} else {
-			setPlayerLight(plugin.getConfig().getBoolean("PlayerLight"));
-			setEntityLight(plugin.getConfig().getBoolean("EntityLight"));
-			setItemLight(plugin.getConfig().getBoolean("ItemLight"));
-			// setUpdater(plugin.getConfig().getBoolean("Enable-updater"));
-			setTaskTicks(plugin.getConfig().getInt("Task-delay-ticks"));
-			setMaxIterationsPerTick(plugin.getConfig().getInt("max-iterations-per-tick"));
-		}
-	}
+        if (strategyUpdate == UpdateMode.SAVE) {
+            setPlayerLight(true);
+            setEntityLight(false);
+            setItemLight(false);
+            setTaskTicks(20);
+            setMaxIterationsPerTick(2);
+        } else if (strategyUpdate == UpdateMode.MAXIMUM) {
+            setPlayerLight(true);
+            setEntityLight(true);
+            setItemLight(true);
+            setTaskTicks(4);
+            setMaxIterationsPerTick(5);
+        } else {
+            setPlayerLight(plugin.getConfig().getBoolean("PlayerLight"));
+            setEntityLight(plugin.getConfig().getBoolean("EntityLight"));
+            setItemLight(plugin.getConfig().getBoolean("ItemLight"));
+            // setUpdater(plugin.getConfig().getBoolean("Enable-updater"));
+            setTaskTicks(plugin.getConfig().getInt("Task-delay-ticks"));
+            setMaxIterationsPerTick(plugin.getConfig().getInt("max-iterations-per-tick"));
+        }
 
-	public void save() {
-		FileConfiguration fc = plugin.getConfig();
-		fc.set("PlayerLight", isPlayerLight());
-		fc.set("EntityLight", isEntityLight());
-		fc.set("ItemLight", isItemLight());
-		// fc.set("Enable-updater", isUpdater());
-		fc.set("Task-delay-ticks", getTaskTicks());
-		fc.set("max-iterations-per-tick", getMaxIterationsPerTick());
-		plugin.saveConfig();
-	}
+        setLightSourceDamage(plugin.getConfig().getBoolean("LightSourceDamage"));
+        setDamageFire(plugin.getConfig().getInt("Damage-fire-ticks-sec"));
+    }
 
-	public UpdateMode getMode() {
-		return strategyUpdate;
-	}
+    public void save() {
+        FileConfiguration fc = plugin.getConfig();
+        fc.set("PlayerLight", isPlayerLight());
+        fc.set("EntityLight", isEntityLight());
+        fc.set("ItemLight", isItemLight());
+        fc.set("LightSourceDamage", isLightSourceDamage());
+        // fc.set("Enable-updater", isUpdater());
+        fc.set("Task-delay-ticks", getTaskTicks());
+        fc.set("max-iterations-per-tick", getMaxIterationsPerTick());
+        fc.set("Damage-fire-ticks-sec", getDamageFire());
+        plugin.saveConfig();
+    }
 
-	public void setMode(UpdateMode mode) {
-		this.strategyUpdate = mode;
-	}
+    public UpdateMode getMode() {
+        return strategyUpdate;
+    }
 
-	/**
-	 * @return the playerlight
-	 */
-	public boolean isPlayerLight() {
-		return playerlight;
-	}
+    public void setMode(UpdateMode mode) {
+        this.strategyUpdate = mode;
+    }
 
-	/**
-	 * @param playerlight
-	 *            the playerlight to set
-	 */
-	public void setPlayerLight(boolean playerlight) {
-		this.playerlight = playerlight;
-	}
+    /**
+     * @return the playerlight
+     */
+    public boolean isPlayerLight() {
+        return playerlight;
+    }
 
-	/**
-	 * @return the entitylight
-	 */
-	public boolean isEntityLight() {
-		return entitylight;
-	}
+    /**
+     * @param playerlight
+     *            the playerlight to set
+     */
+    public void setPlayerLight(boolean playerlight) {
+        this.playerlight = playerlight;
+    }
 
-	/**
-	 * @param entitylight
-	 *            the entitylight to set
-	 */
-	public void setEntityLight(boolean entitylight) {
-		this.entitylight = entitylight;
-	}
+    /**
+     * @return the entitylight
+     */
+    public boolean isEntityLight() {
+        return entitylight;
+    }
 
-	/**
-	 * @return the itemlight
-	 */
-	public boolean isItemLight() {
-		return itemlight;
-	}
+    /**
+     * @param entitylight
+     *            the entitylight to set
+     */
+    public void setEntityLight(boolean entitylight) {
+        this.entitylight = entitylight;
+    }
 
-	/**
-	 * @param itemlight
-	 *            the itemlight to set
-	 */
-	public void setItemLight(boolean itemlight) {
-		this.itemlight = itemlight;
-	}
+    /**
+     * @return the itemlight
+     */
+    public boolean isItemLight() {
+        return itemlight;
+    }
 
-	public boolean getWorld(String name) {
-		return plugin.getConfig().getBoolean("Worlds." + name);
-	}
+    /**
+     * @param itemlight
+     *            the itemlight to set
+     */
+    public void setItemLight(boolean itemlight) {
+        this.itemlight = itemlight;
+    }
 
-	public void setWorld(String name, boolean flag) {
-		plugin.getConfig().set("Worlds." + name, flag);
-		plugin.saveConfig();
-	}
+    public boolean getWorld(String name) {
+        return plugin.getConfig().getBoolean("Worlds." + name);
+    }
 
-	/**
-	 * @return the taskticks
-	 */
-	public int getTaskTicks() {
-		return taskticks;
-	}
+    public void setWorld(String name, boolean flag) {
+        plugin.getConfig().set("Worlds." + name, flag);
+        plugin.saveConfig();
+    }
 
-	/**
-	 * @param taskticks
-	 *            the taskticks to set
-	 */
-	public void setTaskTicks(int taskticks) {
-		this.taskticks = taskticks;
-	}
+    /**
+     * @return the taskticks
+     */
+    public int getTaskTicks() {
+        return taskticks;
+    }
 
-	/**
-	 * @return the maxIterationsPerTick
-	 */
-	public int getMaxIterationsPerTick() {
-		return maxIterationsPerTick;
-	}
+    /**
+     * @param taskticks
+     *            the taskticks to set
+     */
+    public void setTaskTicks(int taskticks) {
+        this.taskticks = taskticks;
+    }
 
-	/**
-	 * @param maxIterationsPerTick
-	 *            the maxIterationsPerTick to set
-	 */
-	public void setMaxIterationsPerTick(int maxIterationsPerTick) {
-		this.maxIterationsPerTick = maxIterationsPerTick;
-	}
+    /**
+     * @return the maxIterationsPerTick
+     */
+    public int getMaxIterationsPerTick() {
+        return maxIterationsPerTick;
+    }
+
+    /**
+     * @param maxIterationsPerTick
+     *            the maxIterationsPerTick to set
+     */
+    public void setMaxIterationsPerTick(int maxIterationsPerTick) {
+        this.maxIterationsPerTick = maxIterationsPerTick;
+    }
+
+    /**
+     * @return the damageFire
+     */
+    public int getDamageFire() {
+        return damageFire;
+    }
+
+    /**
+     * @param damageFire
+     *            the damageFire to set
+     */
+    public void setDamageFire(int damageFire) {
+        this.damageFire = damageFire;
+    }
+
+    /**
+     * @return the lightSourceDamage
+     */
+    public boolean isLightSourceDamage() {
+        return lightSourceDamage;
+    }
+
+    /**
+     * @param lightSourceDamage
+     *            the lightSourceDamage to set
+     */
+    public void setLightSourceDamage(boolean lightSourceDamage) {
+        this.lightSourceDamage = lightSourceDamage;
+    }
 }

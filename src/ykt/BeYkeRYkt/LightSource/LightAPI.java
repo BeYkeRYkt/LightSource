@@ -14,59 +14,59 @@ import ykt.BeYkeRYkt.LightSource.sources.SourceManager;
 
 public class LightAPI {
 
-	private static ItemManager manager;
-	private GUIManager gui;
-	private static SourceManager source;
-	public static CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
-	private static NMSHandler nmsHandler;
-	private int taskBurnId;
+    private static ItemManager manager;
+    private GUIManager gui;
+    private static SourceManager source;
+    public static CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
+    private static NMSHandler nmsHandler;
 
-	public LightAPI() {
-		this.nmsHandler = new NMSHandler_v_1_8();
+    public LightAPI() {
+        LightAPI.nmsHandler = new NMSHandler_v_1_8(); // Only 1.8 :)
 
-		manager = new ItemManager();
-		gui = new GUIManager(LightSource.getInstance());
-		source = new SourceManager(LightSource.getInstance());
+        manager = new ItemManager();
+        gui = new GUIManager();
+        source = new SourceManager(LightSource.getInstance());
+    }
 
-		// Start burn task
-		// taskBurnId =
-		// Bukkit.getScheduler().runTaskTimer(LightSource.getInstance(), new
-		// BurnTask(source), 0, 20).getTaskId();
-	}
+    public void init() {
+        manager.loadItems();
+        gui.load();
+        source.init();
+        nmsHandler.initWorlds();
+    }
 
-	public void init() {
-		manager.loadItems();
-		gui.load();
-		source.init();
-		nmsHandler.initWorlds();
-	}
+    public static void createLight(Location location, int lightlevel) {
+        nmsHandler.createLight(location, lightlevel);
+    }
 
-	public static void createLight(Location location, int lightlevel) {
-		nmsHandler.createLight(location, lightlevel);
-	}
+    public static void deleteLight(Location location) {
+        nmsHandler.deleteLight(location);
+    }
 
-	public static void deleteLight(Location location) {
-		nmsHandler.deleteLight(location);
-	}
+    public static void updateChunk(ChunkCoords chunk) {
+        nmsHandler.updateChunk(chunk);
+    }
 
-	public static void updateChunk(ChunkCoords chunk) {
-		nmsHandler.updateChunk(chunk);
-	}
+    public static ItemManager getItemManager() {
+        return manager;
+    }
 
-	public static ItemManager getItemManager() {
-		return manager;
-	}
+    public GUIManager getGUIManager() {
+        return gui;
+    }
 
-	public GUIManager getGUIManager() {
-		return gui;
-	}
+    public static SourceManager getSourceManager() {
+        return source;
+    }
 
-	public static SourceManager getSourceManager() {
-		return source;
-	}
+    public void log(CommandSender sender, String message) {
+        sender.sendMessage(ChatColor.AQUA + "<LightSource>: " + ChatColor.WHITE + message);
+    }
 
-	public void log(CommandSender sender, String message) {
-		sender.sendMessage(ChatColor.AQUA + "<LightSource>: " + ChatColor.WHITE + message);
-	}
-
+    /**
+     * @return the nmsHandler
+     */
+    public NMSHandler getNMSHandler() {
+        return nmsHandler;
+    }
 }

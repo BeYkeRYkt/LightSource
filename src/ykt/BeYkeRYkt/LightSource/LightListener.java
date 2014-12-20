@@ -28,6 +28,7 @@ import ykt.BeYkeRYkt.LightSource.gui.Menu;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.items.LightItem;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
+import ykt.BeYkeRYkt.LightSource.sources.ItemSource;
 import ykt.BeYkeRYkt.LightSource.sources.PlayerSource;
 import ykt.BeYkeRYkt.LightSource.sources.Source;
 import ykt.BeYkeRYkt.LightSource.sources.Source.ItemType;
@@ -36,6 +37,8 @@ public class LightListener implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.isCancelled())
+            return;
         Inventory inventory = event.getInventory();
 
         if (inventory.getTitle() == null)
@@ -60,6 +63,8 @@ public class LightListener implements Listener {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent event) {
+        if (event.isCancelled())
+            return;
         ItemStack item = event.getCurrentItem();
 
         Inventory inventory = event.getInventory();
@@ -79,9 +84,28 @@ public class LightListener implements Listener {
         }
     }
 
-    // Port from old version
+    @EventHandler
+    public void onPlayerDropLight(PlayerDropItemEvent event) {
+        if (event.isCancelled())
+            return;
+        for (Source light : LightAPI.getSourceManager().getSourceList()) {
+            if (light.getOwner().getType() == EntityType.PLAYER) {
+                Player player = (Player) light.getOwner();
+                if (player.getName().equals(event.getPlayer())) {
+                    if (player.getItemInHand().getAmount() <= 1) {
+                        LightAPI.deleteLight(light.getLocation(), false);
+                    }
+                    ItemSource itemsource = new ItemSource(event.getItemDrop(), event.getItemDrop().getLocation(), light.getItem(), ItemType.NONE);
+                    LightAPI.getSourceManager().addSource(itemsource);
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void onItemHeldChange(PlayerItemHeldEvent event) {
+        if (event.isCancelled())
+            return;
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItem(event.getNewSlot());
         Location loc = player.getLocation();
@@ -96,11 +120,24 @@ public class LightListener implements Listener {
                     lightItem.setBurnTime(time, true);
                 }
 
-                PlayerSource light = new PlayerSource(player, loc, lightItem, ItemType.HAND, item);
-                LightAPI.getSourceManager().addSource(light);
-            } else if (item == null || item != null && ItemManager.isLightSource(item)) {
+                if (LightAPI.getSourceManager().getSource(player) == null) {
+                    PlayerSource light = new PlayerSource(player, loc, lightItem, ItemType.HAND, item);
+                    LightAPI.getSourceManager().addSource(light);
+                } else {
+                    Source source = LightAPI.getSourceManager().getSource(player);
+
+                    // Save old item nbt
+                    AttributeStorage saveStorage = AttributeStorage.newTarget(source.getItemStack(), ItemManager.ITEM_ID);
+                    saveStorage.setData(String.valueOf(source.getItem().getBurnTime()));
+
+                    // set new item
+                    source.setItemStack(item);
+                    source.setItem(lightItem);
+                }
+            } else if (item == null || item != null && !ItemManager.isLightSource(item)) {
                 if (LightAPI.getSourceManager().getSource(player) != null) {
-                    LightAPI.deleteLight(loc);
+                    LightAPI.deleteLight(loc, false); // because it's work for
+                                                      // Source.doTick() :)
                 }
             }
         }
@@ -110,16 +147,18 @@ public class LightListener implements Listener {
     public void onChunkLoad(ChunkLoadEvent event) {
         for (Source light : LightAPI.getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation());
+                LightAPI.deleteLight(light.getLocation(), false);
             }
         }
     }
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
+        if (event.isCancelled())
+            return;
         for (Source light : LightAPI.getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation());
+                LightAPI.deleteLight(light.getLocation(), false);
             }
         }
     }
@@ -128,39 +167,29 @@ public class LightListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), false);
             LightAPI.getSourceManager().removeSource(light);
         }
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
+        if (event.isCancelled())
+            return;
         if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), false);
             LightAPI.getSourceManager().removeSource(light);
         }
     }
 
     @EventHandler
     public void onPlayerBedEnter(PlayerBedEnterEvent event) {
+        if (event.isCancelled())
+            return;
         if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation());
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDropLight(PlayerDropItemEvent event) {
-        for (Source light : LightAPI.getSourceManager().getSourceList()) {
-            if (light.getOwner().getType() == EntityType.PLAYER) {
-                Player player = (Player) light.getOwner();
-                if (player.getName().equals(event.getPlayer())) {
-                    if (player.getItemInHand().getAmount() <= 1) {
-                        LightAPI.deleteLight(light.getLocation());
-                    }
-                }
-            }
+            LightAPI.deleteLight(light.getLocation(), false);
         }
     }
 
@@ -168,15 +197,17 @@ public class LightListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (LightAPI.getSourceManager().getSource(event.getEntity()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getEntity());
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), false);
         }
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if (event.isCancelled())
+            return;
         if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), true);
         }
     }
 
@@ -184,12 +215,14 @@ public class LightListener implements Listener {
     public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
         if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), true);
         }
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.isCancelled())
+            return;
         if (LightSource.getInstance().getDB().isLightSourceDamage()) {
             LivingEntity entity = (LivingEntity) event.getEntity();
             if (event.getDamager().getType().isAlive()) {

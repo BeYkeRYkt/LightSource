@@ -13,6 +13,7 @@ import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.gui.icons.About;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Back;
 import ykt.BeYkeRYkt.LightSource.gui.icons.EntityLight;
+import ykt.BeYkeRYkt.LightSource.gui.icons.IgnoreSaveUpdate;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ItemLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Items;
 import ykt.BeYkeRYkt.LightSource.gui.icons.LightSourceDamage;
@@ -45,6 +46,7 @@ public class GUIManager {
         LightSource.getAPI().getGUIManager().registerIcon(new PlayerLight());
         LightSource.getAPI().getGUIManager().registerIcon(new Worlds());
         LightSource.getAPI().getGUIManager().registerIcon(new LightSourceDamage());
+        LightSource.getAPI().getGUIManager().registerIcon(new IgnoreSaveUpdate());
 
         // init worlds
         // also: MONSTERKILL!

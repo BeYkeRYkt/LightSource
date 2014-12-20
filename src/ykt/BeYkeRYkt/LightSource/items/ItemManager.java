@@ -2,7 +2,6 @@ package ykt.BeYkeRYkt.LightSource.items;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -52,11 +51,13 @@ public class ItemManager {
         this.customConfig = YamlConfiguration.loadConfiguration(this.customFile);
 
         // Look for defaults in the jar
-        InputStream defConfigStream = LightSource.getInstance().getResource(name + ".yml");
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.customConfig.setDefaults(defConfig);
-        }
+        // InputStream defConfigStream =
+        // LightSource.getInstance().getResource(name + ".yml");
+        // if (defConfigStream != null) {
+        // YamlConfiguration defConfig =
+        // YamlConfiguration.loadConfiguration(defConfigStream);
+        // this.customConfig.setDefaults(defConfig);
+        // }
     }
 
     public FileConfiguration getConfig() {
@@ -77,6 +78,7 @@ public class ItemManager {
         }
     }
 
+    @SuppressWarnings("static-access")
     public static void addLightSource(LightItem item, String keyName) {
         if (!list.contains(item)) {
             list.add(item);

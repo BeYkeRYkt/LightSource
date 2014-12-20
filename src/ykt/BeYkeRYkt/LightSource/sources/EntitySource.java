@@ -30,35 +30,15 @@ public class EntitySource extends Source {
                     } else if (entity.getEquipment().getHelmet() != null && getItemStack().equals(entity.getEquipment().getHelmet()) && ItemManager.isLightSource(entity.getEquipment().getHelmet())) {
                         updateLight(newLocation);
                         return;
-                    } else {
-                        LightAPI.deleteLight(this.getLocation());
-                        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                        storage.setData(String.valueOf(getItem().getBurnTime()));
-                        LightAPI.getSourceManager().removeSource(this);
-                        return;
                     }
-                } else {
-                    LightAPI.deleteLight(this.getLocation());
-                    AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                    storage.setData(String.valueOf(getItem().getBurnTime()));
-                    LightAPI.getSourceManager().removeSource(this);
-                    return;
                 }
-            } else {
-                LightAPI.deleteLight(this.getLocation());
-                AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                storage.setData(String.valueOf(getItem().getBurnTime()));
-                LightAPI.getSourceManager().removeSource(this);
-                return;
             }
-        } else {
-            LightAPI.deleteLight(this.getLocation());
-
-            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-            storage.setData(String.valueOf(getItem().getBurnTime()));
-            LightAPI.getSourceManager().removeSource(this);
-            return;
         }
+        LightAPI.deleteLight(this.getLocation(), true);
+        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+        storage.setData(String.valueOf(getItem().getBurnTime()));
+        LightAPI.getSourceManager().removeSource(this);
+        return;
     }
 
     @Override

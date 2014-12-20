@@ -26,34 +26,15 @@ public class ItemSource extends Source {
                     if (entity.getItemStack() != null && ItemManager.isLightSource(entity.getItemStack())) {
                         updateLight(newLocation);
                         return;
-                    } else {
-                        LightAPI.deleteLight(this.getLocation());
-                        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                        storage.setData(String.valueOf(getItem().getBurnTime()));
-                        LightAPI.getSourceManager().removeSource(this);
-                        return;
                     }
-                } else {
-                    LightAPI.deleteLight(this.getLocation());
-                    AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                    storage.setData(String.valueOf(getItem().getBurnTime()));
-                    LightAPI.getSourceManager().removeSource(this);
-                    return;
                 }
-            } else {
-                LightAPI.deleteLight(this.getLocation());
-                AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-                storage.setData(String.valueOf(getItem().getBurnTime()));
-                LightAPI.getSourceManager().removeSource(this);
-                return;
             }
-        } else {
-            LightAPI.deleteLight(this.getLocation());
-            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
-            storage.setData(String.valueOf(getItem().getBurnTime()));
-            LightAPI.getSourceManager().removeSource(this);
-            return;
         }
+        LightAPI.deleteLight(this.getLocation(), true);
+        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+        storage.setData(String.valueOf(getItem().getBurnTime()));
+        LightAPI.getSourceManager().removeSource(this);
+        return;
     }
 
     @Override

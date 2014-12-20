@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,6 +38,7 @@ public class LightSource extends JavaPlugin {
                 fc.addDefault("EntityLight", false);
                 fc.addDefault("ItemLight", false);
                 fc.addDefault("LightSourceDamage", true);
+                fc.addDefault("Ignore-save-update-light", false);
 
                 fc.addDefault("Task-delay-ticks", 5);
                 fc.addDefault("max-iterations-per-tick", 3);
@@ -78,11 +78,12 @@ public class LightSource extends JavaPlugin {
         int index;
         for (index = LightAPI.getSourceManager().getSourceList().size() - 1; index >= 0; --index) {
             Source light = LightAPI.getSourceManager().getSourceList().get(index);
-            LightAPI.deleteLight(light.getLocation());
+            LightAPI.deleteLight(light.getLocation(), true);
             LightAPI.getSourceManager().removeSource(light);
         }
         getDB().save();
         api = null;
+        db = null;
     }
 
     public static LightSource getInstance() {
@@ -102,35 +103,57 @@ public class LightSource extends JavaPlugin {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (cmd.getName().equalsIgnoreCase("ls")) {
-                getAPI().getGUIManager().openMenu(player, getAPI().getGUIManager().getMenuFromId("mainMenu"));
+                if (player.hasPermission("ls.admin") || player.isOp()) {
+                    getAPI().getGUIManager().openMenu(player, getAPI().getGUIManager().getMenuFromId("mainMenu"));
+                } else {
+                    getAPI().log(player, "Nope :)");
+                }
             } else if (cmd.getName().equalsIgnoreCase("light")) {
-                if (args.length == 0) {
-                    // Menus.openLightCreatorMenu(player);
-                } else if (args.length == 1) {
-                    if (args[0].equalsIgnoreCase("create")) {
-                        player.sendMessage(ChatColor.RED + "Need more arguments!");
-                        player.sendMessage(ChatColor.RED + "/light create [level 1-15]");
-                    } else if (args[0].equalsIgnoreCase("delete")) {
-                        // LightAPI.deleteLightSource(player.getLocation());
-                        player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
-                    }
-                } else if (args.length == 2) {
-                    if (args[0].equalsIgnoreCase("create")) {
-                        int lightlevel = Integer.parseInt(args[1]);
-                        if (lightlevel <= 15) {
-                            // LightAPI.createLightSource(player.getLocation(),
-                            // lightlevel, true);
-                            player.sendMessage(ChatColor.GREEN + "Light successfully created!");
-                        } else {
-                            player.sendMessage(ChatColor.RED + "Maximum 15 level!");
-                            player.sendMessage(ChatColor.RED + "/light create [level 1-15]");
+                if (player.hasPermission("ls.admin") || player.isOp()) {
+                    if (args.length == 0) {
+                        // Menus.openLightCreatorMenu(player);
+                        getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                    } else if (args.length == 1) {
+                        if (args[0].equalsIgnoreCase("create")) {
+                            // player.sendMessage(ChatColor.RED +
+                            // "Need more arguments!");
+                            // player.sendMessage(ChatColor.RED +
+                            // "/light create [level 1-15]");
+                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                        } else if (args[0].equalsIgnoreCase("delete")) {
+                            // LightAPI.deleteLightSource(player.getLocation());
+                            // player.sendMessage(ChatColor.GREEN +
+                            // "Light successfully deleted!");
+                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
                         }
-                    } else if (args[0].equalsIgnoreCase("delete")) {
-                        // LightAPI.deleteLightSource(player.getLocation());
-                        player.sendMessage(ChatColor.GREEN + "Light successfully deleted!");
+                    } else if (args.length == 2) {
+                        if (args[0].equalsIgnoreCase("create")) {
+                            int lightlevel = Integer.parseInt(args[1]);
+                            if (lightlevel <= 15) {
+                                // LightAPI.createLightSource(player.getLocation(),
+                                // lightlevel, true);
+                                // player.sendMessage(ChatColor.GREEN +
+                                // "Light successfully created!");
+                                getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                            } else {
+                                // player.sendMessage(ChatColor.RED +
+                                // "Maximum 15 level!");
+                                // player.sendMessage(ChatColor.RED +
+                                // "/light create [level 1-15]");
+                                getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                            }
+                        } else if (args[0].equalsIgnoreCase("delete")) {
+                            // LightAPI.deleteLightSource(player.getLocation());
+                            // player.sendMessage(ChatColor.GREEN +
+                            // "Light successfully deleted!");
+                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                        }
+                    } else {
+                        // Menus.openLightCreatorMenu(player);
+                        getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
                     }
                 } else {
-                    // Menus.openLightCreatorMenu(player);
+                    getAPI().log(player, "Nope :)");
                 }
             }
         }

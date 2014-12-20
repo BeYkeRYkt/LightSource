@@ -40,6 +40,7 @@ import com.google.common.io.InputSupplier;
 import com.google.common.io.OutputSupplier;
 import com.google.common.primitives.Primitives;
 
+@SuppressWarnings("deprecation")
 public class NbtFactory {
 
     // Convert between NBT id and the equivalent class in java

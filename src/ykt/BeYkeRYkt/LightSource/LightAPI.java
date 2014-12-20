@@ -39,8 +39,11 @@ public class LightAPI {
         nmsHandler.createLight(location, lightlevel);
     }
 
-    public static void deleteLight(Location location) {
+    public static void deleteLight(Location location, boolean needUpdateChunk) {
         nmsHandler.deleteLight(location);
+        if (needUpdateChunk) {
+            updateChunk(new ChunkCoords(location.getChunk()));
+        }
     }
 
     public static void updateChunk(ChunkCoords chunk) {

@@ -21,17 +21,20 @@ public class MainMenu extends Menu {
         Icon itemLight = LightSource.getAPI().getGUIManager().getIconFromId("itemLight");
         addItem(itemLight, 3);
 
+        Icon ignore = LightSource.getAPI().getGUIManager().getIconFromId("ignoreSaveUpdate");
+        addItem(ignore, 4);
+
         Icon lightDamage = LightSource.getAPI().getGUIManager().getIconFromId("lightsourcedamage");
-        addItem(lightDamage, 4);
+        addItem(lightDamage, 5);
 
         Icon items = LightSource.getAPI().getGUIManager().getIconFromId("items");
-        addItem(items, 5);
+        addItem(items, 6);
 
         Icon worlds = LightSource.getAPI().getGUIManager().getIconFromId("worlds");
-        addItem(worlds, 6);
+        addItem(worlds, 7);
 
         Icon about = LightSource.getAPI().getGUIManager().getIconFromId("about");
-        addItem(about, 9);
+        addItem(about, 18);
     }
 
     @Override

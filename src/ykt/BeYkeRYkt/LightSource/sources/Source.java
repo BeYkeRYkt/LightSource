@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.items.LightItem;
 
 public abstract class Source {
@@ -83,13 +84,17 @@ public abstract class Source {
 
     public void updateLight(Location newLocation) {
         // for save :)
-        // if (newLocation.getBlockX() != getLocation().getBlockX() ||
-        // newLocation.getBlockY() != getLocation().getBlockY() ||
-        // newLocation.getBlockZ() != getLocation().getBlockZ()) {
-        LightAPI.deleteLight(getLocation());
-        setLocation(newLocation);
-        LightAPI.createLight(getLocation(), item.getLevelLight());
-        // }
+        if (!LightSource.getInstance().getDB().isIgnoreSaveUpdate()) {
+            if (newLocation.getBlockX() != getLocation().getBlockX() || newLocation.getBlockY() != getLocation().getBlockY() || newLocation.getBlockZ() != getLocation().getBlockZ()) {
+                LightAPI.deleteLight(getLocation(), false);
+                setLocation(newLocation);
+                LightAPI.createLight(getLocation(), item.getLevelLight());
+            }
+        } else {
+            LightAPI.deleteLight(getLocation(), false);
+            setLocation(newLocation);
+            LightAPI.createLight(getLocation(), item.getLevelLight());
+        }
     }
 
     public abstract void doTick();
@@ -159,7 +164,7 @@ public abstract class Source {
                 this.getItem().setLevelLight(0);
                 this.getLocation().getWorld().playSound(this.getLocation(), Sound.FIZZ, 1, 1);
                 this.getItem().setEnd();
-                LightAPI.deleteLight(this.getLocation());
+                LightAPI.deleteLight(this.getLocation(), false);
                 removeItem();
             }
         }

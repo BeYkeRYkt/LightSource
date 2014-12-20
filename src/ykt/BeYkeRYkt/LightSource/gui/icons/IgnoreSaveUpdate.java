@@ -16,9 +16,12 @@ public class IgnoreSaveUpdate extends Icon {
         super("ignoreSaveUpdate", Material.REDSTONE);
 
         setName(ChatColor.GOLD + "Ignore save update light");
-        getLore().add(ChatColor.WHITE + "Ignoring the checking location for the update.");
-        getLore().add(ChatColor.GREEN + "If the setting is off: Chunk will be updated if the source moves.");
-        getLore().add(ChatColor.RED + "If the setting is enabled: Chunk will be constantly updated.");
+        getLore().add(ChatColor.WHITE + "Ignoring the checking location");
+        getLore().add(ChatColor.WHITE + "for the update.");
+        getLore().add(ChatColor.GREEN + "If the setting is off:");
+        getLore().add(ChatColor.GREEN + "Chunk will be updated if the source moves.");
+        getLore().add(ChatColor.RED + "If the setting is enabled:");
+        getLore().add(ChatColor.RED + "Chunk will be constantly updated.");
         getLore().add(ChatColor.GOLD + "Status: ");
         getLore().add(String.valueOf(LightSource.getInstance().getDB().isIgnoreSaveUpdate()));
     }
@@ -30,7 +33,7 @@ public class IgnoreSaveUpdate extends Icon {
         } else {
             LightSource.getInstance().getDB().setIgnoreSaveUpdate(false);
         }
-        getLore().set(4, String.valueOf(LightSource.getInstance().getDB().isIgnoreSaveUpdate()));
+        getLore().set(7, String.valueOf(LightSource.getInstance().getDB().isIgnoreSaveUpdate()));
 
         Menu menu1 = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
         Player player = (Player) event.getWhoClicked();

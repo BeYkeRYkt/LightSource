@@ -16,7 +16,8 @@ public class LightSourceDamage extends Icon {
         super("lightsourcedamage", Material.LAVA_BUCKET);
 
         setName(ChatColor.RED + "Fire Damage");
-        getLore().add(ChatColor.WHITE + "Enabling and disabling burning enemy during battle.");
+        getLore().add(ChatColor.WHITE + "Enabling and disabling burning");
+        getLore().add(ChatColor.WHITE + "enemy during battle.");
         getLore().add(ChatColor.GOLD + "Status: ");
         getLore().add(String.valueOf(LightSource.getInstance().getDB().isLightSourceDamage()));
     }
@@ -29,7 +30,7 @@ public class LightSourceDamage extends Icon {
             LightSource.getInstance().getDB().setLightSourceDamage(false);
         }
         // replace
-        getLore().set(2, String.valueOf(LightSource.getInstance().getDB().isLightSourceDamage()));
+        getLore().set(3, String.valueOf(LightSource.getInstance().getDB().isLightSourceDamage()));
 
         Menu menu1 = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
         Player player = (Player) event.getWhoClicked();

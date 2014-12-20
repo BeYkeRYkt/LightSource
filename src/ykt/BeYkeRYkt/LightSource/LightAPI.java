@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import ykt.BeYkeRYkt.LightSource.gui.GUIManager;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler;
+import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_7_10;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_8;
 import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
 import ykt.BeYkeRYkt.LightSource.sources.SourceManager;
@@ -21,11 +22,25 @@ public class LightAPI {
     private static NMSHandler nmsHandler;
 
     public LightAPI() {
-        LightAPI.nmsHandler = new NMSHandler_v_1_8(); // Only 1.8 :)
+        String version = Bukkit.getBukkitVersion();
+        version = version.substring(0, 6);
+        version = version.replaceAll("-", "");
 
-        manager = new ItemManager();
-        gui = new GUIManager();
-        source = new SourceManager(LightSource.getInstance());
+        if (version.startsWith("1.7.10")) {
+            nmsHandler = new NMSHandler_v_1_7_10();
+            log(BUKKIT_SENDER, ChatColor.GREEN + "Enabling NMS Handler for Minecraft 1.7.10");
+        } else if (version.startsWith("1.8")) {
+            nmsHandler = new NMSHandler_v_1_8();
+            log(BUKKIT_SENDER, ChatColor.GREEN + "Enabling NMS Handler for Minecraft 1.8");
+        } else {
+            log(BUKKIT_SENDER, ChatColor.RED + "Sorry. Your MC server not supported this plugin.");
+            Bukkit.getPluginManager().disablePlugin(LightSource.getInstance());
+        }
+        if (getNMSHandler() != null) {
+            manager = new ItemManager();
+            gui = new GUIManager();
+            source = new SourceManager(LightSource.getInstance());
+        }
     }
 
     public void init() {

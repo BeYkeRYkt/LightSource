@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -58,14 +59,16 @@ public class LightSource extends JavaPlugin {
         createExampleItems();
         getAPI().init();
 
-        Bukkit.getPluginManager().registerEvents(new LightListener(), this);
+        if (getAPI().getNMSHandler() != null) {
+            Bukkit.getPluginManager().registerEvents(new LightListener(), this);
 
-        // mcstats
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
+            // mcstats
+            try {
+                Metrics metrics = new Metrics(this);
+                metrics.start();
+            } catch (IOException e) {
+                // Failed to submit the stats :-(
+            }
         }
     }
 
@@ -112,41 +115,30 @@ public class LightSource extends JavaPlugin {
                 if (player.hasPermission("ls.admin") || player.isOp()) {
                     if (args.length == 0) {
                         // Menus.openLightCreatorMenu(player);
-                        getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                        getAPI().log(player, "This feature is not currently running ( Open GUI creator menu). Wait for the next version. Maybe 2.0.3 :)");
                     } else if (args.length == 1) {
                         if (args[0].equalsIgnoreCase("create")) {
-                            // player.sendMessage(ChatColor.RED +
-                            // "Need more arguments!");
-                            // player.sendMessage(ChatColor.RED +
-                            // "/light create [level 1-15]");
-                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                            getAPI().log(player, ChatColor.RED + "Need more arguments!");
+                            getAPI().log(player, ChatColor.RED + "/light create [level 1-15]");
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            // LightAPI.deleteLightSource(player.getLocation());
-                            // player.sendMessage(ChatColor.GREEN +
-                            // "Light successfully deleted!");
-                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                            LightAPI.deleteLight(player.getLocation(), true);
+                            getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
                         }
                     } else if (args.length == 2) {
                         if (args[0].equalsIgnoreCase("create")) {
                             int lightlevel = Integer.parseInt(args[1]);
                             if (lightlevel <= 15) {
-                                // LightAPI.createLightSource(player.getLocation(),
-                                // lightlevel, true);
-                                // player.sendMessage(ChatColor.GREEN +
-                                // "Light successfully created!");
-                                getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                                LightAPI.createLight(player.getLocation(), lightlevel);
+                                player.getLocation().getChunk().unload(true);
+                                player.getLocation().getChunk().load(true);
+                                getAPI().log(player, ChatColor.GREEN + "Light successfully created!");
                             } else {
-                                // player.sendMessage(ChatColor.RED +
-                                // "Maximum 15 level!");
-                                // player.sendMessage(ChatColor.RED +
-                                // "/light create [level 1-15]");
-                                getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                                getAPI().log(player, ChatColor.RED + "Maximum 15 level!");
+                                getAPI().log(player, ChatColor.RED + "/light create [level 1-15]");
                             }
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            // LightAPI.deleteLightSource(player.getLocation());
-                            // player.sendMessage(ChatColor.GREEN +
-                            // "Light successfully deleted!");
-                            getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                            LightAPI.deleteLight(player.getLocation(), true);
+                            getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
                         }
                     } else {
                         // Menus.openLightCreatorMenu(player);

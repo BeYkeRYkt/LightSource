@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,8 +24,7 @@ public abstract class Icon {
     }
 
     public Icon(String id, ItemStack item) {
-        this.id = id;
-        this.material = item.getType();
+        this(id, item.getType());
         if (item.getItemMeta().hasDisplayName()) {
             this.name = item.getItemMeta().getDisplayName();
         }
@@ -92,4 +92,7 @@ public abstract class Icon {
     }
 
     public abstract void onItemClick(InventoryClickEvent event);
+
+    public void onMenuOpen(Menu menu, Player player) {
+    }
 }

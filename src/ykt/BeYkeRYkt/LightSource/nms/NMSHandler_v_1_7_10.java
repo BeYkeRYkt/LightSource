@@ -92,7 +92,7 @@ public class NMSHandler_v_1_7_10 implements NMSHandler {
                     }
                 }
             }
-            map.flush();
+            // map.flush(); - it's work for WorldServer :D
         } catch (Exception e) {
             e.printStackTrace();
         }

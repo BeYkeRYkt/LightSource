@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
+import ykt.BeYkeRYkt.LightSource.editor.EditorManager;
 import ykt.BeYkeRYkt.LightSource.gui.GUIManager;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler;
@@ -20,6 +21,7 @@ public class LightAPI {
     private static SourceManager source;
     public static CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
     private static NMSHandler nmsHandler;
+    private static EditorManager editor;
 
     public LightAPI() {
         String version = Bukkit.getBukkitVersion();
@@ -38,15 +40,17 @@ public class LightAPI {
         }
         if (getNMSHandler() != null) {
             manager = new ItemManager();
-            gui = new GUIManager();
             source = new SourceManager(LightSource.getInstance());
+            gui = new GUIManager();
+            editor = new EditorManager();
         }
     }
 
     public void init() {
         manager.loadItems();
-        gui.load();
         source.init();
+        editor.init();
+        gui.load();
         nmsHandler.initWorlds();
     }
 
@@ -86,5 +90,9 @@ public class LightAPI {
      */
     public NMSHandler getNMSHandler() {
         return nmsHandler;
+    }
+
+    public static EditorManager getEditorManager() {
+        return editor;
     }
 }

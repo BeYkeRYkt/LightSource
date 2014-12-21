@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
 
 public class Items extends Icon {
@@ -14,17 +15,14 @@ public class Items extends Icon {
         super("items", Material.CHEST);
         setName(ChatColor.GREEN + "Items");
 
-        getLore().add(ChatColor.WHITE + "Comming soon...");
+        getLore().add(ChatColor.WHITE + "Online item editor!");
     }
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        // Item Editor 3000
-        // Edit: Create, Delete light source...
-        // End.
         Player player = (Player) event.getWhoClicked();
-        // LightSource.getAPI().getGUIManager().openMenu(player,
-        // LightSource.getAPI().getGUIManager().getMenuFromId("itemsMenu"));
-        player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1, 1);
+        player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
+
+        LightSource.getAPI().getGUIManager().openMenu(player, LightSource.getAPI().getGUIManager().getMenuFromId("page_0"));
     }
 }

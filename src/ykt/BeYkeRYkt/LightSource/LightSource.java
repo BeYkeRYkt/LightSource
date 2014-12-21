@@ -15,7 +15,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ykt.BeYkeRYkt.LightSource.gui.Menu;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
 import ykt.BeYkeRYkt.LightSource.sources.Source;
 
 public class LightSource extends JavaPlugin {
@@ -41,8 +43,8 @@ public class LightSource extends JavaPlugin {
                 fc.addDefault("LightSourceDamage", true);
                 fc.addDefault("Ignore-save-update-light", false);
 
-                fc.addDefault("Task-delay-ticks", 5);
-                fc.addDefault("max-iterations-per-tick", 3);
+                fc.addDefault("Task-delay-ticks", 10);
+                fc.addDefault("max-iterations-per-tick", 6);
                 fc.addDefault("Damage-fire-ticks-sec", 5);
 
                 List<World> worlds = getServer().getWorlds();
@@ -114,8 +116,8 @@ public class LightSource extends JavaPlugin {
             } else if (cmd.getName().equalsIgnoreCase("light")) {
                 if (player.hasPermission("ls.admin") || player.isOp()) {
                     if (args.length == 0) {
-                        // Menus.openLightCreatorMenu(player);
-                        getAPI().log(player, "This feature is not currently running ( Open GUI creator menu). Wait for the next version. Maybe 2.0.3 :)");
+                        Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
+                        getAPI().getGUIManager().openMenu(player, menu);
                     } else if (args.length == 1) {
                         if (args[0].equalsIgnoreCase("create")) {
                             getAPI().log(player, ChatColor.RED + "Need more arguments!");
@@ -129,6 +131,7 @@ public class LightSource extends JavaPlugin {
                             int lightlevel = Integer.parseInt(args[1]);
                             if (lightlevel <= 15) {
                                 LightAPI.createLight(player.getLocation(), lightlevel);
+                                LightAPI.updateChunk(new ChunkCoords(player.getLocation().getChunk()));
                                 player.getLocation().getChunk().unload(true);
                                 player.getLocation().getChunk().load(true);
                                 getAPI().log(player, ChatColor.GREEN + "Light successfully created!");
@@ -141,8 +144,8 @@ public class LightSource extends JavaPlugin {
                             getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
                         }
                     } else {
-                        // Menus.openLightCreatorMenu(player);
-                        getAPI().log(player, "This feature is not currently running. Wait for the next version. Maybe 2.0.2 :)");
+                        Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
+                        getAPI().getGUIManager().openMenu(player, menu);
                     }
                 } else {
                     getAPI().log(player, "Nope :)");

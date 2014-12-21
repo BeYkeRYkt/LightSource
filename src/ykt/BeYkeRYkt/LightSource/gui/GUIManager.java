@@ -9,19 +9,33 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.gui.icons.About;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Back;
+import ykt.BeYkeRYkt.LightSource.gui.icons.Back_Pages;
+import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
+import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
+import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeName;
 import ykt.BeYkeRYkt.LightSource.gui.icons.EntityLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.IgnoreSaveUpdate;
+import ykt.BeYkeRYkt.LightSource.gui.icons.ItemIcon;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ItemLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Items;
+import ykt.BeYkeRYkt.LightSource.gui.icons.LC_Create;
+import ykt.BeYkeRYkt.LightSource.gui.icons.LC_Delete;
+import ykt.BeYkeRYkt.LightSource.gui.icons.LC_LightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.LightSourceDamage;
 import ykt.BeYkeRYkt.LightSource.gui.icons.PlayerLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.World_Name;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Worlds;
+import ykt.BeYkeRYkt.LightSource.gui.menus.EditorMenu;
+import ykt.BeYkeRYkt.LightSource.gui.menus.LightCreatorCreate;
+import ykt.BeYkeRYkt.LightSource.gui.menus.LightCreatorMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.MainMenu;
+import ykt.BeYkeRYkt.LightSource.gui.menus.PageMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.WorldsMenu;
+import ykt.BeYkeRYkt.LightSource.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.items.LightItem;
 
 /**
  * 
@@ -38,26 +52,53 @@ public class GUIManager {
     public void load() {
         // Icons
         // getGUIManager().registerIcon(new NullLOL());
-        LightSource.getAPI().getGUIManager().registerIcon(new About());
-        LightSource.getAPI().getGUIManager().registerIcon(new Back());
-        LightSource.getAPI().getGUIManager().registerIcon(new EntityLight());
-        LightSource.getAPI().getGUIManager().registerIcon(new ItemLight());
-        LightSource.getAPI().getGUIManager().registerIcon(new Items());
-        LightSource.getAPI().getGUIManager().registerIcon(new PlayerLight());
-        LightSource.getAPI().getGUIManager().registerIcon(new Worlds());
-        LightSource.getAPI().getGUIManager().registerIcon(new LightSourceDamage());
-        LightSource.getAPI().getGUIManager().registerIcon(new IgnoreSaveUpdate());
+        registerIcon(new About());
+        registerIcon(new Back());
+        registerIcon(new EntityLight());
+        registerIcon(new ItemLight());
+        registerIcon(new Items());
+        registerIcon(new PlayerLight());
+        registerIcon(new Worlds());
+        registerIcon(new LightSourceDamage());
+        registerIcon(new IgnoreSaveUpdate());
+        registerIcon(new LC_Create());
+        registerIcon(new LC_Delete());
+        registerIcon(new ChangeName());
+        registerIcon(new ChangeBurnTime());
+        registerIcon(new ChangeLightLevel());
+        registerIcon(new Back_Pages());
 
         // init worlds
         // also: MONSTERKILL!
         for (World world : Bukkit.getWorlds()) {
             WorldBlockTransform wbt = new WorldBlockTransform(world);
-            LightSource.getAPI().getGUIManager().registerIcon(new World_Name(wbt));
+            registerIcon(new World_Name(wbt));
+        }
+
+        // init lightlevels :D
+        for (int i = 0; i < 15; i++) {
+            LC_LightLevel light = new LC_LightLevel(i + 1);
+            registerIcon(light);
+        }
+
+        // 2.0.3: init more lightitems :D
+        for (int i = 0; i < ItemManager.getList().size(); i++) {
+            LightItem item = ItemManager.getList().get(i);
+            ItemIcon icon = new ItemIcon(item);
+            registerIcon(icon);
         }
 
         // Menus
-        LightSource.getAPI().getGUIManager().registerMenu(new MainMenu());
-        LightSource.getAPI().getGUIManager().registerMenu(new WorldsMenu());
+        registerMenu(new MainMenu());
+        registerMenu(new WorldsMenu());
+        registerMenu(new LightCreatorMenu());
+        registerMenu(new LightCreatorCreate());
+        registerMenu(new EditorMenu());
+
+        // 2.0.3: init large pages :D
+        for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {
+            registerMenu(new PageMenu(i));
+        }
     }
 
     public Inventory openMenu(Player player, Menu menu) {
@@ -66,6 +107,7 @@ public class GUIManager {
         if (!menu.getIcons().isEmpty()) {
             for (Icon icon : menu.getIcons().keySet()) {
                 int num = menu.getIcons().get(icon);
+                icon.onMenuOpen(menu, player);
                 ItemStack item = icon.getItemStack();
                 inv.setItem(num, item);
             }

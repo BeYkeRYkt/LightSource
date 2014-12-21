@@ -15,6 +15,7 @@ import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
+import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
 import ykt.BeYkeRYkt.LightSource.sources.EntitySource;
 import ykt.BeYkeRYkt.LightSource.sources.ItemSource;
 import ykt.BeYkeRYkt.LightSource.sources.PlayerSource;
@@ -29,11 +30,13 @@ public class SendChunkTask implements Runnable {
     private SourceManager manager;
 
     private List<Source> sources;
+    private List<ChunkCoords> chunks;
 
     public SendChunkTask(SourceManager sourceManager) {
         this.manager = sourceManager;
         this.sources = new ArrayList<Source>(this.manager.getSourceList());
         this.maxIterationsPerTick = LightSource.getInstance().getDB().getMaxIterationsPerTick();
+        this.chunks = new ArrayList<ChunkCoords>();
     }
 
     public List<Source> getSources() {
@@ -49,8 +52,18 @@ public class SendChunkTask implements Runnable {
             Source source = sources.get(0);
             source.doBurnTick();
             source.doTick();
-            LightAPI.updateChunk(source.getChunk());
+            // LightAPI.updateChunk(source.getChunk());
+
+            if (!chunks.contains(source.getChunk())) {
+                chunks.add(source.getChunk());
+            }
             sources.remove(0);
+        }
+
+        if (!chunks.isEmpty()) {
+            ChunkCoords chunk = chunks.get(0);
+            LightAPI.updateChunk(chunk);
+            chunks.remove(0);
         }
 
         if (sources.isEmpty()) {

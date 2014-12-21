@@ -13,7 +13,7 @@ public class LSConfig {
          * entity light: false
          * item light: false
          * Task delay: 20
-         * max-iterations-per-tick: 2
+         * max-iterations-per-tick: 4
          * ignore-save-update-light: false
          */
         SAVE,
@@ -23,7 +23,7 @@ public class LSConfig {
          * entity light: true
          * item light: true
          * Task delay: 4
-         * max-iterations-per-tick: 5
+         * max-iterations-per-tick: 10
          * ignore-save-update-light: true
          */
         MAXIMUM,
@@ -32,8 +32,8 @@ public class LSConfig {
          * player light : true
          * entity light: false
          * item light: false
-         * Task delay: 15
-         * max-iterations-per-tick: 3
+         * Task delay: 10
+         * max-iterations-per-tick: 6
          * ignore-save-update-light: false
          */
         USER;
@@ -66,14 +66,14 @@ public class LSConfig {
             setEntityLight(false);
             setItemLight(false);
             setTaskTicks(20);
-            setMaxIterationsPerTick(2);
+            setMaxIterationsPerTick(4);
             setIgnoreSaveUpdate(false);
         } else if (strategyUpdate == UpdateMode.MAXIMUM) {
             setPlayerLight(true);
             setEntityLight(true);
             setItemLight(true);
             setTaskTicks(4);
-            setMaxIterationsPerTick(5);
+            setMaxIterationsPerTick(10);
             setIgnoreSaveUpdate(true);
         } else {
             setPlayerLight(plugin.getConfig().getBoolean("PlayerLight"));
@@ -90,17 +90,19 @@ public class LSConfig {
     }
 
     public void save() {
-        FileConfiguration fc = plugin.getConfig();
-        fc.set("PlayerLight", isPlayerLight());
-        fc.set("EntityLight", isEntityLight());
-        fc.set("ItemLight", isItemLight());
-        fc.set("LightSourceDamage", isLightSourceDamage());
-        fc.set("Ignore-save-update-light", isIgnoreSaveUpdate());
-        // fc.set("Enable-updater", isUpdater());
-        fc.set("Task-delay-ticks", getTaskTicks());
-        fc.set("max-iterations-per-tick", getMaxIterationsPerTick());
-        fc.set("Damage-fire-ticks-sec", getDamageFire());
-        plugin.saveConfig();
+        if (strategyUpdate == UpdateMode.USER) {
+            FileConfiguration fc = plugin.getConfig();
+            fc.set("PlayerLight", isPlayerLight());
+            fc.set("EntityLight", isEntityLight());
+            fc.set("ItemLight", isItemLight());
+            fc.set("LightSourceDamage", isLightSourceDamage());
+            fc.set("Ignore-save-update-light", isIgnoreSaveUpdate());
+            // fc.set("Enable-updater", isUpdater());
+            fc.set("Task-delay-ticks", getTaskTicks());
+            fc.set("max-iterations-per-tick", getMaxIterationsPerTick());
+            fc.set("Damage-fire-ticks-sec", getDamageFire());
+            plugin.saveConfig();
+        }
     }
 
     public UpdateMode getMode() {

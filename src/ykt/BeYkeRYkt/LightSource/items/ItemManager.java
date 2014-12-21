@@ -89,10 +89,15 @@ public class ItemManager {
     }
 
     public static void removeLightSource(LightItem item) {
-        if (list.contains(item)) {
-            list.remove(item);
-        } else {
-            plugin.getLogger().log(Level.WARNING, "This source is not found.");
+        // if (list.contains(item)) {
+        // list.remove(item);
+        // } else {
+        // plugin.getLogger().log(Level.WARNING, "This source is not found.");
+        // }
+        for (LightItem items : getList()) {
+            if (items.getId().equals(item.getId())) {
+                list.remove(items);
+            }
         }
     }
 

@@ -146,12 +146,21 @@ public class NMSHandler_v_1_8 implements NMSHandler {
             @Override
             // markBlockForUpdate
             public void a(BlockPosition position) {
-                map.flagDirty(position);
+                // World method: notify();
+                // map.flagDirty(position); - duplicate in WorldManager
             }
 
+            /**
+             * On the client, re-renders this block. On the server, does
+             * nothing. Used for lighting updates.
+             * 
+             * @author MCP-1.7.10
+             *         BeYkeRYkt: Bingo! :D
+             */
             @Override
             // markBlockForRenderUpdate
             public void b(BlockPosition position) {
+                // World method: n()
                 map.flagDirty(position);
             }
 

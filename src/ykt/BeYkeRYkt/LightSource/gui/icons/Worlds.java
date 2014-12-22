@@ -2,6 +2,7 @@ package ykt.BeYkeRYkt.LightSource.gui.icons;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -21,5 +22,6 @@ public class Worlds extends Icon {
         Player player = (Player) event.getWhoClicked();
         Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("worldsMenu");
         LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        player.playSound(player.getLocation(), Sound.SHEEP_IDLE, 1, 1);
     }
 }

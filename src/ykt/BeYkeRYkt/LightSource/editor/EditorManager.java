@@ -3,6 +3,9 @@ package ykt.BeYkeRYkt.LightSource.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.file.FileConfiguration;
+
+import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.items.LightItem;
 
@@ -50,6 +53,15 @@ public class EditorManager {
         return null;
     }
 
+    public boolean isEditor(String name) {
+        for (PlayerEditor editor : editors) {
+            if (editor.getBukkitPlayer().getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public synchronized boolean removeEditor(PlayerEditor editor) {
         if (!editors.isEmpty()) {
             for (PlayerEditor i : editors) {
@@ -69,5 +81,21 @@ public class EditorManager {
      */
     public List<LightItem> getCachedItemsList() {
         return cachedList;
+    }
+
+    public void save() {
+        if (!editors.isEmpty()) {
+            for (PlayerEditor editor : editors) {
+                editor.getBukkitPlayer().closeInventory();
+            }
+        }
+        editors.clear();
+        FileConfiguration config = LightAPI.getItemManager().getConfig();
+        for (LightItem item : ItemManager.getList()) {
+            config.set(item.getId() + ".name", item.getName());
+            config.set(item.getId() + ".lightlevel", item.getMaxLevelLight());
+            config.set(item.getId() + ".burnTime", item.getMaxBurnTime());
+        }
+        LightAPI.getItemManager().saveConfig();
     }
 }

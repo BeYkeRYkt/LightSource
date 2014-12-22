@@ -31,7 +31,7 @@ public class ItemSource extends Source {
             }
         }
         LightAPI.deleteLight(this.getLocation(), true);
-        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+        AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.TIME_ID);
         storage.setData(String.valueOf(getItem().getBurnTime()));
         LightAPI.getSourceManager().removeSource(this);
         return;

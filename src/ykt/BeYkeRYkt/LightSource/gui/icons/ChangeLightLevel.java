@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
 import ykt.BeYkeRYkt.LightSource.gui.Menu;
@@ -22,12 +23,18 @@ public class ChangeLightLevel extends Icon {
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        LightSource.getAPI().log(player, "Enter new level 1 - 15 (Chat)");
+
+        PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        editor.setStage(3);
+        player.closeInventory();
     }
 
     @Override
     public void onMenuOpen(Menu menu, Player player) {
         PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
-        getLore().set(1, ChatColor.WHITE + "Current level: " + ChatColor.GREEN + editor.getItem().getLevelLight() + ChatColor.WHITE + " / 15");
+        getLore().set(1, ChatColor.WHITE + "Current level: " + ChatColor.GREEN + editor.getItem().getMaxLevelLight() + ChatColor.WHITE + " / 15");
     }
 
 }

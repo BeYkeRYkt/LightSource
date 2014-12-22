@@ -14,13 +14,23 @@ public class PageMenu extends Menu {
     public PageMenu(int page) {
         super("page_" + page, "Page " + (page + 1), 54);
 
-        for (int i = 0; i < 47; i++) {
+        for (int i = 0; i < 45; i++) {
             if (!LightAPI.getEditorManager().getCachedItemsList().isEmpty()) {
                 LightItem item = LightAPI.getEditorManager().getCachedItemsList().get(0);
                 Icon icon = LightSource.getAPI().getGUIManager().getIconFromId("item_" + item.getId());
                 addItem(icon, i + 1);
                 LightAPI.getEditorManager().getCachedItemsList().remove(0);
             }
+        }
+
+        if (LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page - 1)) != null) {
+            Icon previous = LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page - 1));
+            addItem(previous, 52);
+        }
+
+        if (LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page + 1)) != null) {
+            Icon next = LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page + 1));
+            addItem(next, 53);
         }
 
         Icon back = LightSource.getAPI().getGUIManager().getIconFromId("back");

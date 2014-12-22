@@ -23,13 +23,13 @@ public class ItemIcon extends Icon {
         getLore().add(ChatColor.GOLD + "Settings: ");
         getLore().add(ChatColor.WHITE + "Name: " + ChatColor.GREEN + item.getName());
         getLore().add(ChatColor.WHITE + "Material: " + ChatColor.GREEN + item.getMaterial());
-        getLore().add(ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + item.getLevelLight());
+        getLore().add(ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + item.getMaxLevelLight());
         getLore().add(ChatColor.WHITE + "BurnTime: " + ChatColor.YELLOW + item.getMaxBurnTime());
     }
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        if (LightAPI.getEditorManager().getEditor(event.getWhoClicked().getName()) == null) {
+        if (!LightAPI.getEditorManager().isEditor(event.getWhoClicked().getName())) {
             Player player = (Player) event.getWhoClicked();
             PlayerEditor editor = new PlayerEditor(player.getName(), item);
             LightAPI.getEditorManager().addEditor(editor);
@@ -49,7 +49,7 @@ public class ItemIcon extends Icon {
         }
         getLore().set(1, ChatColor.WHITE + "Name: " + ChatColor.GREEN + refresh.getName());
         getLore().set(2, ChatColor.WHITE + "Material: " + ChatColor.GREEN + refresh.getMaterial());
-        getLore().set(3, ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + refresh.getLevelLight());
+        getLore().set(3, ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + refresh.getMaxLevelLight());
         getLore().set(4, ChatColor.WHITE + "BurnTime: " + ChatColor.YELLOW + refresh.getMaxBurnTime());
     }
 }

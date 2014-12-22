@@ -23,7 +23,7 @@ public class ItemManager {
     private String name = "Items";
 
     // GENERATE YOUR OWN ID! GO TO uuidgenerator.net
-    public static final UUID ITEM_ID = UUID.fromString("ec44b607-0d5d-472d-a84c-618bdd0230e9");
+    public static final UUID TIME_ID = UUID.fromString("ec44b607-0d5d-472d-a84c-618bdd0230e9");
 
     public void loadItems() {
         for (String str : getConfig().getKeys(false)) {

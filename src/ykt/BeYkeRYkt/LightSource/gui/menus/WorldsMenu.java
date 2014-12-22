@@ -2,9 +2,7 @@ package ykt.BeYkeRYkt.LightSource.gui.menus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -29,8 +27,6 @@ public class WorldsMenu extends Menu {
 
     @Override
     public void onOpenMenu(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
-        player.playSound(player.getLocation(), Sound.SHEEP_IDLE, 1, 1);
     }
 
     @Override

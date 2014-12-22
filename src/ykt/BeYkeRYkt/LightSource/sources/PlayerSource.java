@@ -36,10 +36,7 @@ public class PlayerSource extends Source {
         }
         LightAPI.deleteLight(this.getLocation(), true);
         if (entity.getInventory().contains(getItemStack())) {
-            // LightUtils.setFuelLore(getItemStack(),
-            // getItem().getPercent());
-
-            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.ITEM_ID);
+            AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.TIME_ID);
             storage.setData(String.valueOf(getItem().getBurnTime()));
             entity.updateInventory();
         }

@@ -10,6 +10,7 @@ public class LightItem implements Cloneable {
     private String name;
     private Material material;
     private int light;
+    private int maxLight;
     private int burnTime;
     private int maxBurnTime;
 
@@ -25,6 +26,7 @@ public class LightItem implements Cloneable {
         this.burnTime = burnTime;
         this.maxBurnTime = burnTime;
         this.light = lightlevel;
+        this.maxLight = lightlevel;
     }
 
     public String getId() {
@@ -98,6 +100,19 @@ public class LightItem implements Cloneable {
     }
 
     public void burn() {
+        // checker
+        LightItem item = ItemManager.getLightItem(getId());
+
+        if (item.getMaxLevelLight() != maxLight) {
+            setMaxLevelLight(item.getMaxLevelLight());
+            setLevelLight(item.getLevelLight());
+        }
+
+        if (item.getMaxBurnTime() != getMaxBurnTime()) {
+            setMaxBurnTime(item.getMaxBurnTime());
+            setBurnTime(item.getMaxBurnTime(), false);
+        }
+
         if (burnTime > 0) {
             ++ticks;
             if (ticks == maxTicks) {
@@ -105,6 +120,14 @@ public class LightItem implements Cloneable {
                 ticks = 0; // restart
             }
         }
+    }
+
+    public int getMaxLevelLight() {
+        return maxLight;
+    }
+
+    public void setMaxLevelLight(int level) {
+        this.maxLight = level;
     }
 
     public void setEnd() {
@@ -119,4 +142,12 @@ public class LightItem implements Cloneable {
         burnTime = -1;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMaxBurnTime(int time) {
+        this.maxBurnTime = time;
+        setBurnTime(time, false);
+    }
 }

@@ -17,6 +17,7 @@ import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeName;
 import ykt.BeYkeRYkt.LightSource.gui.icons.EntityLight;
+import ykt.BeYkeRYkt.LightSource.gui.icons.GoToPage;
 import ykt.BeYkeRYkt.LightSource.gui.icons.IgnoreSaveUpdate;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ItemIcon;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ItemLight;
@@ -86,6 +87,11 @@ public class GUIManager {
             LightItem item = ItemManager.getList().get(i);
             ItemIcon icon = new ItemIcon(item);
             registerIcon(icon);
+        }
+
+        // 2.0.3: init large pages :D
+        for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {
+            registerIcon(new GoToPage(i));
         }
 
         // Menus

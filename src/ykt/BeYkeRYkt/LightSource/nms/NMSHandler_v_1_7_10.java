@@ -127,7 +127,7 @@ public class NMSHandler_v_1_7_10 implements NMSHandler {
             @Override
             // markBlockForUpdate
             public void a(int x, int y, int z) {
-                map.flagDirty(x, y, z);
+                // map.flagDirty(x, y, z); - duplicate in WorldManager
             }
 
             @Override
@@ -189,8 +189,6 @@ public class NMSHandler_v_1_7_10 implements NMSHandler {
 
             @Override
             public void b() {
-                // TODO Auto-generated method stub
-
             }
         };
     }

@@ -78,6 +78,7 @@ public class LightSource extends JavaPlugin {
     public void onDisable() {
         getAPI().getNMSHandler().unloadWorlds();
         Bukkit.getScheduler().cancelTasks(this);
+        LightAPI.getEditorManager().save();
         ItemManager.getList().clear();
         HandlerList.unregisterAll(this);
         int index;

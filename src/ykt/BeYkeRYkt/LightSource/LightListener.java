@@ -1,5 +1,6 @@
 package ykt.BeYkeRYkt.LightSource;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -11,6 +12,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -23,6 +25,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
 import ykt.BeYkeRYkt.LightSource.gui.Menu;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
@@ -34,6 +37,41 @@ import ykt.BeYkeRYkt.LightSource.sources.Source;
 import ykt.BeYkeRYkt.LightSource.sources.Source.ItemType;
 
 public class LightListener implements Listener {
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        if (LightAPI.getEditorManager().isEditor(player.getName())) {
+            PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+
+            if (editor.getStage() == 1) {// Change name
+                String message = event.getMessage();
+
+                if (message.equalsIgnoreCase("null") || message.equalsIgnoreCase("no")) {
+                    message = null;
+                }
+                editor.getItem().setName(message);
+                LightSource.getAPI().log(player, "Name changed to " + ChatColor.AQUA + message);
+            } else if (editor.getStage() == 2) {// Change burn time
+                String message = event.getMessage();
+                int time = Integer.parseInt(message);
+
+                editor.getItem().setMaxBurnTime(time);
+                LightSource.getAPI().log(player, "Burn time changed to " + ChatColor.AQUA + message + ChatColor.WHITE + " seconds!");
+            } else if (editor.getStage() == 3) {// Change light level
+                String message = event.getMessage();
+                int level = Integer.parseInt(message);
+
+                editor.getItem().setMaxLevelLight(level);
+                LightSource.getAPI().log(player, "Light level changed to " + ChatColor.AQUA + message + ChatColor.WHITE + " / 15.");
+            }
+
+            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
+            LightSource.getAPI().getGUIManager().openMenu(player, menu);
+            editor.setStage(0);
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
@@ -114,7 +152,8 @@ public class LightListener implements Listener {
 
             if (item != null && ItemManager.isLightSource(item)) {
                 LightItem lightItem = ItemManager.getLightItem(item);
-                AttributeStorage storage = AttributeStorage.newTarget(item, ItemManager.ITEM_ID);
+
+                AttributeStorage storage = AttributeStorage.newTarget(item, ItemManager.TIME_ID);
                 if (storage.getData(null) != null) {
                     int time = Integer.parseInt(storage.getData(null));
                     lightItem.setBurnTime(time, true);
@@ -127,7 +166,7 @@ public class LightListener implements Listener {
                     Source source = LightAPI.getSourceManager().getSource(player);
 
                     // Save old item nbt
-                    AttributeStorage saveStorage = AttributeStorage.newTarget(source.getItemStack(), ItemManager.ITEM_ID);
+                    AttributeStorage saveStorage = AttributeStorage.newTarget(source.getItemStack(), ItemManager.TIME_ID);
                     saveStorage.setData(String.valueOf(source.getItem().getBurnTime()));
 
                     // set new item

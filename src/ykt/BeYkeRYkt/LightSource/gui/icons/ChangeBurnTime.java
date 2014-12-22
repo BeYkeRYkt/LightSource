@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
 import ykt.BeYkeRYkt.LightSource.gui.Menu;
@@ -22,12 +23,18 @@ public class ChangeBurnTime extends Icon {
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        LightSource.getAPI().log(player, "Enter new time in seconds (Chat)");
+
+        PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        editor.setStage(2);
+        player.closeInventory();
     }
 
     @Override
     public void onMenuOpen(Menu menu, Player player) {
         PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
-        getLore().set(1, ChatColor.WHITE + "Current time: " + ChatColor.GREEN + editor.getItem().getBurnTime() + ChatColor.WHITE + " seconds");
+        getLore().set(1, ChatColor.WHITE + "Current time: " + ChatColor.GREEN + editor.getItem().getMaxBurnTime() + ChatColor.WHITE + " seconds");
     }
 
 }

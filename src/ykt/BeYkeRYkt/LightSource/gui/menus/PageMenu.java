@@ -23,6 +23,9 @@ public class PageMenu extends Menu {
             }
         }
 
+        Icon create = LightSource.getAPI().getGUIManager().getIconFromId("createItem");
+        addItem(create, 46);
+
         if (LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page - 1)) != null) {
             Icon previous = LightSource.getAPI().getGUIManager().getIconFromId("goto_page_" + (page - 1));
             addItem(previous, 52);

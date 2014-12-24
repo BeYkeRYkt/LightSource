@@ -3,6 +3,7 @@ package ykt.BeYkeRYkt.LightSource.items;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -12,7 +13,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.sources.Source;
 
 public class ItemManager {
 
@@ -89,14 +92,19 @@ public class ItemManager {
     }
 
     public static void removeLightSource(LightItem item) {
-        // if (list.contains(item)) {
-        // list.remove(item);
-        // } else {
-        // plugin.getLogger().log(Level.WARNING, "This source is not found.");
-        // }
-        for (LightItem items : getList()) {
-            if (items.getId().equals(item.getId())) {
-                list.remove(items);
+        Iterator<LightItem> it = getList().iterator();
+        while (it.hasNext()) {
+            LightItem litem = it.next();
+            if (item.getId().equals(litem.getId())) {
+                it.remove();
+            }
+        }
+
+        Iterator<Source> sources = LightAPI.getSourceManager().getSourceList().iterator();
+        while (sources.hasNext()) {
+            Source i = sources.next();
+            if (i.getItem().getId().equals(item.getId())) {
+                sources.remove();
             }
         }
     }

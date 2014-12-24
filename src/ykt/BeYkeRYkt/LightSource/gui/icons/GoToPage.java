@@ -16,7 +16,7 @@ public class GoToPage extends Icon {
     private int page;
 
     public GoToPage(int page) {
-        super("goto_page_" + page, new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getWoolData()));
+        super("goto_page_" + page, new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getData()));
         this.page = page;
         setName("Go to " + ChatColor.YELLOW + (page + 1));
     }

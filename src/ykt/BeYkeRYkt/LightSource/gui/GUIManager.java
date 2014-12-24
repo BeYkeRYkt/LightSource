@@ -16,6 +16,8 @@ import ykt.BeYkeRYkt.LightSource.gui.icons.Back_Pages;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeName;
+import ykt.BeYkeRYkt.LightSource.gui.icons.CreateItem;
+import ykt.BeYkeRYkt.LightSource.gui.icons.DeleteItem;
 import ykt.BeYkeRYkt.LightSource.gui.icons.EntityLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.GoToPage;
 import ykt.BeYkeRYkt.LightSource.gui.icons.IgnoreSaveUpdate;
@@ -68,6 +70,8 @@ public class GUIManager {
         registerIcon(new ChangeBurnTime());
         registerIcon(new ChangeLightLevel());
         registerIcon(new Back_Pages());
+        registerIcon(new CreateItem());
+        registerIcon(new DeleteItem());
 
         // init worlds
         // also: MONSTERKILL!
@@ -105,6 +109,14 @@ public class GUIManager {
         for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {
             registerMenu(new PageMenu(i));
         }
+    }
+
+    public void refresh() {
+        icons.clear();
+        menus.clear();
+
+        LightAPI.getEditorManager().refreshCachedItemsList();
+        load();
     }
 
     public Inventory openMenu(Player player, Menu menu) {

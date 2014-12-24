@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
 
-public class LightItem implements Cloneable {
+public class LightItem {
 
     private String id;
     private String name;
@@ -23,8 +23,10 @@ public class LightItem implements Cloneable {
         this.id = id;
         this.name = name;
         this.material = material;
+
         this.burnTime = burnTime;
         this.maxBurnTime = burnTime;
+
         this.light = lightlevel;
         this.maxLight = lightlevel;
     }
@@ -51,13 +53,6 @@ public class LightItem implements Cloneable {
 
     public int getBurnTime() {
         return this.burnTime;
-    }
-
-    /**
-     * @return the maxBurnTime
-     */
-    public int getMaxBurnTime() {
-        return maxBurnTime;
     }
 
     public void setBurnTime(int time, boolean updateLightLevel) {
@@ -96,14 +91,14 @@ public class LightItem implements Cloneable {
 
     @Override
     public LightItem clone() {
-        return new LightItem(id, name, material, light, burnTime);
+        return new LightItem(id, name, material, maxLight, maxBurnTime);
     }
 
     public void burn() {
         // checker
         LightItem item = ItemManager.getLightItem(getId());
 
-        if (item.getMaxLevelLight() != maxLight) {
+        if (item.getMaxLevelLight() != getMaxLevelLight()) {
             setMaxLevelLight(item.getMaxLevelLight());
             setLevelLight(item.getLevelLight());
         }
@@ -146,8 +141,11 @@ public class LightItem implements Cloneable {
         this.name = name;
     }
 
+    public int getMaxBurnTime() {
+        return maxBurnTime;
+    }
+
     public void setMaxBurnTime(int time) {
         this.maxBurnTime = time;
-        setBurnTime(time, false);
     }
 }

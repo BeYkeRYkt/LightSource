@@ -2,6 +2,7 @@ package ykt.BeYkeRYkt.LightSource;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ykt.BeYkeRYkt.LightSource.editor.PlayerCreator;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
 import ykt.BeYkeRYkt.LightSource.gui.Menu;
@@ -40,9 +42,12 @@ public class LightListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
+        if (event.isCancelled())
+            return;
         Player player = event.getPlayer();
         if (LightAPI.getEditorManager().isEditor(player.getName())) {
             PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+            event.setCancelled(true);
 
             if (editor.getStage() == 1) {// Change name
                 String message = event.getMessage();
@@ -54,22 +59,75 @@ public class LightListener implements Listener {
                 LightSource.getAPI().log(player, "Name changed to " + ChatColor.AQUA + message);
             } else if (editor.getStage() == 2) {// Change burn time
                 String message = event.getMessage();
-                int time = Integer.parseInt(message);
 
-                editor.getItem().setMaxBurnTime(time);
-                LightSource.getAPI().log(player, "Burn time changed to " + ChatColor.AQUA + message + ChatColor.WHITE + " seconds!");
+                try {
+                    int time = Integer.parseInt(message);
+                    editor.getItem().setMaxBurnTime(time);
+                    LightSource.getAPI().log(player, "Burn time changed to " + ChatColor.AQUA + time + ChatColor.WHITE + " seconds!");
+                } catch (Exception e) {
+                    LightSource.getAPI().log(player, ChatColor.RED + "Please enter numbers");
+                    return;
+                }
             } else if (editor.getStage() == 3) {// Change light level
                 String message = event.getMessage();
-                int level = Integer.parseInt(message);
 
-                editor.getItem().setMaxLevelLight(level);
-                LightSource.getAPI().log(player, "Light level changed to " + ChatColor.AQUA + message + ChatColor.WHITE + " / 15.");
+                try {
+                    int level = Integer.parseInt(message);
+                    if (level > 15) { // User, You are a crazy ?!
+                        level = 15;
+                    }
+                    editor.getItem().setMaxLevelLight(level);
+                    LightSource.getAPI().log(player, "Light level changed to " + ChatColor.AQUA + level + ChatColor.WHITE + " / 15.");
+                } catch (Exception e) {
+                    LightSource.getAPI().log(player, ChatColor.RED + "Please enter numbers");
+                    return;
+                }
             }
 
             Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
             LightSource.getAPI().getGUIManager().openMenu(player, menu);
             editor.setStage(0);
+            return;
+        }
+
+        if (LightAPI.getEditorManager().isCreator(player.getName())) {
+            PlayerCreator creator = LightAPI.getEditorManager().getCreator(player.getName());
             event.setCancelled(true);
+
+            if (creator.getStage() == 0) {// create item ID
+                String id = event.getMessage();
+                if (ItemManager.getLightItem(id) != null) {
+                    LightSource.getAPI().log(player, ChatColor.RED + "This ID is exists. try new id.");
+                    return;
+                } else {
+                    creator.setID(id);
+                    LightSource.getAPI().log(player, "Enter item material (You can see BukkitAPI documentation or use Essentials comamnd /dura).");
+                    creator.setStage(1);
+                    return;
+                }
+            } else if (creator.getStage() == 1) {// create Material
+                String material = event.getMessage().toUpperCase();
+                if (Material.getMaterial(material) != null) {
+                    creator.setMaterial(Material.getMaterial(material));
+                    creator.setStage(0);
+
+                    LightItem item = new LightItem(creator.getID(), null, Material.getMaterial(material), 15, 60);
+                    ItemManager.addLightSource(item, item.getId());
+
+                    PlayerEditor editor = new PlayerEditor(player.getName(), item);
+                    LightAPI.getEditorManager().removeCreator(creator);
+                    LightAPI.getEditorManager().addEditor(editor);
+
+                    LightSource.getAPI().log(player, ChatColor.DARK_AQUA + "Refreshing GUI Manager...");
+                    LightSource.getAPI().getGUIManager().refresh();
+                } else {
+                    LightSource.getAPI().log(player, ChatColor.RED + "Material is not found. Try again :(");
+                    return;
+                }
+            }
+            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
+            LightSource.getAPI().getGUIManager().openMenu(player, menu);
+            return;
         }
     }
 
@@ -104,7 +162,6 @@ public class LightListener implements Listener {
         if (event.isCancelled())
             return;
         ItemStack item = event.getCurrentItem();
-
         Inventory inventory = event.getInventory();
 
         if (item == null)
@@ -175,8 +232,8 @@ public class LightListener implements Listener {
                 }
             } else if (item == null || item != null && !ItemManager.isLightSource(item)) {
                 if (LightAPI.getSourceManager().getSource(player) != null) {
-                    LightAPI.deleteLight(loc, false); // because it's work for
-                                                      // Source.doTick() :)
+                    Source source = LightAPI.getSourceManager().getSource(player);
+                    LightAPI.deleteLight(source.getLocation(), true);
                 }
             }
         }

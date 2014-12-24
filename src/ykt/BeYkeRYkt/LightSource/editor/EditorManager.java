@@ -12,11 +12,14 @@ import ykt.BeYkeRYkt.LightSource.items.LightItem;
 public class EditorManager {
 
     private List<PlayerEditor> editors;
+    private List<PlayerCreator> creators;
+
     private List<LightItem> cachedList;
     private int pages;
 
     public void init() {
         this.editors = new ArrayList<PlayerEditor>();
+        this.creators = new ArrayList<PlayerCreator>();
         this.cachedList = new ArrayList<LightItem>(ItemManager.getList());
         this.pages = (cachedList.size() / 47) + 1;
     }
@@ -76,11 +79,66 @@ public class EditorManager {
         return false;
     }
 
+    public List<PlayerCreator> getCreators() {
+        return creators;
+    }
+
+    public boolean addCreator(PlayerCreator creator) {
+        if (!creators.isEmpty()) {
+            for (PlayerCreator i : creators) {
+                if (!i.equals(creator)) {
+                    creators.add(creator);
+                    return true;
+                }
+            }
+        } else {
+            creators.add(creator);
+        }
+
+        return false;
+    }
+
+    public PlayerCreator getCreator(String name) {
+        for (PlayerCreator creator : creators) {
+            if (creator.getBukkitPlayer().getName().equals(name)) {
+                return creator;
+            }
+        }
+        return null;
+    }
+
+    public boolean isCreator(String name) {
+        for (PlayerCreator creator : creators) {
+            if (creator.getBukkitPlayer().getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean removeCreator(PlayerCreator creator) {
+        if (!creators.isEmpty()) {
+            for (PlayerCreator i : creators) {
+                if (i.equals(creator)) {
+                    creators.remove(creator);
+                    return true;
+                }
+            }
+        } else {
+            creators.remove(creator);
+        }
+        return false;
+    }
+
     /**
      * @return the cachedList
      */
     public List<LightItem> getCachedItemsList() {
         return cachedList;
+    }
+
+    public void refreshCachedItemsList() {
+        this.cachedList = new ArrayList<LightItem>(ItemManager.getList());
     }
 
     public void save() {
@@ -90,9 +148,18 @@ public class EditorManager {
             }
         }
         editors.clear();
+
+        if (!creators.isEmpty()) {
+            for (PlayerCreator creator : creators) {
+                creator.getBukkitPlayer().closeInventory();
+            }
+        }
+        creators.clear();
+
         FileConfiguration config = LightAPI.getItemManager().getConfig();
         for (LightItem item : ItemManager.getList()) {
             config.set(item.getId() + ".name", item.getName());
+            config.set(item.getId() + ".material", item.getMaterial().name());
             config.set(item.getId() + ".lightlevel", item.getMaxLevelLight());
             config.set(item.getId() + ".burnTime", item.getMaxBurnTime());
         }

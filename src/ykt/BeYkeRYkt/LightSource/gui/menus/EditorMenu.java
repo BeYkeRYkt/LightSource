@@ -24,6 +24,9 @@ public class EditorMenu extends Menu {
         Icon level = LightSource.getAPI().getGUIManager().getIconFromId("editorLevel");
         addItem(level, 3);
 
+        Icon delete = LightSource.getAPI().getGUIManager().getIconFromId("deleteItem");
+        addItem(delete, 4);
+
         Icon back = LightSource.getAPI().getGUIManager().getIconFromId("back_pages");
         addItem(back, 18);
     }

@@ -38,4 +38,16 @@ public class PlayerEditor {
     public LightItem getItem() {
         return changeItem;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        } else if (!(other instanceof PlayerEditor)) {
+            return false;
+        } else {
+            PlayerEditor editor = (PlayerEditor) other;
+            return getBukkitPlayer().getName().equals(editor.getBukkitPlayer().getName());
+        }
+    }
 }

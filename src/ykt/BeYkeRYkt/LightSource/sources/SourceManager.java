@@ -1,6 +1,7 @@
 package ykt.BeYkeRYkt.LightSource.sources;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -41,15 +42,13 @@ public class SourceManager {
     }
 
     public synchronized boolean removeSource(Source source) {
-        if (!sources.isEmpty()) {
-            for (Source i : sources) {
-                if (i.equals(source)) {
-                    sources.remove(source);
-                    return true;
-                }
+        Iterator<Source> it = getSourceList().iterator();
+        while (it.hasNext()) {
+            Source i = it.next();
+            if (i.equals(source)) {
+                it.remove();
+                return true;
             }
-        } else {
-            sources.remove(source);
         }
         return false;
     }

@@ -34,7 +34,7 @@ public class ItemLight extends Icon {
 
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.ITEM_PICKUP, 1, 1);
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
+        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
         LightSource.getAPI().getGUIManager().openMenu(player, menu);
     }
 }

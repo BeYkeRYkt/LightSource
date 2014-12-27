@@ -34,7 +34,7 @@ public class EntityLight extends Icon {
 
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1, 1);
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
+        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
         LightSource.getAPI().getGUIManager().openMenu(player, menu);
     }
 }

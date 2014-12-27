@@ -75,7 +75,7 @@ public abstract class Source {
      *            the item to set
      */
     public void setItem(LightItem item) {
-        this.item = item.clone();
+        this.item = item;
     }
 
     public ItemType getType() {
@@ -127,6 +127,8 @@ public abstract class Source {
     }
 
     public void doBurnTick() {
+        if (getItem() == null)
+            return;
         if (!getItem().isEnded()) {
             int percent = this.getItem().getPercent();
             int level = this.getItem().getLevelLight();

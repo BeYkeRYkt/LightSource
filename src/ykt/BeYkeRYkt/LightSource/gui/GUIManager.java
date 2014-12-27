@@ -16,6 +16,7 @@ import ykt.BeYkeRYkt.LightSource.gui.icons.Back_Pages;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeName;
+import ykt.BeYkeRYkt.LightSource.gui.icons.CheckUpdate;
 import ykt.BeYkeRYkt.LightSource.gui.icons.CreateItem;
 import ykt.BeYkeRYkt.LightSource.gui.icons.DeleteItem;
 import ykt.BeYkeRYkt.LightSource.gui.icons.EntityLight;
@@ -28,6 +29,7 @@ import ykt.BeYkeRYkt.LightSource.gui.icons.LC_Create;
 import ykt.BeYkeRYkt.LightSource.gui.icons.LC_Delete;
 import ykt.BeYkeRYkt.LightSource.gui.icons.LC_LightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.LightSourceDamage;
+import ykt.BeYkeRYkt.LightSource.gui.icons.Options;
 import ykt.BeYkeRYkt.LightSource.gui.icons.PlayerLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.World_Name;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Worlds;
@@ -35,6 +37,7 @@ import ykt.BeYkeRYkt.LightSource.gui.menus.EditorMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.LightCreatorCreate;
 import ykt.BeYkeRYkt.LightSource.gui.menus.LightCreatorMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.MainMenu;
+import ykt.BeYkeRYkt.LightSource.gui.menus.OptionsMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.PageMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.WorldsMenu;
 import ykt.BeYkeRYkt.LightSource.items.ItemManager;
@@ -72,6 +75,8 @@ public class GUIManager {
         registerIcon(new Back_Pages());
         registerIcon(new CreateItem());
         registerIcon(new DeleteItem());
+        registerIcon(new Options());
+        registerIcon(new CheckUpdate());
 
         // init worlds
         // also: MONSTERKILL!
@@ -104,6 +109,7 @@ public class GUIManager {
         registerMenu(new LightCreatorMenu());
         registerMenu(new LightCreatorCreate());
         registerMenu(new EditorMenu());
+        registerMenu(new OptionsMenu());
 
         // 2.0.3: init large pages :D
         for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {

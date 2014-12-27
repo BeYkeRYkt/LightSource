@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.gui.Icon;
@@ -13,7 +14,7 @@ import ykt.BeYkeRYkt.LightSource.gui.Menu;
 public class PlayerLight extends Icon {
 
     public PlayerLight() {
-        super("playerLight", Material.TORCH);
+        super("playerLight", new ItemStack(Material.SKULL_ITEM, 1, (short) 3));
         setName(ChatColor.GREEN + "PlayerLight");
         getLore().add("");
         getLore().add(ChatColor.DARK_RED + "WARNING!");
@@ -34,7 +35,7 @@ public class PlayerLight extends Icon {
 
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
+        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
         LightSource.getAPI().getGUIManager().openMenu(player, menu);
     }
 }

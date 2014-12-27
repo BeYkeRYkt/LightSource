@@ -243,7 +243,7 @@ public class LightListener implements Listener {
     public void onChunkLoad(ChunkLoadEvent event) {
         for (Source light : LightAPI.getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation(), false);
+                LightAPI.deleteLight(light.getLocation(), true);
             }
         }
     }
@@ -254,7 +254,7 @@ public class LightListener implements Listener {
             return;
         for (Source light : LightAPI.getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation(), false);
+                LightAPI.deleteLight(light.getLocation(), true);
             }
         }
     }

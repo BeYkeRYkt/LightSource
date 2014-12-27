@@ -15,6 +15,7 @@ public abstract class Icon {
     private String name;
     private List<String> lore = new ArrayList<String>();
     private int amount = 1;
+    private short data;
 
     private String id;
 
@@ -32,6 +33,7 @@ public abstract class Icon {
         if (item.getItemMeta().hasLore()) {
             this.lore = item.getItemMeta().getLore();
         }
+        this.data = item.getData().getData();
     }
 
     public String getId() {
@@ -75,8 +77,7 @@ public abstract class Icon {
     }
 
     public ItemStack getItemStack() {
-        ItemStack item = new ItemStack(material);
-        item.setAmount(amount);
+        ItemStack item = new ItemStack(material, amount, data);
         ItemMeta meta = item.getItemMeta();
 
         if (name != null) {
@@ -94,5 +95,20 @@ public abstract class Icon {
     public abstract void onItemClick(InventoryClickEvent event);
 
     public void onMenuOpen(Menu menu, Player player) {
+    }
+
+    /**
+     * @return the data
+     */
+    public short getData() {
+        return data;
+    }
+
+    /**
+     * @param data
+     *            the data to set
+     */
+    public void setData(short data) {
+        this.data = data;
     }
 }

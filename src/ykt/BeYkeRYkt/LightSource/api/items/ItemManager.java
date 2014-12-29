@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.items;
+package ykt.BeYkeRYkt.LightSource.api.items;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.sources.Source;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source;
 
 public class ItemManager {
 
@@ -168,30 +168,6 @@ public class ItemManager {
             }
         }
         return false;
-    }
-
-    public static int getLightLevel(ItemStack item) {
-        if (item != null && item.getType() != Material.AIR) {
-            if (item.getItemMeta().hasDisplayName()) {
-                String name = item.getItemMeta().getDisplayName();
-                Material mat = item.getType();
-
-                for (LightItem items : getList()) {
-                    if (name.equals(items.getName()) && mat == items.getMaterial()) {
-                        return items.getLevelLight();// FOUND!
-                    }
-                }
-            } else if (!item.getItemMeta().hasDisplayName()) {
-                Material mat = item.getType();
-
-                for (LightItem items : getList()) {
-                    if (items.getName() == null && mat == items.getMaterial()) {
-                        return items.getLevelLight();// FOUND!
-                    }
-                }
-            }
-        }
-        return 0;
     }
 
 }

@@ -12,8 +12,8 @@ public class LSConfig {
          * player light : true
          * entity light: false
          * item light: false
-         * Task delay: 20
-         * max-iterations-per-tick: 4
+         * Task delay: 15
+         * max-iterations-per-tick: 5
          * ignore-save-update-light: false
          */
         SAVE,
@@ -22,8 +22,8 @@ public class LSConfig {
          * player light : true
          * entity light: true
          * item light: true
-         * Task delay: 4
-         * max-iterations-per-tick: 10
+         * Task delay: 5
+         * max-iterations-per-tick: 15
          * ignore-save-update-light: true
          */
         MAXIMUM,
@@ -33,7 +33,7 @@ public class LSConfig {
          * entity light: false
          * item light: false
          * Task delay: 10
-         * max-iterations-per-tick: 6
+         * max-iterations-per-tick: 10
          * ignore-save-update-light: false
          */
         USER;
@@ -45,6 +45,7 @@ public class LSConfig {
     private boolean itemlight;
     private boolean lightSourceDamage;
     private boolean ignoreSaveUpdate;
+    private boolean burnLight;
 
     // private boolean updater;
     private int taskticks;
@@ -65,20 +66,23 @@ public class LSConfig {
             setPlayerLight(true);
             setEntityLight(false);
             setItemLight(false);
-            setTaskTicks(20);
-            setMaxIterationsPerTick(4);
+            setBurnLight(false);
+            setTaskTicks(15);
+            setMaxIterationsPerTick(5);
             setIgnoreSaveUpdate(false);
         } else if (strategyUpdate == UpdateMode.MAXIMUM) {
             setPlayerLight(true);
             setEntityLight(true);
             setItemLight(true);
-            setTaskTicks(4);
-            setMaxIterationsPerTick(10);
+            setBurnLight(true);
+            setTaskTicks(5);
+            setMaxIterationsPerTick(15);
             setIgnoreSaveUpdate(true);
         } else {
             setPlayerLight(plugin.getConfig().getBoolean("PlayerLight"));
             setEntityLight(plugin.getConfig().getBoolean("EntityLight"));
             setItemLight(plugin.getConfig().getBoolean("ItemLight"));
+            setBurnLight(plugin.getConfig().getBoolean("BurnLight"));
             // setUpdater(plugin.getConfig().getBoolean("Enable-updater"));
             setTaskTicks(plugin.getConfig().getInt("Task-delay-ticks"));
             setMaxIterationsPerTick(plugin.getConfig().getInt("max-iterations-per-tick"));
@@ -95,6 +99,7 @@ public class LSConfig {
             fc.set("PlayerLight", isPlayerLight());
             fc.set("EntityLight", isEntityLight());
             fc.set("ItemLight", isItemLight());
+            fc.set("BurnLight", isBurnLight());
             fc.set("LightSourceDamage", isLightSourceDamage());
             fc.set("Ignore-save-update-light", isIgnoreSaveUpdate());
             // fc.set("Enable-updater", isUpdater());
@@ -240,5 +245,20 @@ public class LSConfig {
      */
     public void setIgnoreSaveUpdate(boolean ignoreSaveUpdate) {
         this.ignoreSaveUpdate = ignoreSaveUpdate;
+    }
+
+    /**
+     * @return the burnLight
+     */
+    public boolean isBurnLight() {
+        return burnLight;
+    }
+
+    /**
+     * @param burnLight
+     *            the burnLight to set
+     */
+    public void setBurnLight(boolean burnLight) {
+        this.burnLight = burnLight;
     }
 }

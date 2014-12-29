@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.gui;
+package ykt.BeYkeRYkt.LightSource.api.gui;
 
 import java.util.HashMap;
 import java.util.Map;

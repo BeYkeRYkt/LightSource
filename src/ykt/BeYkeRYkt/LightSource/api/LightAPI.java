@@ -1,18 +1,21 @@
-package ykt.BeYkeRYkt.LightSource;
+package ykt.BeYkeRYkt.LightSource.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
-import ykt.BeYkeRYkt.LightSource.editor.EditorManager;
-import ykt.BeYkeRYkt.LightSource.gui.GUIManager;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.nms.NMSHandler;
+import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.api.editor.EditorManager;
+import ykt.BeYkeRYkt.LightSource.api.events.DeleteLightEvent;
+import ykt.BeYkeRYkt.LightSource.api.events.SetLightEvent;
+import ykt.BeYkeRYkt.LightSource.api.gui.GUIManager;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.nms.NMSHandler;
+import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.api.sources.SourceManager;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_7_10;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_8;
-import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
-import ykt.BeYkeRYkt.LightSource.sources.SourceManager;
 
 public class LightAPI {
 
@@ -55,13 +58,24 @@ public class LightAPI {
     }
 
     public static void createLight(Location location, int lightlevel) {
-        nmsHandler.createLight(location, lightlevel);
+        SetLightEvent event = new SetLightEvent(location, lightlevel);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+            return;
+        nmsHandler.createLight(event.getLocation(), event.getLightLevel());
     }
 
     public static void deleteLight(Location location, boolean needUpdateChunk) {
-        nmsHandler.deleteLight(location);
+
+        DeleteLightEvent event = new DeleteLightEvent(location);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+            return;
+        nmsHandler.deleteLight(event.getLocation());
         if (needUpdateChunk) {
-            updateChunk(new ChunkCoords(location.getChunk()));
+            updateChunk(new ChunkCoords(event.getLocation().getChunk()));
         }
     }
 

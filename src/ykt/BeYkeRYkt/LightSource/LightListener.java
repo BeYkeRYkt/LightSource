@@ -1,8 +1,10 @@
 package ykt.BeYkeRYkt.LightSource;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -26,17 +29,21 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.gui.Icon;
+import ykt.BeYkeRYkt.LightSource.api.gui.Menu;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source.ItemType;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerCreator;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
-import ykt.BeYkeRYkt.LightSource.gui.Icon;
-import ykt.BeYkeRYkt.LightSource.gui.Menu;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.items.LightItem;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
 import ykt.BeYkeRYkt.LightSource.sources.ItemSource;
 import ykt.BeYkeRYkt.LightSource.sources.PlayerSource;
-import ykt.BeYkeRYkt.LightSource.sources.Source;
-import ykt.BeYkeRYkt.LightSource.sources.Source.ItemType;
+import de.albionco.updater.Response;
+import de.albionco.updater.Updater;
+import de.albionco.updater.Version;
 
 public class LightListener implements Listener {
 
@@ -190,7 +197,7 @@ public class LightListener implements Listener {
                     if (player.getItemInHand().getAmount() <= 1) {
                         LightAPI.deleteLight(light.getLocation(), false);
                     }
-                    ItemSource itemsource = new ItemSource(event.getItemDrop(), event.getItemDrop().getLocation(), light.getItem(), ItemType.NONE);
+                    ItemSource itemsource = new ItemSource(event.getItemDrop(), light.getItem(), ItemType.NONE);
                     LightAPI.getSourceManager().addSource(itemsource);
                 }
             }
@@ -210,21 +217,30 @@ public class LightListener implements Listener {
             if (item != null && ItemManager.isLightSource(item)) {
                 LightItem lightItem = ItemManager.getLightItem(item);
 
-                AttributeStorage storage = AttributeStorage.newTarget(item, ItemManager.TIME_ID);
-                if (storage.getData(null) != null) {
-                    int time = Integer.parseInt(storage.getData(null));
-                    lightItem.setBurnTime(time, true);
-                }
+                // AttributeStorage storage = AttributeStorage.newTarget(item,
+                // ItemManager.TIME_ID);
+                // if (storage.getData(null) != null) {
+                // int time = Integer.parseInt(storage.getData(null));
+                // lightItem.setBurnTime(time, true);
+                // }
 
                 if (LightAPI.getSourceManager().getSource(player) == null) {
                     PlayerSource light = new PlayerSource(player, loc, lightItem, ItemType.HAND, item);
+
+                    AttributeStorage storage = AttributeStorage.newTarget(item, ItemManager.TIME_ID);
+                    if (storage.getData(null) != null) {
+                        int time = Integer.parseInt(storage.getData(null));
+                        // lightItem.setBurnTime(time, true);
+                        light.setBurnTime(time, true);
+                    }
+
                     LightAPI.getSourceManager().addSource(light);
                 } else {
                     Source source = LightAPI.getSourceManager().getSource(player);
 
                     // Save old item nbt
                     AttributeStorage saveStorage = AttributeStorage.newTarget(source.getItemStack(), ItemManager.TIME_ID);
-                    saveStorage.setData(String.valueOf(source.getItem().getBurnTime()));
+                    saveStorage.setData(String.valueOf(source.getBurnTime()));
 
                     // set new item
                     source.setItemStack(item);
@@ -328,6 +344,39 @@ public class LightListener implements Listener {
                     entity.setFireTicks(fire);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+
+        if (player.isOp() || player.hasPermission("ls.admin")) {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(LightSource.getInstance(), new Runnable() {
+
+                @Override
+                public void run() {
+                    Version version = Version.parse(LightSource.getInstance().getDescription().getVersion());
+                    String repo = "BeYkeRYkt/LightSource";
+
+                    Updater updater;
+                    try {
+                        updater = new Updater(version, repo);
+
+                        Response response = updater.getResult();
+                        if (response == Response.SUCCESS) {
+                            LightSource.getAPI().log(player, ChatColor.GREEN + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.GREEN + "!");
+                            LightSource.getAPI().log(player, ChatColor.GREEN + "Changes: ");
+                            player.sendMessage(updater.getChanges());// for
+                                                                     // normal
+                                                                     // view
+                            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 20);
         }
     }
 }

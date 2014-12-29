@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
  *
  * @author Connor Spencer Harries
  */
-@SuppressWarnings("unused")
 public class Version {
 
     /**

@@ -7,8 +7,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.gui.Icon;
-import ykt.BeYkeRYkt.LightSource.gui.Menu;
+import ykt.BeYkeRYkt.LightSource.api.gui.Icon;
+import ykt.BeYkeRYkt.LightSource.api.gui.Menu;
 
 public class WorldsMenu extends Menu {
 

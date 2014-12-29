@@ -1,8 +1,8 @@
-package ykt.BeYkeRYkt.LightSource.nms;
+package ykt.BeYkeRYkt.LightSource.api.nms;
 
 import org.bukkit.Location;
 
-import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
 
 public interface NMSHandler {
 

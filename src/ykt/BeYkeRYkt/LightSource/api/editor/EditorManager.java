@@ -1,13 +1,15 @@
-package ykt.BeYkeRYkt.LightSource.editor;
+package ykt.BeYkeRYkt.LightSource.api.editor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.editor.PlayerCreator;
+import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
 
 public class EditorManager {
 

@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.gui;
+package ykt.BeYkeRYkt.LightSource.api.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.events.PlayerOpenMenuEvent;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.gui.WorldBlockTransform;
 import ykt.BeYkeRYkt.LightSource.gui.icons.About;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Back;
 import ykt.BeYkeRYkt.LightSource.gui.icons.Back_Pages;
+import ykt.BeYkeRYkt.LightSource.gui.icons.BurnLight;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
 import ykt.BeYkeRYkt.LightSource.gui.icons.ChangeName;
@@ -40,8 +45,6 @@ import ykt.BeYkeRYkt.LightSource.gui.menus.MainMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.OptionsMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.PageMenu;
 import ykt.BeYkeRYkt.LightSource.gui.menus.WorldsMenu;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.items.LightItem;
 
 /**
  * 
@@ -77,6 +80,7 @@ public class GUIManager {
         registerIcon(new DeleteItem());
         registerIcon(new Options());
         registerIcon(new CheckUpdate());
+        registerIcon(new BurnLight());
 
         // init worlds
         // also: MONSTERKILL!
@@ -126,17 +130,23 @@ public class GUIManager {
     }
 
     public Inventory openMenu(Player player, Menu menu) {
-        Inventory inv = Bukkit.createInventory(null, menu.getSlots(), menu.getName());
+        PlayerOpenMenuEvent event = new PlayerOpenMenuEvent(player, menu);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+            return Bukkit.createInventory(null, menu.getSlots(), menu.getName());
+
+        Inventory inv = Bukkit.createInventory(null, event.getMenu().getSlots(), event.getMenu().getName());
         // init icons
-        if (!menu.getIcons().isEmpty()) {
-            for (Icon icon : menu.getIcons().keySet()) {
-                int num = menu.getIcons().get(icon);
-                icon.onMenuOpen(menu, player);
+        if (!event.getMenu().getIcons().isEmpty()) {
+            for (Icon icon : event.getMenu().getIcons().keySet()) {
+                int num = event.getMenu().getIcons().get(icon);
+                icon.onMenuOpen(event.getMenu(), player);
                 ItemStack item = icon.getItemStack();
                 inv.setItem(num, item);
             }
         }
-        player.openInventory(inv);
+        event.getPlayer().openInventory(inv);
         return inv;
     }
 

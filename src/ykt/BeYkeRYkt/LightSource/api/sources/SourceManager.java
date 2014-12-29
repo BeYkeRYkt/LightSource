@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.sources;
+package ykt.BeYkeRYkt.LightSource.api.sources;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -15,10 +15,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ykt.BeYkeRYkt.LightSource.gui.Menu;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
-import ykt.BeYkeRYkt.LightSource.sources.Source;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.gui.Menu;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source;
 
 public class LightSource extends JavaPlugin {
 
@@ -35,16 +36,17 @@ public class LightSource extends JavaPlugin {
             FileConfiguration fc = getConfig();
             if (!new File(getDataFolder(), "config.yml").exists()) {
                 fc.options().header("LightSource v" + pdfFile.getVersion() + " Configuration" + "\nHave fun :3" + "\nby BeYkeRYkt" + "\nUpdate modes can be: SAVE, MAXIMUM and USER");
-                fc.addDefault("LightUpdateMode", "SAVE");
+                fc.addDefault("LightUpdateMode", "USER");
 
                 fc.addDefault("PlayerLight", true);
                 fc.addDefault("EntityLight", false);
                 fc.addDefault("ItemLight", false);
+                fc.addDefault("BurnLight", false);
                 fc.addDefault("LightSourceDamage", true);
                 fc.addDefault("Ignore-save-update-light", false);
 
                 fc.addDefault("Task-delay-ticks", 10);
-                fc.addDefault("max-iterations-per-tick", 6);
+                fc.addDefault("max-iterations-per-tick", 10);
                 fc.addDefault("Damage-fire-ticks-sec", 5);
 
                 List<World> worlds = getServer().getWorlds();
@@ -198,6 +200,26 @@ public class LightSource extends JavaPlugin {
                 fc.addDefault("Redstone.material", "REDSTONE_TORCH_ON");
                 fc.addDefault("Redstone.lightlevel", 9);
                 fc.addDefault("Redstone.burnTime", 20);
+
+                fc.addDefault("SeaLatern.material", "SEA_LANTERN");
+                fc.addDefault("SeaLatern.lightlevel", 15);
+                fc.addDefault("SeaLatern.burnTime", -1);
+
+                fc.addDefault("RedstoneLamp.material", "REDSTONE_LAMP_ON");
+                fc.addDefault("RedstoneLamp.lightlevel", 15);
+                fc.addDefault("RedstoneLamp.burnTime", -1);
+
+                fc.addDefault("Furnace.material", "BURNING_FURNACE");
+                fc.addDefault("Furnace.lightlevel", 13);
+                fc.addDefault("Furnace.burnTime", -1);
+
+                fc.addDefault("RedstoneOre.material", "REDSTONE_ORE");
+                fc.addDefault("RedstoneOre.lightlevel", 9);
+                fc.addDefault("RedstoneOre.burnTime", -1);
+
+                fc.addDefault("EnderChest.material", "ENDER_CHEST");
+                fc.addDefault("EnderChest.lightlevel", 6);
+                fc.addDefault("EnderChest.burnTime", -1);
 
                 fc.options().copyDefaults(true);
                 getAPI();

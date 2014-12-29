@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.sources;
+package ykt.BeYkeRYkt.LightSource.api.sources;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;

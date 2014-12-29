@@ -8,8 +8,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.gui.Icon;
-import ykt.BeYkeRYkt.LightSource.gui.Menu;
+import ykt.BeYkeRYkt.LightSource.api.gui.Icon;
+import ykt.BeYkeRYkt.LightSource.api.gui.Menu;
 
 public class PlayerLight extends Icon {
 

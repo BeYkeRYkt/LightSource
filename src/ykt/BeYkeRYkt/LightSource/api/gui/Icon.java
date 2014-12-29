@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.gui;
+package ykt.BeYkeRYkt.LightSource.api.gui;
 
 import java.util.ArrayList;
 import java.util.List;

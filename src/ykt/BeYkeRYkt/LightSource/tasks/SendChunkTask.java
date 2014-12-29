@@ -11,17 +11,18 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source.ItemType;
+import ykt.BeYkeRYkt.LightSource.api.sources.SourceManager;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
-import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.sources.BurnSource;
 import ykt.BeYkeRYkt.LightSource.sources.EntitySource;
 import ykt.BeYkeRYkt.LightSource.sources.ItemSource;
 import ykt.BeYkeRYkt.LightSource.sources.PlayerSource;
-import ykt.BeYkeRYkt.LightSource.sources.Source;
-import ykt.BeYkeRYkt.LightSource.sources.Source.ItemType;
-import ykt.BeYkeRYkt.LightSource.sources.SourceManager;
 
 public class SendChunkTask implements Runnable {
 
@@ -82,6 +83,11 @@ public class SendChunkTask implements Runnable {
                 if (LightSource.getInstance().getDB().getWorld(player.getWorld().getName())) {
                     if (LightAPI.getSourceManager().getSource(player) == null) {
                         if (!player.isDead()) {
+                            if (player.getFireTicks() > 0) {
+                                BurnSource source = new BurnSource(player);
+                                LightAPI.getSourceManager().addSource(source);
+                            }
+
                             if (player.getEquipment().getItemInHand() != null && ItemManager.isLightSource(player.getEquipment().getItemInHand())) {
                                 PlayerSource light = new PlayerSource(player, player.getLocation(), ItemManager.getLightItem(player.getEquipment().getItemInHand()), ItemType.HAND, player.getEquipment().getItemInHand());
 
@@ -89,7 +95,7 @@ public class SendChunkTask implements Runnable {
                                 AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);
                                 if (storage.getData(null) != null) {
                                     int time = Integer.parseInt(storage.getData(null));
-                                    light.getItem().setBurnTime(time, true);
+                                    light.setBurnTime(time, true);
                                 }
 
                                 LightAPI.getSourceManager().addSource(light);
@@ -100,7 +106,7 @@ public class SendChunkTask implements Runnable {
                                 AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);
                                 if (storage.getData(null) != null) {
                                     int time = Integer.parseInt(storage.getData(null));
-                                    light.getItem().setBurnTime(time, true);
+                                    light.setBurnTime(time, true);
                                 }
                                 LightAPI.getSourceManager().addSource(light);
                             }
@@ -120,6 +126,11 @@ public class SendChunkTask implements Runnable {
 
                             if (LightAPI.getSourceManager().getSource(le) == null) {
                                 if (!le.isDead()) {
+                                    if (le.getFireTicks() > 0) {
+                                        BurnSource source = new BurnSource(le);
+                                        LightAPI.getSourceManager().addSource(source);
+                                    }
+
                                     if (le.getEquipment().getItemInHand() != null && ItemManager.isLightSource(le.getEquipment().getItemInHand())) {
                                         EntitySource light = new EntitySource(le, le.getLocation(), ItemManager.getLightItem(le.getEquipment().getItemInHand()), ItemType.HAND, le.getEquipment().getItemInHand());
 
@@ -127,7 +138,7 @@ public class SendChunkTask implements Runnable {
                                         AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);
                                         if (storage.getData(null) != null) {
                                             int time = Integer.parseInt(storage.getData(null));
-                                            light.getItem().setBurnTime(time, true);
+                                            light.setBurnTime(time, true);
                                         }
                                         LightAPI.getSourceManager().addSource(light);
 
@@ -138,7 +149,7 @@ public class SendChunkTask implements Runnable {
                                         AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);
                                         if (storage.getData(null) != null) {
                                             int time = Integer.parseInt(storage.getData(null));
-                                            light.getItem().setBurnTime(time, true);
+                                            light.setBurnTime(time, true);
                                         }
                                         LightAPI.getSourceManager().addSource(light);
 
@@ -154,16 +165,20 @@ public class SendChunkTask implements Runnable {
                         if (ent.getType() == EntityType.DROPPED_ITEM) {
                             Item item = (Item) ent;
                             ItemStack stack = item.getItemStack();
+                            if (item.getFireTicks() > 0) {
+                                BurnSource source = new BurnSource(item);
+                                LightAPI.getSourceManager().addSource(source);
+                            }
 
                             if (LightAPI.getSourceManager().getSource(item) == null) {
                                 if (ItemManager.isLightSource(stack)) {
-                                    ItemSource light = new ItemSource(item, item.getLocation(), ItemManager.getLightItem(stack), ItemType.NONE);
+                                    ItemSource light = new ItemSource(item, ItemManager.getLightItem(stack), ItemType.NONE);
 
                                     // restore from pickup
                                     AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);
                                     if (storage.getData(null) != null) {
                                         int time = Integer.parseInt(storage.getData(null));
-                                        light.getItem().setBurnTime(time, true);
+                                        light.setBurnTime(time, true);
                                     }
                                     LightAPI.getSourceManager().addSource(light);
                                 }

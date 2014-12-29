@@ -5,11 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.gui.Icon;
+import ykt.BeYkeRYkt.LightSource.api.gui.Menu;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
-import ykt.BeYkeRYkt.LightSource.gui.Icon;
-import ykt.BeYkeRYkt.LightSource.gui.Menu;
 
 public class EditorMenu extends Menu {
 

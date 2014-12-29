@@ -1,39 +1,17 @@
 package ykt.BeYkeRYkt.LightSource.editor;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
-public class PlayerCreator {
+import ykt.BeYkeRYkt.LightSource.api.editor.Editor;
 
-    private String name;
-    private int stage;
+public class PlayerCreator extends Editor {
 
     // for item
     private String id;
     private Material material;
 
     public PlayerCreator(String name) {
-        this.name = name;
-    }
-
-    public Player getBukkitPlayer() {
-        return Bukkit.getPlayer(name);
-    }
-
-    /**
-     * @return the stage
-     */
-    public int getStage() {
-        return stage;
-    }
-
-    /**
-     * @param stage
-     *            the stage to set
-     */
-    public void setStage(int stage) {
-        this.stage = stage;
+        super(name);
     }
 
     /**

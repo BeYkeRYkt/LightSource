@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.LightSource.sources;
+package ykt.BeYkeRYkt.LightSource.api.sources;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -6,9 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
 
 public abstract class Source {
 
@@ -22,19 +22,40 @@ public abstract class Source {
     private ItemType type;
     private ItemStack itemStack = new ItemStack(Material.AIR);
 
+    private int burnTime;
+    private int light;
+    private int ticks;
+    private int maxTicks;
+
     public Source(Entity entity, Location loc, LightItem item, ItemType type) {
+        this.maxTicks = 20 / LightSource.getInstance().getDB().getTaskTicks();
+
         this.owner = entity;
         this.location = loc;
-        this.item = item;
         this.type = type;
+
+        if (item != null) {
+            this.item = item;
+            this.burnTime = item.getMaxBurnTime();
+            this.light = item.getMaxLevelLight();
+        }
     }
 
     public Source(Entity entity, Location loc, LightItem item, ItemType type, ItemStack itemStack) {
-        this.owner = entity;
-        this.location = loc;
-        this.item = item;
-        this.type = type;
+        this(entity, loc, item, type);
         this.itemStack = itemStack;
+    }
+
+    public Source(Entity entity, Location loc, int burnTime, int lightlevel) {
+        this(entity, loc, null, ItemType.NONE);
+        this.burnTime = burnTime;
+        this.light = lightlevel;
+    }
+
+    public Source(Entity entity, Location loc, ItemStack itemStack, int burnTime, int lightlevel) {
+        this(entity, loc, null, ItemType.NONE, itemStack);
+        this.burnTime = burnTime;
+        this.light = lightlevel;
     }
 
     /**
@@ -76,6 +97,8 @@ public abstract class Source {
      */
     public void setItem(LightItem item) {
         this.item = item;
+        this.burnTime = item.getMaxBurnTime();
+        this.light = item.getMaxLevelLight();
     }
 
     public ItemType getType() {
@@ -88,12 +111,12 @@ public abstract class Source {
             if (newLocation.getBlockX() != getLocation().getBlockX() || newLocation.getBlockY() != getLocation().getBlockY() || newLocation.getBlockZ() != getLocation().getBlockZ()) {
                 LightAPI.deleteLight(getLocation(), false);
                 setLocation(newLocation);
-                LightAPI.createLight(getLocation(), item.getLevelLight());
+                LightAPI.createLight(getLocation(), getLevelLight());
             }
         } else {
             LightAPI.deleteLight(getLocation(), false);
             setLocation(newLocation);
-            LightAPI.createLight(getLocation(), item.getLevelLight());
+            LightAPI.createLight(getLocation(), getLevelLight());
         }
     }
 
@@ -129,10 +152,10 @@ public abstract class Source {
     public void doBurnTick() {
         if (getItem() == null)
             return;
-        if (!getItem().isEnded()) {
-            int percent = this.getItem().getPercent();
-            int level = this.getItem().getLevelLight();
-            this.getItem().burn();
+        if (!isEnded()) {
+            int percent = getPercent();
+            int level = getLevelLight();
+            this.getItem().check();
 
             // Maybe playEffect ?
             // this.getLocation().getWorld().playEffect(this.getOwner().getLocation(),
@@ -141,35 +164,105 @@ public abstract class Source {
             // Effect.MOBSPAWNER_FLAMES, 1);
             // No.
 
+            if (burnTime > 0) {
+                ++ticks;
+                if (ticks == maxTicks) {
+                    --burnTime;
+                    ticks = 0; // restart
+                }
+            }
+
             if (percent >= 80 && percent <= 90) {
                 if (level > 13) {
-                    this.getItem().setLevelLight(13);
+                    setLevelLight(13);
                 }
             } else if (percent >= 60 && percent < 80) {
                 if (level > 11) {
-                    this.getItem().setLevelLight(11);
+                    setLevelLight(11);
                 }
             } else if (percent >= 40 && percent < 60) {
                 if (level > 9) {
-                    this.getItem().setLevelLight(9);
+                    setLevelLight(9);
                 }
             } else if (percent >= 10 && percent < 30) {
                 if (level > 7) {
-                    this.getItem().setLevelLight(7);
+                    setLevelLight(7);
                 }
             } else if (percent > 1 && percent < 10) {
                 if (level > 5) {
-                    this.getItem().setLevelLight(5);
+                    setLevelLight(5);
                 }
             } else if (percent >= 0 && percent < 1) {
                 // off light...
-                this.getItem().setLevelLight(0);
+                setLevelLight(0);
                 this.getLocation().getWorld().playSound(this.getLocation(), Sound.FIZZ, 1, 1);
-                this.getItem().setEnd();
+                setEnd();
                 LightAPI.deleteLight(this.getLocation(), false);
                 removeItem();
             }
         }
+    }
+
+    public int getLevelLight() {
+        return light;
+    }
+
+    public void setLevelLight(int newLevel) {
+        this.light = newLevel;
+    }
+
+    public int getBurnTime() {
+        return this.burnTime;
+    }
+
+    public void setBurnTime(int time, boolean updateLightLevel) {
+        this.burnTime = time;
+
+        if (updateLightLevel) {
+            if (getPercent() >= 80 && getPercent() <= 90) {
+                if (getLevelLight() > 13) {
+                    setLevelLight(13);
+                }
+            } else if (getPercent() >= 60 && getPercent() < 80) {
+                if (getLevelLight() > 11) {
+                    setLevelLight(11);
+                }
+            } else if (getPercent() >= 40 && getPercent() < 60) {
+                if (getLevelLight() > 9) {
+                    setLevelLight(9);
+                }
+            } else if (getPercent() >= 10 && getPercent() < 30) {
+                if (getLevelLight() > 7) {
+                    setLevelLight(7);
+                }
+            } else if (getPercent() > 1 && getPercent() < 10) {
+                if (getLevelLight() > 5) {
+                    setLevelLight(5);
+                }
+            } else if (getPercent() >= 0 && getPercent() < 1) {
+                setLevelLight(0);
+            }
+        }
+    }
+
+    public void setEnd() {
+        burnTime = -2;
+    }
+
+    public boolean isEnded() {
+        return burnTime == -2;
+    }
+
+    public void setInfinity() {
+        burnTime = -1;
+    }
+
+    public boolean isInfinity() {
+        return burnTime == -1;
+    }
+
+    public int getPercent() {
+        return (this.burnTime * 100) / item.getMaxBurnTime();
     }
 
     // for remove item

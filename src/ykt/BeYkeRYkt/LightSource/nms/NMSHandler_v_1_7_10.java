@@ -19,7 +19,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 
-import ykt.BeYkeRYkt.LightSource.sources.ChunkCoords;
+import ykt.BeYkeRYkt.LightSource.api.nms.NMSHandler;
+import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
 
 public class NMSHandler_v_1_7_10 implements NMSHandler {
 

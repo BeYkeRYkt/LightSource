@@ -5,11 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.gui.Icon;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.editor.PlayerEditor;
-import ykt.BeYkeRYkt.LightSource.gui.Icon;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
 
 public class DeleteItem extends Icon {
 

@@ -4,10 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-import ykt.BeYkeRYkt.LightSource.LightAPI;
 import ykt.BeYkeRYkt.LightSource.LightSource;
-import ykt.BeYkeRYkt.LightSource.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.api.LightAPI;
+import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
+import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
+import ykt.BeYkeRYkt.LightSource.api.sources.Source;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
 
 public class EntitySource extends Source {
@@ -36,7 +37,7 @@ public class EntitySource extends Source {
         }
         LightAPI.deleteLight(this.getLocation(), true);
         AttributeStorage storage = AttributeStorage.newTarget(getItemStack(), ItemManager.TIME_ID);
-        storage.setData(String.valueOf(getItem().getBurnTime()));
+        storage.setData(String.valueOf(getBurnTime()));
         LightAPI.getSourceManager().removeSource(this);
         return;
     }

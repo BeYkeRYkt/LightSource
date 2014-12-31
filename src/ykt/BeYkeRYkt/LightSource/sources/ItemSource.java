@@ -12,8 +12,8 @@ import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
 
 public class ItemSource extends Source {
 
-    public ItemSource(Item entity, LightItem item, ItemType type) {
-        super(entity, entity.getLocation(), item, type, entity.getItemStack());
+    public ItemSource(Item entity, LightItem item) {
+        super(entity, entity.getLocation(), item, ItemType.ITEM, entity.getItemStack());
     }
 
     @Override

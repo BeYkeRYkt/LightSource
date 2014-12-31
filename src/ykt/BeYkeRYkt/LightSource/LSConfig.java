@@ -39,6 +39,13 @@ public class LSConfig {
         USER;
     }
 
+    /**
+     * Enum for Main task mode
+     */
+    public enum TaskMode {
+        ONE_FOR_ALL, ONE_FOR_ONE;
+    }
+
     private LightSource plugin;
     private boolean playerlight;
     private boolean entitylight;
@@ -53,13 +60,23 @@ public class LSConfig {
     private int damageFire;
 
     private UpdateMode strategyUpdate = UpdateMode.USER;
+    private TaskMode task = TaskMode.ONE_FOR_ALL;
 
     public LSConfig(LightSource plugin) {
         this.plugin = plugin;
 
-        String mode = plugin.getConfig().getString("LightUpdateMode");
-        if (UpdateMode.valueOf(mode) != null) {
-            strategyUpdate = UpdateMode.valueOf(mode);
+        if (plugin.getConfig().getString("LightUpdateMode") != null) {
+            String mode = plugin.getConfig().getString("LightUpdateMode");
+            if (UpdateMode.valueOf(mode) != null) {
+                strategyUpdate = UpdateMode.valueOf(mode);
+            }
+        }
+
+        if (plugin.getConfig().getString("TaskMode") != null) {
+            String task = plugin.getConfig().getString("TaskMode");
+            if (TaskMode.valueOf(task) != null) {
+                this.task = TaskMode.valueOf(task);
+            }
         }
 
         if (strategyUpdate == UpdateMode.SAVE) {
@@ -96,6 +113,8 @@ public class LSConfig {
     public void save() {
         if (strategyUpdate == UpdateMode.USER) {
             FileConfiguration fc = plugin.getConfig();
+            fc.set("LightUpdateMode", strategyUpdate.name());
+            fc.set("TaskMode", task.name());
             fc.set("PlayerLight", isPlayerLight());
             fc.set("EntityLight", isEntityLight());
             fc.set("ItemLight", isItemLight());
@@ -260,5 +279,12 @@ public class LSConfig {
      */
     public void setBurnLight(boolean burnLight) {
         this.burnLight = burnLight;
+    }
+
+    /**
+     * @return the task
+     */
+    public TaskMode getTaskMode() {
+        return task;
     }
 }

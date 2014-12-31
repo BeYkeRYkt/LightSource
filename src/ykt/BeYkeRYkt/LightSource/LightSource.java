@@ -35,8 +35,9 @@ public class LightSource extends JavaPlugin {
         try {
             FileConfiguration fc = getConfig();
             if (!new File(getDataFolder(), "config.yml").exists()) {
-                fc.options().header("LightSource v" + pdfFile.getVersion() + " Configuration" + "\nHave fun :3" + "\nby BeYkeRYkt" + "\nUpdate modes can be: SAVE, MAXIMUM and USER");
+                fc.options().header("LightSource v" + pdfFile.getVersion() + " Configuration" + "\nHave fun :3" + "\nby BeYkeRYkt" + "\nUpdate modes can be: SAVE, MAXIMUM and USER" + "\nTask modes can be: ONE_FOR_ALL and ONE_FOR_ONE");
                 fc.addDefault("LightUpdateMode", "USER");
+                fc.addDefault("TaskMode", "ONE_FOR_ALL");
 
                 fc.addDefault("PlayerLight", true);
                 fc.addDefault("EntityLight", false);
@@ -61,9 +62,9 @@ public class LightSource extends JavaPlugin {
         }
         this.db = new LSConfig(this);
         createExampleItems();
-        getAPI().init();
 
         if (getAPI().getNMSHandler() != null) {
+            getAPI().init();
             Bukkit.getPluginManager().registerEvents(new LightListener(), this);
 
             // mcstats

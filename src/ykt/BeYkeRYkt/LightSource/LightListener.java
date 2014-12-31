@@ -197,7 +197,7 @@ public class LightListener implements Listener {
                     if (player.getItemInHand().getAmount() <= 1) {
                         LightAPI.deleteLight(light.getLocation(), false);
                     }
-                    ItemSource itemsource = new ItemSource(event.getItemDrop(), light.getItem(), ItemType.NONE);
+                    ItemSource itemsource = new ItemSource(event.getItemDrop(), light.getItem());
                     LightAPI.getSourceManager().addSource(itemsource);
                 }
             }

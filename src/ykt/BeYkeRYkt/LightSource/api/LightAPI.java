@@ -14,6 +14,7 @@ import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
 import ykt.BeYkeRYkt.LightSource.api.nms.NMSHandler;
 import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
 import ykt.BeYkeRYkt.LightSource.api.sources.SourceManager;
+import ykt.BeYkeRYkt.LightSource.api.task.TaskManager;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_7_10;
 import ykt.BeYkeRYkt.LightSource.nms.NMSHandler_v_1_8;
 
@@ -25,6 +26,7 @@ public class LightAPI {
     public static CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
     private static NMSHandler nmsHandler;
     private static EditorManager editor;
+    private static TaskManager task;
 
     public LightAPI() {
         String version = Bukkit.getBukkitVersion();
@@ -43,7 +45,8 @@ public class LightAPI {
         }
         if (getNMSHandler() != null) {
             manager = new ItemManager();
-            source = new SourceManager(LightSource.getInstance());
+            source = new SourceManager();
+            task = new TaskManager();
             gui = new GUIManager();
             editor = new EditorManager();
         }
@@ -51,8 +54,8 @@ public class LightAPI {
 
     public void init() {
         manager.loadItems();
-        source.init();
         editor.init();
+        task.init();
         gui.load();
         nmsHandler.initWorlds();
     }
@@ -108,5 +111,9 @@ public class LightAPI {
 
     public static EditorManager getEditorManager() {
         return editor;
+    }
+
+    public static TaskManager getTaskManager() {
+        return task;
     }
 }

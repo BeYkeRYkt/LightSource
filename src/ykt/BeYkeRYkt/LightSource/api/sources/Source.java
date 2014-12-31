@@ -13,7 +13,7 @@ import ykt.BeYkeRYkt.LightSource.api.items.LightItem;
 public abstract class Source {
 
     public enum ItemType {
-        NONE, HELMET, HAND;
+        NONE, HELMET, HAND, ITEM, BURN;
     }
 
     private Entity owner;
@@ -46,14 +46,14 @@ public abstract class Source {
         this.itemStack = itemStack;
     }
 
-    public Source(Entity entity, Location loc, int burnTime, int lightlevel) {
-        this(entity, loc, null, ItemType.NONE);
+    public Source(Entity entity, Location loc, ItemType type, int burnTime, int lightlevel) {
+        this(entity, loc, null, type);
         this.burnTime = burnTime;
         this.light = lightlevel;
     }
 
-    public Source(Entity entity, Location loc, ItemStack itemStack, int burnTime, int lightlevel) {
-        this(entity, loc, null, ItemType.NONE, itemStack);
+    public Source(Entity entity, Location loc, ItemStack itemStack,ItemType type, int burnTime, int lightlevel) {
+        this(entity, loc, null, type, itemStack);
         this.burnTime = burnTime;
         this.light = lightlevel;
     }

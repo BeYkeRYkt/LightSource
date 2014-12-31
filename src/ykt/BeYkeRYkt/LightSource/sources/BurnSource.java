@@ -10,7 +10,7 @@ import ykt.BeYkeRYkt.LightSource.api.sources.Source;
 public class BurnSource extends Source {
 
     public BurnSource(Entity entity) {
-        super(entity, entity.getLocation(), -1, 14);
+        super(entity, entity.getLocation(),ItemType.BURN , -1, 14);
     }
 
     @Override

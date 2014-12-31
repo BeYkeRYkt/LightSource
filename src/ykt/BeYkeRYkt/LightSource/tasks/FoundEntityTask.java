@@ -1,6 +1,5 @@
 package ykt.BeYkeRYkt.LightSource.tasks;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -14,64 +13,23 @@ import org.bukkit.inventory.ItemStack;
 import ykt.BeYkeRYkt.LightSource.LightSource;
 import ykt.BeYkeRYkt.LightSource.api.LightAPI;
 import ykt.BeYkeRYkt.LightSource.api.items.ItemManager;
-import ykt.BeYkeRYkt.LightSource.api.sources.ChunkCoords;
-import ykt.BeYkeRYkt.LightSource.api.sources.Source;
 import ykt.BeYkeRYkt.LightSource.api.sources.Source.ItemType;
-import ykt.BeYkeRYkt.LightSource.api.sources.SourceManager;
+import ykt.BeYkeRYkt.LightSource.api.task.Task;
 import ykt.BeYkeRYkt.LightSource.nbt.comphenix.AttributeStorage;
 import ykt.BeYkeRYkt.LightSource.sources.BurnSource;
 import ykt.BeYkeRYkt.LightSource.sources.EntitySource;
 import ykt.BeYkeRYkt.LightSource.sources.ItemSource;
 import ykt.BeYkeRYkt.LightSource.sources.PlayerSource;
 
-public class SendChunkTask implements Runnable {
+public class FoundEntityTask extends Task {
 
-    private int iteratorCount = 0;
-    private int maxIterationsPerTick;
-    private SourceManager manager;
-
-    private List<Source> sources;
-    private List<ChunkCoords> chunks;
-
-    public SendChunkTask(SourceManager sourceManager) {
-        this.manager = sourceManager;
-        this.sources = new ArrayList<Source>(this.manager.getSourceList());
-        this.maxIterationsPerTick = LightSource.getInstance().getDB().getMaxIterationsPerTick();
-        this.chunks = new ArrayList<ChunkCoords>();
-    }
-
-    public List<Source> getSources() {
-        return sources;
+    @Override
+    public String getId() {
+        return "main_FoundEntity";
     }
 
     @Override
-    public void run() {
-        iteratorCount = 0;
-
-        while (!this.sources.isEmpty() && iteratorCount < maxIterationsPerTick) {
-            iteratorCount++;
-            Source source = sources.get(0);
-            source.doBurnTick();
-            source.doTick();
-            // LightAPI.updateChunk(source.getChunk());
-
-            if (!chunks.contains(source.getChunk())) {
-                chunks.add(source.getChunk());
-            }
-            sources.remove(0);
-        }
-
-        if (!chunks.isEmpty()) {
-            ChunkCoords chunk = chunks.get(0);
-            LightAPI.updateChunk(chunk);
-            chunks.remove(0);
-        }
-
-        if (sources.isEmpty()) {
-            sources.addAll(manager.getSourceList());
-        }
-
-        // Others enities
+    public void doTick() {
         @SuppressWarnings("deprecation")
         Player[] onlinePlayers = Bukkit.getOnlinePlayers();
         for (int i = 0; i < onlinePlayers.length; i++) {
@@ -172,7 +130,7 @@ public class SendChunkTask implements Runnable {
 
                             if (LightAPI.getSourceManager().getSource(item) == null) {
                                 if (ItemManager.isLightSource(stack)) {
-                                    ItemSource light = new ItemSource(item, ItemManager.getLightItem(stack), ItemType.NONE);
+                                    ItemSource light = new ItemSource(item, ItemManager.getLightItem(stack));
 
                                     // restore from pickup
                                     AttributeStorage storage = AttributeStorage.newTarget(light.getItemStack(), ItemManager.TIME_ID);

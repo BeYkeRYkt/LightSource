@@ -1,6 +1,6 @@
 name: LightSource
 main: ykt.BeYkeRYkt.LightSource.LightSource
-version: 2.1.4
+version: 2.1.5
 description: More Lights!
 author: BeYkeRYkt
 commands:
@@ -10,4 +10,6 @@ commands:
       description: Main command for static lights
 permissions:
   ls.admin:
+    default: false
+  ls.lightcreator:
     default: false

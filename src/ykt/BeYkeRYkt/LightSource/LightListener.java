@@ -249,7 +249,9 @@ public class LightListener implements Listener {
             } else if (item == null || item != null && !ItemManager.isLightSource(item)) {
                 if (LightAPI.getSourceManager().getSource(player) != null) {
                     Source source = LightAPI.getSourceManager().getSource(player);
-                    LightAPI.deleteLight(source.getLocation(), true);
+                    if (source.getType() == ItemType.HAND) {
+                        LightAPI.deleteLight(source.getLocation(), true);
+                    }
                 }
             }
         }

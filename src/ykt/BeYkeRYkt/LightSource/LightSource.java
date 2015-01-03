@@ -118,7 +118,7 @@ public class LightSource extends JavaPlugin {
                     getAPI().log(player, "Nope :)");
                 }
             } else if (cmd.getName().equalsIgnoreCase("light")) {
-                if (player.hasPermission("ls.admin") || player.isOp()) {
+                if (player.hasPermission("ls.lightcreator") || player.isOp()) {
                     if (args.length == 0) {
                         Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
                         getAPI().getGUIManager().openMenu(player, menu);
@@ -129,6 +129,9 @@ public class LightSource extends JavaPlugin {
                         } else if (args[0].equalsIgnoreCase("delete")) {
                             LightAPI.deleteLight(player.getLocation(), true);
                             getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
+                        } else {
+                            Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
+                            getAPI().getGUIManager().openMenu(player, menu);
                         }
                     } else if (args.length == 2) {
                         if (args[0].equalsIgnoreCase("create")) {
@@ -146,6 +149,9 @@ public class LightSource extends JavaPlugin {
                         } else if (args[0].equalsIgnoreCase("delete")) {
                             LightAPI.deleteLight(player.getLocation(), true);
                             getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
+                        } else {
+                            Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
+                            getAPI().getGUIManager().openMenu(player, menu);
                         }
                     } else {
                         Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");

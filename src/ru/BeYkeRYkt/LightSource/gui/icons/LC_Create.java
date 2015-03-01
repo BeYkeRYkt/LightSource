@@ -27,8 +27,8 @@ public class LC_Create extends Icon {
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("lc_createMenu");
-        LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("lc_createMenu");
+        LightSource.getInstance().getGUIManager().openMenu(player, menu);
     }
 
     @Override

@@ -3,9 +3,7 @@ package ru.BeYkeRYkt.LightSource.task.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
-import ru.BeYkeRYkt.LightSource.sources.ChunkCoords;
 import ru.BeYkeRYkt.LightSource.sources.Source;
 import ru.BeYkeRYkt.LightSource.sources.Source.ItemType;
 import ru.BeYkeRYkt.LightSource.sources.SourceManager;
@@ -18,15 +16,13 @@ public class BurnTask extends Task {
     private SourceManager manager;
 
     private List<Source> sources;
-    private List<ChunkCoords> chunks;
 
     @Override
     public void start() {
         super.start();
-        this.manager = LightAPI.getSourceManager();
+        this.manager = LightSource.getInstance().getSourceManager();
         this.sources = new ArrayList<Source>();
         this.maxIterationsPerTick = LightSource.getInstance().getDB().getMaxIterationsPerTick();
-        this.chunks = new ArrayList<ChunkCoords>();
     }
 
     @Override
@@ -41,20 +37,8 @@ public class BurnTask extends Task {
         while (!this.sources.isEmpty() && iteratorCount < maxIterationsPerTick) {
             iteratorCount++;
             Source source = sources.get(0);
-            source.doBurnTick();
             source.doTick();
-            // LightAPI.updateChunk(source.getChunk());
-
-            if (!chunks.contains(source.getChunk())) {
-                chunks.add(source.getChunk());
-            }
             sources.remove(0);
-        }
-
-        while (!chunks.isEmpty()) {
-            ChunkCoords chunk = chunks.get(0);
-            LightAPI.updateChunk(chunk);
-            chunks.remove(0);
         }
 
         if (sources.isEmpty()) {

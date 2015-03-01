@@ -23,6 +23,6 @@ public class Items extends Icon {
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
 
-        LightSource.getAPI().getGUIManager().openMenu(player, LightSource.getAPI().getGUIManager().getMenuFromId("page_0"));
+        LightSource.getInstance().getGUIManager().openMenu(player, LightSource.getInstance().getGUIManager().getMenuFromId("page_0"));
     }
 }

@@ -35,8 +35,8 @@ public class World_Name extends Icon {
 
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("worldsMenu");
-        LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("worldsMenu");
+        LightSource.getInstance().getGUIManager().openMenu(player, menu);
     }
 
 }

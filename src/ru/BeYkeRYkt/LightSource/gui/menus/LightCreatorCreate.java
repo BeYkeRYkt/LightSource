@@ -13,7 +13,7 @@ public class LightCreatorCreate extends Menu {
         super("lc_createMenu", "Create light", 18);
 
         for (int i = 0; i < 15; i++) {
-            Icon lightIcon = LightSource.getAPI().getGUIManager().getIconFromId("lc_lightlevel_" + (i + 1));
+            Icon lightIcon = LightSource.getInstance().getGUIManager().getIconFromId("lc_lightlevel_" + (i + 1));
             addItem(lightIcon, i + 1);
         }
     }

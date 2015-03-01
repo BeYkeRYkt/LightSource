@@ -24,18 +24,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
 import ru.BeYkeRYkt.LightSource.gui.editor.PlayerCreator;
 import ru.BeYkeRYkt.LightSource.gui.editor.PlayerEditor;
 import ru.BeYkeRYkt.LightSource.items.ItemManager;
 import ru.BeYkeRYkt.LightSource.items.LightItem;
-import ru.BeYkeRYkt.LightSource.items.nbt.comphenix.AttributeStorage;
 import ru.BeYkeRYkt.LightSource.sources.ItemSource;
 import ru.BeYkeRYkt.LightSource.sources.PlayerSource;
 import ru.BeYkeRYkt.LightSource.sources.Source;
@@ -47,12 +48,19 @@ import de.albionco.updater.Version;
 public class LightListener implements Listener {
 
     @EventHandler
+    public void onPluginDisable(PluginDisableEvent event) {
+        if (event.getPlugin().getName().equals("LightAPI")) {
+            event.getPlugin().getServer().getPluginManager().disablePlugin(LightSource.getInstance());
+        }
+    }
+
+    @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled())
             return;
         Player player = event.getPlayer();
-        if (LightAPI.getEditorManager().isEditor(player.getName())) {
-            PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        if (LightSource.getInstance().getEditorManager().isEditor(player.getName())) {
+            PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
             event.setCancelled(true);
 
             if (editor.getStage() == 1) {// Change name
@@ -62,19 +70,9 @@ public class LightListener implements Listener {
                     message = null;
                 }
                 editor.getItem().setName(message);
-                LightSource.getAPI().log(player, "Name changed to " + ChatColor.AQUA + message);
-            } else if (editor.getStage() == 2) {// Change burn time
-                String message = event.getMessage();
-
-                try {
-                    int time = Integer.parseInt(message);
-                    editor.getItem().setMaxBurnTime(time);
-                    LightSource.getAPI().log(player, "Burn time changed to " + ChatColor.AQUA + time + ChatColor.WHITE + " seconds!");
-                } catch (Exception e) {
-                    LightSource.getAPI().log(player, ChatColor.RED + "Please enter numbers");
-                    return;
-                }
-            } else if (editor.getStage() == 3) {// Change light level
+                LightSource.getInstance().log(player, "Name changed to " + ChatColor.AQUA + message);
+            }
+            if (editor.getStage() == 2) {// Change light level
                 String message = event.getMessage();
 
                 try {
@@ -83,41 +81,41 @@ public class LightListener implements Listener {
                         level = 15;
                     }
                     editor.getItem().setMaxLevelLight(level);
-                    LightSource.getAPI().log(player, "Light level changed to " + ChatColor.AQUA + level + ChatColor.WHITE + " / 15.");
+                    LightSource.getInstance().log(player, "Light level changed to " + ChatColor.AQUA + level + ChatColor.WHITE + " / 15.");
                 } catch (Exception e) {
-                    LightSource.getAPI().log(player, ChatColor.RED + "Please enter numbers");
+                    LightSource.getInstance().log(player, ChatColor.RED + "Please enter numbers");
                     return;
                 }
-            } else if (editor.getStage() == 4) {
+            } else if (editor.getStage() == 3) { // Change data value
                 String message = event.getMessage();
                 try {
                     int data = Integer.parseInt(message);
                     editor.getItem().setData(data);
-                    LightSource.getAPI().log(player, "Data changed to " + ChatColor.AQUA + data + ChatColor.WHITE + ".");
+                    LightSource.getInstance().log(player, "Data changed to " + ChatColor.AQUA + data + ChatColor.WHITE + ".");
                 } catch (Exception e) {
-                    LightSource.getAPI().log(player, ChatColor.RED + "Please enter numbers");
+                    LightSource.getInstance().log(player, ChatColor.RED + "Please enter numbers");
                     return;
                 }
             }
 
-            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
-            LightSource.getAPI().getGUIManager().openMenu(player, menu);
+            Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("editorMenu");
+            LightSource.getInstance().getGUIManager().openMenu(player, menu);
             editor.setStage(0);
             return;
         }
 
-        if (LightAPI.getEditorManager().isCreator(player.getName())) {
-            PlayerCreator creator = LightAPI.getEditorManager().getCreator(player.getName());
+        if (LightSource.getInstance().getEditorManager().isCreator(player.getName())) {
+            PlayerCreator creator = LightSource.getInstance().getEditorManager().getCreator(player.getName());
             event.setCancelled(true);
 
             if (creator.getStage() == 0) {// create item ID
                 String id = event.getMessage();
                 if (ItemManager.getLightItem(id) != null) {
-                    LightSource.getAPI().log(player, ChatColor.RED + "This ID is exists. try new id.");
+                    LightSource.getInstance().log(player, ChatColor.RED + "This ID is exists. try new id.");
                     return;
                 } else {
                     creator.setID(id);
-                    LightSource.getAPI().log(player, "Enter item material (You can see BukkitAPI documentation or use Essentials comamnd /dura).");
+                    LightSource.getInstance().log(player, "Enter item material (You can see BukkitAPI documentation or use Essentials comamnd /dura).");
                     creator.setStage(1);
                     return;
                 }
@@ -127,24 +125,24 @@ public class LightListener implements Listener {
                     creator.setMaterial(Material.getMaterial(material));
                     creator.setStage(0);
 
-                    LightItem item = new LightItem(creator.getID(), null, Material.getMaterial(material), 0, 15, 60); // Maybe
-                                                                                                                      // TODO
-                                                                                                                      // FIX
+                    LightItem item = new LightItem(creator.getID(), null, Material.getMaterial(material), 0, 15); // Maybe
+                                                                                                                  // TODO
+                                                                                                                  // FIX
                     ItemManager.addLightSource(item, item.getId());
 
                     PlayerEditor editor = new PlayerEditor(player.getName(), item);
-                    LightAPI.getEditorManager().removeCreator(creator);
-                    LightAPI.getEditorManager().addEditor(editor);
+                    LightSource.getInstance().getEditorManager().removeCreator(creator);
+                    LightSource.getInstance().getEditorManager().addEditor(editor);
 
-                    LightSource.getAPI().log(player, ChatColor.DARK_AQUA + "Refreshing GUI Manager...");
-                    LightSource.getAPI().getGUIManager().refresh();
+                    LightSource.getInstance().log(player, ChatColor.DARK_AQUA + "Refreshing GUI Manager...");
+                    LightSource.getInstance().getGUIManager().refresh();
                 } else {
-                    LightSource.getAPI().log(player, ChatColor.RED + "Material is not found. Try again :(");
+                    LightSource.getInstance().log(player, ChatColor.RED + "Material is not found. Try again :(");
                     return;
                 }
             }
-            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
-            LightSource.getAPI().getGUIManager().openMenu(player, menu);
+            Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("editorMenu");
+            LightSource.getInstance().getGUIManager().openMenu(player, menu);
             return;
         }
     }
@@ -157,8 +155,8 @@ public class LightListener implements Listener {
 
         if (inventory.getTitle() == null)
             return;
-        if (LightSource.getAPI().getGUIManager().isMenu(inventory.getTitle())) {
-            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromName(inventory.getTitle());
+        if (LightSource.getInstance().getGUIManager().isMenu(inventory.getTitle())) {
+            Menu menu = LightSource.getInstance().getGUIManager().getMenuFromName(inventory.getTitle());
             menu.onOpenMenu(event);
         }
     }
@@ -169,8 +167,8 @@ public class LightListener implements Listener {
 
         if (inventory.getTitle() == null)
             return;
-        if (LightSource.getAPI().getGUIManager().isMenu(inventory.getTitle())) {
-            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromName(inventory.getTitle());
+        if (LightSource.getInstance().getGUIManager().isMenu(inventory.getTitle())) {
+            Menu menu = LightSource.getInstance().getGUIManager().getMenuFromName(inventory.getTitle());
             menu.onCloseMenu(event);
         }
     }
@@ -186,11 +184,11 @@ public class LightListener implements Listener {
             return;
         if (inventory.getTitle() == null)
             return;
-        if (LightSource.getAPI().getGUIManager().isMenu(inventory.getTitle())) {
-            if (LightSource.getAPI().getGUIManager().isIcon(item)) {
+        if (LightSource.getInstance().getGUIManager().isMenu(inventory.getTitle())) {
+            if (LightSource.getInstance().getGUIManager().isIcon(item)) {
                 if (!item.getItemMeta().hasDisplayName())
                     return;
-                Icon icon = LightSource.getAPI().getGUIManager().getIconFromName(item.getItemMeta().getDisplayName());
+                Icon icon = LightSource.getInstance().getGUIManager().getIconFromName(item.getItemMeta().getDisplayName());
                 icon.onItemClick(event);
             }
             event.setCancelled(true);
@@ -201,15 +199,15 @@ public class LightListener implements Listener {
     public void onPlayerDropLight(PlayerDropItemEvent event) {
         if (event.isCancelled())
             return;
-        for (Source light : LightAPI.getSourceManager().getSourceList()) {
+        for (Source light : LightSource.getInstance().getSourceManager().getSourceList()) {
             if (light.getOwner().getType() == EntityType.PLAYER) {
                 Player player = (Player) light.getOwner();
                 if (player.getName().equals(event.getPlayer())) {
                     if (player.getItemInHand().getAmount() <= 1) {
-                        LightAPI.deleteLight(light.getLocation(), false);
+                        LightAPI.deleteLight(light.getLocation());
                     }
                     ItemSource itemsource = new ItemSource(event.getItemDrop(), light.getItem());
-                    LightAPI.getSourceManager().addSource(itemsource);
+                    LightSource.getInstance().getSourceManager().addSource(itemsource);
                 }
             }
         }
@@ -235,33 +233,20 @@ public class LightListener implements Listener {
                 // lightItem.setBurnTime(time, true);
                 // }
 
-                if (LightAPI.getSourceManager().getSource(player) == null) {
+                if (LightSource.getInstance().getSourceManager().getSource(player) == null) {
                     PlayerSource light = new PlayerSource(player, loc, lightItem, ItemType.HAND, item);
-
-                    AttributeStorage storage = AttributeStorage.newTarget(item, ItemManager.TIME_ID);
-                    if (storage.getData(null) != null) {
-                        int time = Integer.parseInt(storage.getData(null));
-                        // lightItem.setBurnTime(time, true);
-                        light.setBurnTime(time, true);
-                    }
-
-                    LightAPI.getSourceManager().addSource(light);
+                    LightSource.getInstance().getSourceManager().addSource(light);
                 } else {
-                    Source source = LightAPI.getSourceManager().getSource(player);
-
-                    // Save old item nbt
-                    AttributeStorage saveStorage = AttributeStorage.newTarget(source.getItemStack(), ItemManager.TIME_ID);
-                    saveStorage.setData(String.valueOf(source.getBurnTime()));
-
+                    Source source = LightSource.getInstance().getSourceManager().getSource(player);
                     // set new item
                     source.setItemStack(item);
                     source.setItem(lightItem);
                 }
             } else if (item == null || item != null && !ItemManager.isLightSource(item)) {
-                if (LightAPI.getSourceManager().getSource(player) != null) {
-                    Source source = LightAPI.getSourceManager().getSource(player);
+                if (LightSource.getInstance().getSourceManager().getSource(player) != null) {
+                    Source source = LightSource.getInstance().getSourceManager().getSource(player);
                     if (source.getType() == ItemType.HAND) {
-                        LightAPI.deleteLight(source.getLocation(), true);
+                        LightAPI.deleteLight(source.getLocation());
                     }
                 }
             }
@@ -270,9 +255,9 @@ public class LightListener implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
-        for (Source light : LightAPI.getSourceManager().getSourceList()) {
+        for (Source light : LightSource.getInstance().getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation(), true);
+                LightAPI.deleteLight(light.getLocation());
             }
         }
     }
@@ -281,19 +266,19 @@ public class LightListener implements Listener {
     public void onChunkUnload(ChunkUnloadEvent event) {
         if (event.isCancelled())
             return;
-        for (Source light : LightAPI.getSourceManager().getSourceList()) {
+        for (Source light : LightSource.getInstance().getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightAPI.deleteLight(light.getLocation(), true);
+                LightAPI.deleteLight(light.getLocation());
             }
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation(), false);
-            LightAPI.getSourceManager().removeSource(light);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
+            LightAPI.deleteLight(light.getLocation());
+            LightSource.getInstance().getSourceManager().removeSource(light);
         }
     }
 
@@ -301,10 +286,10 @@ public class LightListener implements Listener {
     public void onPlayerKick(PlayerKickEvent event) {
         if (event.isCancelled())
             return;
-        if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation(), false);
-            LightAPI.getSourceManager().removeSource(light);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
+            LightAPI.deleteLight(light.getLocation());
+            LightSource.getInstance().getSourceManager().removeSource(light);
         }
     }
 
@@ -312,17 +297,17 @@ public class LightListener implements Listener {
     public void onPlayerBedEnter(PlayerBedEnterEvent event) {
         if (event.isCancelled())
             return;
-        if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation(), false);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (LightAPI.getSourceManager().getSource(event.getEntity()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getEntity());
-            LightAPI.deleteLight(light.getLocation(), false);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getEntity()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getEntity());
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
@@ -330,17 +315,17 @@ public class LightListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (event.isCancelled())
             return;
-        if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation(), true);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
     @EventHandler
     public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
-        if (LightAPI.getSourceManager().getSource(event.getPlayer()) != null) {
-            Source light = LightAPI.getSourceManager().getSource(event.getPlayer());
-            LightAPI.deleteLight(light.getLocation(), true);
+        if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
+            Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
@@ -380,8 +365,8 @@ public class LightListener implements Listener {
 
                         Response response = updater.getResult();
                         if (response == Response.SUCCESS) {
-                            LightSource.getAPI().log(player, ChatColor.GREEN + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.GREEN + "!");
-                            LightSource.getAPI().log(player, ChatColor.GREEN + "Changes: ");
+                            LightSource.getInstance().log(player, ChatColor.GREEN + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.GREEN + "!");
+                            LightSource.getInstance().log(player, ChatColor.GREEN + "Changes: ");
                             player.sendMessage(updater.getChanges());// for
                                                                      // normal
                                                                      // view

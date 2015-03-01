@@ -19,8 +19,8 @@ public class Back extends Icon {
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        Menu menu1 = LightSource.getAPI().getGUIManager().getMenuFromId("mainMenu");
+        Menu menu1 = LightSource.getInstance().getGUIManager().getMenuFromId("mainMenu");
         Player player = (Player) event.getWhoClicked();
-        LightSource.getAPI().getGUIManager().openMenu(player, menu1);
+        LightSource.getInstance().getGUIManager().openMenu(player, menu1);
     }
 }

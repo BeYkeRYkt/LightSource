@@ -23,8 +23,8 @@ public class GoToPage extends Icon {
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("page_" + page);
-        LightSource.getAPI().getGUIManager().openMenu((Player) event.getWhoClicked(), menu);
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("page_" + page);
+        LightSource.getInstance().getGUIManager().openMenu((Player) event.getWhoClicked(), menu);
     }
 
 }

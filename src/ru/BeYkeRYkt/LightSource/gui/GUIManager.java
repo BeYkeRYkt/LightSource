@@ -9,13 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
+import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.events.PlayerOpenMenuEvent;
 import ru.BeYkeRYkt.LightSource.gui.icons.About;
 import ru.BeYkeRYkt.LightSource.gui.icons.Back;
 import ru.BeYkeRYkt.LightSource.gui.icons.Back_Pages;
 import ru.BeYkeRYkt.LightSource.gui.icons.BurnLight;
-import ru.BeYkeRYkt.LightSource.gui.icons.ChangeBurnTime;
 import ru.BeYkeRYkt.LightSource.gui.icons.ChangeLightLevel;
 import ru.BeYkeRYkt.LightSource.gui.icons.ChangeName;
 import ru.BeYkeRYkt.LightSource.gui.icons.CheckUpdate;
@@ -73,7 +72,6 @@ public class GUIManager {
         registerIcon(new LC_Create());
         registerIcon(new LC_Delete());
         registerIcon(new ChangeName());
-        registerIcon(new ChangeBurnTime());
         registerIcon(new ChangeLightLevel());
         registerIcon(new Back_Pages());
         registerIcon(new CreateItem());
@@ -104,7 +102,7 @@ public class GUIManager {
         }
 
         // 2.0.3: init large pages :D
-        for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {
+        for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
             registerIcon(new GoToPage(i));
         }
 
@@ -117,7 +115,7 @@ public class GUIManager {
         registerMenu(new OptionsMenu());
 
         // 2.0.3: init large pages :D
-        for (int i = 0; i < LightAPI.getEditorManager().getPages(); i++) {
+        for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
             registerMenu(new PageMenu(i));
         }
     }
@@ -126,7 +124,7 @@ public class GUIManager {
         icons.clear();
         menus.clear();
 
-        LightAPI.getEditorManager().refreshCachedItemsList();
+        LightSource.getInstance().getEditorManager().refreshCachedItemsList();
         load();
     }
 

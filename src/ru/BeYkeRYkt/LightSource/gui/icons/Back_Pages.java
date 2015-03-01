@@ -19,9 +19,9 @@ public class Back_Pages extends Icon {
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("page_0");
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("page_0");
         Player player = (Player) event.getWhoClicked();
-        LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        LightSource.getInstance().getGUIManager().openMenu(player, menu);
 
         player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
     }

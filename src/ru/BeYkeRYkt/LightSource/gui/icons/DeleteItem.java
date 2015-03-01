@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.editor.PlayerEditor;
@@ -21,16 +20,16 @@ public class DeleteItem extends Icon {
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
         try {
             ItemManager.removeLightSource(editor.getItem());
-            LightSource.getAPI().log(player, ChatColor.GREEN + "Item successfully deleted !");
-            LightSource.getAPI().log(player, ChatColor.DARK_AQUA + "Refreshing GUI Manager...");
-            LightSource.getAPI().getGUIManager().refresh();
+            LightSource.getInstance().log(player, ChatColor.GREEN + "Item successfully deleted !");
+            LightSource.getInstance().log(player, ChatColor.DARK_AQUA + "Refreshing GUI Manager...");
+            LightSource.getInstance().getGUIManager().refresh();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LightSource.getAPI().getGUIManager().openMenu(player, LightSource.getAPI().getGUIManager().getMenuFromId("page_0"));
+        LightSource.getInstance().getGUIManager().openMenu(player, LightSource.getInstance().getGUIManager().getMenuFromId("page_0"));
     }
 
 }

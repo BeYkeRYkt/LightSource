@@ -9,14 +9,12 @@ public class LightItem {
     private Material material;
     private int maxLight;
     private int data;
-    private int maxBurnTime;
 
-    public LightItem(String id, String name, Material material, int data, int lightlevel, int burnTime) {
+    public LightItem(String id, String name, Material material, int data, int lightlevel) {
         this.id = id;
         this.name = name;
         this.material = material;
         this.data = data;
-        this.maxBurnTime = burnTime;
         this.maxLight = lightlevel;
     }
 
@@ -34,7 +32,7 @@ public class LightItem {
 
     @Override
     public LightItem clone() {
-        return new LightItem(id, name, material, data, maxLight, maxBurnTime);
+        return new LightItem(id, name, material, data, maxLight);
     }
 
     public void check() {
@@ -44,10 +42,6 @@ public class LightItem {
         if (item != null) {
             if (item.getMaxLevelLight() != getMaxLevelLight()) {
                 setMaxLevelLight(item.getMaxLevelLight());
-            }
-
-            if (item.getMaxBurnTime() != getMaxBurnTime()) {
-                setMaxBurnTime(item.getMaxBurnTime());
             }
         }
     }
@@ -62,14 +56,6 @@ public class LightItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getMaxBurnTime() {
-        return maxBurnTime;
-    }
-
-    public void setMaxBurnTime(int time) {
-        this.maxBurnTime = time;
     }
 
     public int getData() {

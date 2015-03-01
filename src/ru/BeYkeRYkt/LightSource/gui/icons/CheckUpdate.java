@@ -46,18 +46,18 @@ public class CheckUpdate extends Icon {
 
                     Response response = updater.getResult();
                     if (response == Response.SUCCESS) {
-                        LightSource.getAPI().log(player, ChatColor.GREEN + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.GREEN + "!");
-                        LightSource.getAPI().log(player, ChatColor.GREEN + "Changes: ");
+                        LightSource.getInstance().log(player, ChatColor.GREEN + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.GREEN + "!");
+                        LightSource.getInstance().log(player, ChatColor.GREEN + "Changes: ");
                         player.sendMessage(updater.getChanges());// for normal
                                                                  // view
                     } else if (response == Response.NO_UPDATE) {
-                        LightSource.getAPI().log(player, "You are running the latest version of LightSource.");
+                        LightSource.getInstance().log(player, "You are running the latest version of LightSource.");
                     } else if (response == Response.REPO_NOT_FOUND) {
-                        LightSource.getAPI().log(player, ChatColor.RED + "Github reposity not found :C");
+                        LightSource.getInstance().log(player, ChatColor.RED + "Github reposity not found :C");
                     } else if (response == Response.FAILED) {
-                        LightSource.getAPI().log(player, ChatColor.RED + "An error occured whilst trying to find updates.");
+                        LightSource.getInstance().log(player, ChatColor.RED + "An error occured whilst trying to find updates.");
                     } else if (response == Response.GITHUB_DENY) {
-                        LightSource.getAPI().log(player, ChatColor.RED + "GitHub denied the connection. This is most likely due to too many connections being opened to the API within a small period of time.");
+                        LightSource.getInstance().log(player, ChatColor.RED + "GitHub denied the connection. This is most likely due to too many connections being opened to the API within a small period of time.");
                     }
                     player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
                 } catch (Exception e) {

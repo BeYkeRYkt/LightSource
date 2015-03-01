@@ -17,11 +17,11 @@ public class WorldsMenu extends Menu {
 
         for (int i = 0; i < Bukkit.getWorlds().size(); i++) {
             World world = Bukkit.getWorlds().get(i);
-            Icon world_icon = LightSource.getAPI().getGUIManager().getIconFromId("world_" + world.getName());
+            Icon world_icon = LightSource.getInstance().getGUIManager().getIconFromId("world_" + world.getName());
             addItem(world_icon, i + 1);
         }
 
-        Icon back = LightSource.getAPI().getGUIManager().getIconFromId("back");
+        Icon back = LightSource.getInstance().getGUIManager().getIconFromId("back");
         addItem(back, 54);
     }
 

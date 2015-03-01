@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
@@ -25,18 +24,17 @@ public class ItemIcon extends Icon {
         getLore().add(ChatColor.WHITE + "Data: " + ChatColor.GREEN + item.getData());
         getLore().add(ChatColor.WHITE + "Material: " + ChatColor.GREEN + item.getMaterial());
         getLore().add(ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + item.getMaxLevelLight());
-        getLore().add(ChatColor.WHITE + "BurnTime: " + ChatColor.YELLOW + item.getMaxBurnTime());
     }
 
     @Override
     public void onItemClick(InventoryClickEvent event) {
-        if (!LightAPI.getEditorManager().isEditor(event.getWhoClicked().getName())) {
+        if (!LightSource.getInstance().getEditorManager().isEditor(event.getWhoClicked().getName())) {
             Player player = (Player) event.getWhoClicked();
             PlayerEditor editor = new PlayerEditor(player.getName(), item);
-            LightAPI.getEditorManager().addEditor(editor);
+            LightSource.getInstance().getEditorManager().addEditor(editor);
 
-            Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("editorMenu");
-            LightSource.getAPI().getGUIManager().openMenu(player, menu);
+            Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("editorMenu");
+            LightSource.getInstance().getGUIManager().openMenu(player, menu);
         }
     }
 
@@ -52,6 +50,5 @@ public class ItemIcon extends Icon {
         getLore().set(2, ChatColor.WHITE + "Data: " + ChatColor.GREEN + refresh.getData());
         getLore().set(3, ChatColor.WHITE + "Material: " + ChatColor.GREEN + refresh.getMaterial());
         getLore().set(4, ChatColor.WHITE + "Light level: " + ChatColor.YELLOW + refresh.getMaxLevelLight());
-        getLore().set(5, ChatColor.WHITE + "BurnTime: " + ChatColor.YELLOW + refresh.getMaxBurnTime());
     }
 }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -13,7 +12,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.sources.Source;
 
@@ -24,9 +22,6 @@ public class ItemManager {
     private static ArrayList<LightItem> list = new ArrayList<LightItem>();
     private static LightSource plugin = LightSource.getInstance();
     private String name = "Items";
-
-    // GENERATE YOUR OWN ID! GO TO uuidgenerator.net
-    public static final UUID TIME_ID = UUID.fromString("ec44b607-0d5d-472d-a84c-618bdd0230e9");
 
     public void loadItems() {
         for (String str : getConfig().getKeys(false)) {
@@ -39,9 +34,8 @@ public class ItemManager {
             Material material = Material.getMaterial(getConfig().getString(str + ".material"));
             int data = getConfig().getInt(str + ".data");
             int level = getConfig().getInt(str + ".lightlevel");
-            int burnTime = getConfig().getInt(str + ".burnTime");
 
-            LightItem item = new LightItem(str, name, material, data, level, burnTime);
+            LightItem item = new LightItem(str, name, material, data, level);
 
             addLightSource(item, str);
         }
@@ -52,7 +46,7 @@ public class ItemManager {
             String folder = LightSource.getInstance().getDataFolder() + "";
             this.customFile = new File(folder, name + ".yml");
         }
-        this.customConfig = YamlConfiguration.loadConfiguration(this.customFile);
+        ItemManager.customConfig = YamlConfiguration.loadConfiguration(this.customFile);
 
         // Look for defaults in the jar
         // InputStream defConfigStream =
@@ -65,14 +59,14 @@ public class ItemManager {
     }
 
     public FileConfiguration getConfig() {
-        if (this.customConfig == null) {
+        if (ItemManager.customConfig == null) {
             reloadConfig();
         }
-        return this.customConfig;
+        return ItemManager.customConfig;
     }
 
     public void saveConfig() {
-        if (this.customConfig == null || this.customFile == null) {
+        if (ItemManager.customConfig == null || this.customFile == null) {
             return;
         }
         try {
@@ -86,7 +80,7 @@ public class ItemManager {
     public static void addLightSource(LightItem item, String keyName) {
         if (!list.contains(item)) {
             list.add(item);
-            LightSource.getAPI().log(LightSource.getAPI().BUKKIT_SENDER, "Added new item: " + ChatColor.YELLOW + keyName);
+            LightSource.getInstance().log(LightSource.getInstance().BUKKIT_SENDER, "Added new item: " + ChatColor.YELLOW + keyName);
         } else {
             plugin.getLogger().log(Level.WARNING, "This item is already in the list.");
         }
@@ -102,7 +96,7 @@ public class ItemManager {
             }
         }
 
-        Iterator<Source> sources = LightAPI.getSourceManager().getSourceList().iterator();
+        Iterator<Source> sources = LightSource.getInstance().getSourceManager().getSourceList().iterator();
         while (sources.hasNext()) {
             Source i = sources.next();
             if (i.getItem().getId().equals(item.getId())) {

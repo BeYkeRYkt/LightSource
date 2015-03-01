@@ -20,8 +20,8 @@ public class Worlds extends Icon {
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("worldsMenu");
-        LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("worldsMenu");
+        LightSource.getInstance().getGUIManager().openMenu(player, menu);
         player.playSound(player.getLocation(), Sound.SHEEP_IDLE, 1, 1);
     }
 }

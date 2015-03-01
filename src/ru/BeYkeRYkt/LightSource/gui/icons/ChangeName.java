@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
@@ -24,16 +23,16 @@ public class ChangeName extends Icon {
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        LightSource.getAPI().log(player, "Enter new name (Chat)");
+        LightSource.getInstance().log(player, "Enter new name (Chat)");
 
-        PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
         editor.setStage(1);
         player.closeInventory();
     }
 
     @Override
     public void onMenuOpen(Menu menu, Player player) {
-        PlayerEditor editor = LightAPI.getEditorManager().getEditor(player.getName());
+        PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
         getLore().set(1, ChatColor.WHITE + "Current name: " + ChatColor.GREEN + editor.getItem().getName());
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
+import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.items.ItemManager;
 import ru.BeYkeRYkt.LightSource.items.LightItem;
 
@@ -156,14 +156,13 @@ public class EditorManager {
         }
         creators.clear();
 
-        FileConfiguration config = LightAPI.getItemManager().getConfig();
+        FileConfiguration config = LightSource.getInstance().getItemManager().getConfig();
         for (LightItem item : ItemManager.getList()) {
             config.set(item.getId() + ".name", item.getName());
             config.set(item.getId() + ".data", item.getData());
             config.set(item.getId() + ".material", item.getMaterial().name());
             config.set(item.getId() + ".lightlevel", item.getMaxLevelLight());
-            config.set(item.getId() + ".burnTime", item.getMaxBurnTime());
         }
-        LightAPI.getItemManager().saveConfig();
+        LightSource.getInstance().getItemManager().saveConfig();
     }
 }

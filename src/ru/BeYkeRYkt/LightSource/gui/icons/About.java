@@ -32,9 +32,9 @@ public class About extends Icon {
             Bukkit.getPluginManager().disablePlugin(LightSource.getInstance());
             Bukkit.getPluginManager().enablePlugin(LightSource.getInstance());
             player.closeInventory();
-            LightSource.getInstance().getAPI().log(player, ChatColor.GREEN + "Reloading is complete.");
+            LightSource.getInstance().log(player, ChatColor.GREEN + "Reloading is complete.");
         } catch (Exception e) {
-            LightSource.getInstance().getAPI().log(player, ChatColor.RED + "There was an error when you restart the plugin, send to developer log.");
+            LightSource.getInstance().log(player, ChatColor.RED + "There was an error when you restart the plugin, send to developer log.");
             e.printStackTrace();
         }
     }

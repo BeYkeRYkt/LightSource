@@ -34,7 +34,7 @@ public class BurnLight extends Icon {
 
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-        Menu menu = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
-        LightSource.getAPI().getGUIManager().openMenu(player, menu);
+        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
+        LightSource.getInstance().getGUIManager().openMenu(player, menu);
     }
 }

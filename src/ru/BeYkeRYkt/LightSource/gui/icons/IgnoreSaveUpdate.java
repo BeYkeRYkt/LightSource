@@ -35,9 +35,9 @@ public class IgnoreSaveUpdate extends Icon {
         }
         getLore().set(7, String.valueOf(LightSource.getInstance().getDB().isIgnoreSaveUpdate()));
 
-        Menu menu1 = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
+        Menu menu1 = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-        LightSource.getAPI().getGUIManager().openMenu(player, menu1);
+        LightSource.getInstance().getGUIManager().openMenu(player, menu1);
     }
 }

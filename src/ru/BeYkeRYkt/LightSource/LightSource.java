@@ -15,21 +15,29 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.BeYkeRYkt.LightAPI.LightAPI;
+import ru.BeYkeRYkt.LightSource.gui.GUIManager;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
+import ru.BeYkeRYkt.LightSource.gui.editor.EditorManager;
 import ru.BeYkeRYkt.LightSource.items.ItemManager;
-import ru.BeYkeRYkt.LightSource.sources.ChunkCoords;
 import ru.BeYkeRYkt.LightSource.sources.Source;
+import ru.BeYkeRYkt.LightSource.sources.SourceManager;
+import ru.BeYkeRYkt.LightSource.task.TaskManager;
 
 public class LightSource extends JavaPlugin {
 
     private static LightSource plugin;
-    private static LightAPI api;
     private LSConfig db;
+    private ItemManager manager;
+    private GUIManager gui;
+    private SourceManager source;
+    public CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
+    private EditorManager editor;
+    private TaskManager task;
 
     @Override
     public void onEnable() {
         LightSource.plugin = this;
-        LightSource.api = new LightAPI();
         PluginDescriptionFile pdfFile = getDescription();
         try {
             FileConfiguration fc = getConfig();
@@ -60,37 +68,42 @@ public class LightSource extends JavaPlugin {
             e.printStackTrace();
         }
         this.db = new LSConfig(this);
+        manager = new ItemManager();
+        source = new SourceManager();
+        task = new TaskManager();
+        gui = new GUIManager();
+        editor = new EditorManager();
+
+        manager.loadItems();
+        editor.init();
+        task.init();
+        gui.load();
+        Bukkit.getPluginManager().registerEvents(new LightListener(), this);
+
         createExampleItems();
 
-        if (getAPI().getNMSHandler() != null) {
-            getAPI().init();
-            Bukkit.getPluginManager().registerEvents(new LightListener(), this);
-
-            // mcstats
-            try {
-                Metrics metrics = new Metrics(this);
-                metrics.start();
-            } catch (IOException e) {
-                // Failed to submit the stats :-(
-            }
+        // mcstats
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
         }
     }
 
     @Override
     public void onDisable() {
-        getAPI().getNMSHandler().unloadWorlds();
         Bukkit.getScheduler().cancelTasks(this);
-        LightAPI.getEditorManager().save();
+        getEditorManager().save();
         ItemManager.getList().clear();
         HandlerList.unregisterAll(this);
         int index;
-        for (index = LightAPI.getSourceManager().getSourceList().size() - 1; index >= 0; --index) {
-            Source light = LightAPI.getSourceManager().getSourceList().get(index);
-            LightAPI.deleteLight(light.getLocation(), true);
-            LightAPI.getSourceManager().removeSource(light);
+        for (index = getSourceManager().getSourceList().size() - 1; index >= 0; --index) {
+            Source light = getSourceManager().getSourceList().get(index);
+            LightAPI.deleteLight(light.getLocation());
+            getSourceManager().removeSource(light);
         }
         getDB().save();
-        api = null;
         db = null;
     }
 
@@ -98,12 +111,32 @@ public class LightSource extends JavaPlugin {
         return plugin;
     }
 
-    public static LightAPI getAPI() {
-        return api;
-    }
-
     public LSConfig getDB() {
         return db;
+    }
+
+    public ItemManager getItemManager() {
+        return manager;
+    }
+
+    public GUIManager getGUIManager() {
+        return gui;
+    }
+
+    public SourceManager getSourceManager() {
+        return source;
+    }
+
+    public void log(CommandSender sender, String message) {
+        sender.sendMessage(ChatColor.AQUA + "<LightSource>: " + ChatColor.WHITE + message);
+    }
+
+    public EditorManager getEditorManager() {
+        return editor;
+    }
+
+    public TaskManager getTaskManager() {
+        return task;
     }
 
     @Override
@@ -112,52 +145,51 @@ public class LightSource extends JavaPlugin {
             Player player = (Player) sender;
             if (cmd.getName().equalsIgnoreCase("ls")) {
                 if (player.hasPermission("ls.admin") || player.isOp()) {
-                    getAPI().getGUIManager().openMenu(player, getAPI().getGUIManager().getMenuFromId("mainMenu"));
+                    getGUIManager().openMenu(player, getGUIManager().getMenuFromId("mainMenu"));
                 } else {
-                    getAPI().log(player, "Nope :)");
+                    log(player, "Nope :)");
                 }
             } else if (cmd.getName().equalsIgnoreCase("light")) {
                 if (player.hasPermission("ls.lightcreator") || player.isOp()) {
                     if (args.length == 0) {
-                        Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
-                        getAPI().getGUIManager().openMenu(player, menu);
+                        Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");
+                        getGUIManager().openMenu(player, menu);
                     } else if (args.length == 1) {
                         if (args[0].equalsIgnoreCase("create")) {
-                            getAPI().log(player, ChatColor.RED + "Need more arguments!");
-                            getAPI().log(player, ChatColor.RED + "/light create [level 1-15]");
+                            log(player, ChatColor.RED + "Need more arguments!");
+                            log(player, ChatColor.RED + "/light create [level 1-15]");
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            LightAPI.deleteLight(player.getLocation(), true);
-                            getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
+                            LightAPI.deleteLight(player.getLocation());
+                            log(player, ChatColor.GREEN + "Light successfully deleted!");
                         } else {
-                            Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
-                            getAPI().getGUIManager().openMenu(player, menu);
+                            Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");
+                            getGUIManager().openMenu(player, menu);
                         }
                     } else if (args.length == 2) {
                         if (args[0].equalsIgnoreCase("create")) {
                             int lightlevel = Integer.parseInt(args[1]);
                             if (lightlevel <= 15) {
                                 LightAPI.createLight(player.getLocation(), lightlevel);
-                                LightAPI.updateChunk(new ChunkCoords(player.getLocation().getChunk()));
                                 player.getLocation().getChunk().unload(true);
                                 player.getLocation().getChunk().load(true);
-                                getAPI().log(player, ChatColor.GREEN + "Light successfully created!");
+                                log(player, ChatColor.GREEN + "Light successfully created!");
                             } else {
-                                getAPI().log(player, ChatColor.RED + "Maximum 15 level!");
-                                getAPI().log(player, ChatColor.RED + "/light create [level 1-15]");
+                                log(player, ChatColor.RED + "Maximum 15 level!");
+                                log(player, ChatColor.RED + "/light create [level 1-15]");
                             }
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            LightAPI.deleteLight(player.getLocation(), true);
-                            getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
+                            LightAPI.deleteLight(player.getLocation());
+                            log(player, ChatColor.GREEN + "Light successfully deleted!");
                         } else {
-                            Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
-                            getAPI().getGUIManager().openMenu(player, menu);
+                            Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");
+                            getGUIManager().openMenu(player, menu);
                         }
                     } else {
-                        Menu menu = getAPI().getGUIManager().getMenuFromId("lc_mainMenu");
-                        getAPI().getGUIManager().openMenu(player, menu);
+                        Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");
+                        getGUIManager().openMenu(player, menu);
                     }
                 } else {
-                    getAPI().log(player, "Nope :)");
+                    log(player, "Nope :)");
                 }
             }
         }
@@ -166,73 +198,57 @@ public class LightSource extends JavaPlugin {
 
     public void createExampleItems() {
         try {
-            getAPI();
-            FileConfiguration fc = LightAPI.getItemManager().getConfig();
+            FileConfiguration fc = getItemManager().getConfig();
 
             if (!new File(getDataFolder(), "Items.yml").exists()) {
 
                 fc.addDefault("Lava.material", "LAVA");
                 fc.addDefault("Lava.lightlevel", 15);
-                fc.addDefault("Lava.burnTime", -1);
 
                 fc.addDefault("StationLava.material", "STATIONARY_LAVA");
                 fc.addDefault("StationLava.lightlevel", 15);
-                fc.addDefault("StationLava.burnTime", -1);
 
                 fc.addDefault("Fire.material", "FIRE");
                 fc.addDefault("Fire.lightlevel", 115);
-                fc.addDefault("Fire.burnTime", -1);
 
                 fc.addDefault("Jack.material", "JACK_O_LANTERN");
                 fc.addDefault("Jack.lightlevel", 15);
-                fc.addDefault("Jack.burnTime", 60);
 
                 fc.addDefault("LavaBucket.material", "LAVA_BUCKET");
                 fc.addDefault("LavaBucket.lightlevel", 15);
-                fc.addDefault("LavaBucket.burnTime", 60);
 
                 fc.addDefault("Torch.material", "TORCH");
                 fc.addDefault("Torch.lightlevel", 14);
-                fc.addDefault("Torch.burnTime", 60);
 
                 fc.addDefault("Glowstone.material", "GLOWSTONE");
                 fc.addDefault("Glowstone.lightlevel", 14);
-                fc.addDefault("Glowstone.burnTime", -1);
 
                 fc.addDefault("BlazeRod.material", "BLAZE_ROD");
                 fc.addDefault("BlazeRod.lightlevel", 5);
-                fc.addDefault("BlazeRod.burnTime", 30);
 
                 fc.addDefault("Redstone.material", "REDSTONE_TORCH_ON");
                 fc.addDefault("Redstone.lightlevel", 9);
-                fc.addDefault("Redstone.burnTime", 20);
 
-                fc.addDefault("SeaLatern.material", "SEA_LANTERN");
-                fc.addDefault("SeaLatern.lightlevel", 15);
-                fc.addDefault("SeaLatern.burnTime", -1);
+                // fc.addDefault("SeaLatern.material", "SEA_LANTERN");
+                // fc.addDefault("SeaLatern.lightlevel", 15);
+                // fc.addDefault("SeaLatern.burnTime", -1); - error for 1.7.10
 
                 fc.addDefault("RedstoneLamp.material", "REDSTONE_LAMP_ON");
                 fc.addDefault("RedstoneLamp.lightlevel", 15);
-                fc.addDefault("RedstoneLamp.burnTime", -1);
 
                 fc.addDefault("Furnace.material", "BURNING_FURNACE");
                 fc.addDefault("Furnace.lightlevel", 13);
-                fc.addDefault("Furnace.burnTime", -1);
 
                 fc.addDefault("RedstoneOre.material", "REDSTONE_ORE");
                 fc.addDefault("RedstoneOre.lightlevel", 9);
-                fc.addDefault("RedstoneOre.burnTime", -1);
 
                 fc.addDefault("EnderChest.material", "ENDER_CHEST");
                 fc.addDefault("EnderChest.lightlevel", 6);
-                fc.addDefault("EnderChest.burnTime", -1);
 
                 fc.options().copyDefaults(true);
-                getAPI();
-                LightAPI.getItemManager().saveConfig();
+                getItemManager().saveConfig();
                 fc.options().copyDefaults(false);
-                getAPI();
-                LightAPI.getItemManager().reloadConfig();
+                getItemManager().reloadConfig();
             }
         } catch (Exception e) {
             e.printStackTrace();

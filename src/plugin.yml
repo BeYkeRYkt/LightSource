@@ -1,9 +1,10 @@
 name: LightSource
 main: ru.BeYkeRYkt.LightSource.LightSource
-version: 2.1.6
+version: 2.2.1
 description: More Lights!
 author: BeYkeRYkt
 softdepend: [Multiverse-Core]
+depend: [LightAPI]
 commands:
    ls:
       description: Main command

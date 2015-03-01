@@ -5,10 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
+import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
-import ru.BeYkeRYkt.LightSource.sources.ChunkCoords;
 
 public class LC_LightLevel extends Icon {
 
@@ -28,10 +27,9 @@ public class LC_LightLevel extends Icon {
         player.closeInventory();
 
         LightAPI.createLight(player.getLocation(), level);
-        LightAPI.updateChunk(new ChunkCoords(player.getLocation().getChunk()));
         player.getLocation().getChunk().unload(true);
         player.getLocation().getChunk().load(true);
-        LightSource.getAPI().log(player, ChatColor.GREEN + "Light successfully created!");
+        LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully created!");
     }
 
 }

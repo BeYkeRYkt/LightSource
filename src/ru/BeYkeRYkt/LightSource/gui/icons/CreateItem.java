@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.editor.PlayerCreator;
@@ -20,11 +19,11 @@ public class CreateItem extends Icon {
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if (!LightAPI.getEditorManager().isCreator(player.getName())) {
+        if (!LightSource.getInstance().getEditorManager().isCreator(player.getName())) {
             PlayerCreator creator = new PlayerCreator(player.getName());
-            LightAPI.getEditorManager().addCreator(creator);
+            LightSource.getInstance().getEditorManager().addCreator(creator);
 
-            LightSource.getAPI().log(player, "Enter item id " + ChatColor.YELLOW + "(Example: MyBestItem or MYBESTITEMTOO) ");
+            LightSource.getInstance().log(player, "Enter item id " + ChatColor.YELLOW + "(Example: MyBestItem or MYBESTITEMTOO) ");
             player.closeInventory();
         }
     }

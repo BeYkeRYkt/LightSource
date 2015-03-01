@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightSource.LightAPI;
+import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
@@ -30,8 +30,8 @@ public class LC_Delete extends Icon {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        LightAPI.deleteLight(player.getLocation(), true);
-        LightSource.getAPI().log(player, ChatColor.GREEN + "Light successfully deleted!");
+        LightAPI.deleteLight(player.getLocation());
+        LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully deleted!");
     }
 
     @Override

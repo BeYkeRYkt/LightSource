@@ -32,9 +32,9 @@ public class LightSourceDamage extends Icon {
         // replace
         getLore().set(3, String.valueOf(LightSource.getInstance().getDB().isLightSourceDamage()));
 
-        Menu menu1 = LightSource.getAPI().getGUIManager().getMenuFromId("optionsMenu");
+        Menu menu1 = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
         Player player = (Player) event.getWhoClicked();
         player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-        LightSource.getAPI().getGUIManager().openMenu(player, menu1);
+        LightSource.getInstance().getGUIManager().openMenu(player, menu1);
     }
 }

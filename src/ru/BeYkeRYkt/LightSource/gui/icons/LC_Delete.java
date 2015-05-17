@@ -30,7 +30,7 @@ public class LC_Delete extends Icon {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        LightAPI.deleteLight(player.getLocation());
+        LightAPI.deleteLight(player.getLocation(), true);
         LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully deleted!");
     }
 

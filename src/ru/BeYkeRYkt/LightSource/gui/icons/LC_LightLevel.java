@@ -26,7 +26,7 @@ public class LC_LightLevel extends Icon {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        LightAPI.createLight(player.getLocation(), level);
+        LightAPI.createLight(player.getLocation(), level, true);
         player.getLocation().getChunk().unload(true);
         player.getLocation().getChunk().load(true);
         LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully created!");

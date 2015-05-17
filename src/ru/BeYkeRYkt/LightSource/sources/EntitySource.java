@@ -33,7 +33,7 @@ public class EntitySource extends Source {
                 }
             }
         }
-        LightAPI.deleteLight(this.getLocation());
+        LightAPI.deleteLight(this.getLocation(), true);
         LightSource.getInstance().getSourceManager().removeSource(this);
         return;
     }

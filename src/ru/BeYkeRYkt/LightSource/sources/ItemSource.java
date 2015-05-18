@@ -3,7 +3,6 @@ package ru.BeYkeRYkt.LightSource.sources;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 
-import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.items.ItemManager;
 import ru.BeYkeRYkt.LightSource.items.LightItem;
@@ -29,7 +28,7 @@ public class ItemSource extends Source {
                 }
             }
         }
-        LightAPI.deleteLight(this.getLocation(), true);
+        LightSource.getInstance().getRegistry().deleteLight(this.getLocation(), true);
         LightSource.getInstance().getSourceManager().removeSource(this);
         return;
     }

@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.ChunkCoords;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.items.LightItem;
@@ -100,14 +99,14 @@ public abstract class Source {
         // for save :)
         if (!LightSource.getInstance().getDB().isIgnoreSaveUpdate()) {
             if (newLocation.getBlockX() != getLocation().getBlockX() || newLocation.getBlockY() != getLocation().getBlockY() || newLocation.getBlockZ() != getLocation().getBlockZ()) {
-                LightAPI.deleteLight(getLocation(), false);
+                LightSource.getInstance().getRegistry().deleteLight(getLocation(), false);
                 setLocation(newLocation);
-                LightAPI.createLight(getLocation(), getLevelLight(), true);
+                LightSource.getInstance().getRegistry().createLight(getLocation(), getLevelLight(), true);
             }
         } else {
-            LightAPI.deleteLight(getLocation(), false);
+            LightSource.getInstance().getRegistry().deleteLight(getLocation(), false);
             setLocation(newLocation);
-            LightAPI.createLight(getLocation(), getLevelLight(), true);
+            LightSource.getInstance().getRegistry().createLight(getLocation(), getLevelLight(), true);
         }
     }
 

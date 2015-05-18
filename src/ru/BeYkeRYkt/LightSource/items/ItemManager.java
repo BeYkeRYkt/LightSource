@@ -76,7 +76,6 @@ public class ItemManager {
         }
     }
 
-    @SuppressWarnings("static-access")
     public static void addLightSource(LightItem item, String keyName) {
         if (!list.contains(item)) {
             list.add(item);

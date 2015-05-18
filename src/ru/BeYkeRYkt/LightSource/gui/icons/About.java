@@ -21,7 +21,6 @@ public class About extends Icon {
         getLore().add(ChatColor.AQUA + "Click here for reload plugin.");
     }
 
-    @SuppressWarnings("static-access")
     @Override
     public void onItemClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();

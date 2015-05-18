@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.BeYkeRYkt.LightAPI.LightAPI;
+import ru.BeYkeRYkt.LightAPI.nms.ILightRegistry;
 import ru.BeYkeRYkt.LightSource.gui.GUIManager;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
 import ru.BeYkeRYkt.LightSource.gui.editor.EditorManager;
@@ -34,6 +35,7 @@ public class LightSource extends JavaPlugin {
     public CommandSender BUKKIT_SENDER = Bukkit.getConsoleSender();
     private EditorManager editor;
     private TaskManager task;
+    private ILightRegistry registry;
 
     @Override
     public void onEnable() {
@@ -67,6 +69,7 @@ public class LightSource extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.registry = LightAPI.getRegistry(getDescription().getName());
         this.db = new LSConfig(this);
         manager = new ItemManager();
         source = new SourceManager();
@@ -100,7 +103,7 @@ public class LightSource extends JavaPlugin {
         int index;
         for (index = getSourceManager().getSourceList().size() - 1; index >= 0; --index) {
             Source light = getSourceManager().getSourceList().get(index);
-            LightAPI.deleteLight(light.getLocation(), true);
+            getRegistry().deleteLight(light.getLocation(), true);
             getSourceManager().removeSource(light);
         }
         getDB().save();
@@ -139,6 +142,10 @@ public class LightSource extends JavaPlugin {
         return task;
     }
 
+    public ILightRegistry getRegistry() {
+        return registry;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (sender instanceof Player) {
@@ -159,7 +166,7 @@ public class LightSource extends JavaPlugin {
                             log(player, ChatColor.RED + "Need more arguments!");
                             log(player, ChatColor.RED + "/light create [level 1-15]");
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            LightAPI.deleteLight(player.getLocation(), true);
+                            getRegistry().deleteLight(player.getLocation(), true);
                             log(player, ChatColor.GREEN + "Light successfully deleted!");
                         } else {
                             Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");
@@ -169,7 +176,7 @@ public class LightSource extends JavaPlugin {
                         if (args[0].equalsIgnoreCase("create")) {
                             int lightlevel = Integer.parseInt(args[1]);
                             if (lightlevel <= 15) {
-                                LightAPI.createLight(player.getLocation(), lightlevel, true);
+                                getRegistry().createLight(player.getLocation(), lightlevel, true);
                                 player.getLocation().getChunk().unload(true);
                                 player.getLocation().getChunk().load(true);
                                 log(player, ChatColor.GREEN + "Light successfully created!");
@@ -178,7 +185,7 @@ public class LightSource extends JavaPlugin {
                                 log(player, ChatColor.RED + "/light create [level 1-15]");
                             }
                         } else if (args[0].equalsIgnoreCase("delete")) {
-                            LightAPI.deleteLight(player.getLocation(), true);
+                            getRegistry().deleteLight(player.getLocation(), true);
                             log(player, ChatColor.GREEN + "Light successfully deleted!");
                         } else {
                             Menu menu = getGUIManager().getMenuFromId("lc_mainMenu");

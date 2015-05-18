@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.items.ItemManager;
 import ru.BeYkeRYkt.LightSource.items.LightItem;
@@ -33,7 +32,7 @@ public class PlayerSource extends Source {
                 }
             }
         }
-        LightAPI.deleteLight(this.getLocation(), true);
+        LightSource.getInstance().getRegistry().deleteLight(this.getLocation(), true);
         LightSource.getInstance().getSourceManager().removeSource(this);
     }
 

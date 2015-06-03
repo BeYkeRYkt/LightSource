@@ -30,6 +30,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
 import ru.BeYkeRYkt.LightSource.gui.editor.PlayerCreator;
@@ -203,7 +204,7 @@ public class LightListener implements Listener {
                 Player player = (Player) light.getOwner();
                 if (player.getName().equals(event.getPlayer())) {
                     if (player.getItemInHand().getAmount() <= 1) {
-                        LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), false);
+                        LightAPI.deleteLight(light.getLocation());
                     }
                     ItemSource itemsource = new ItemSource(event.getItemDrop(), light.getItem());
                     LightSource.getInstance().getSourceManager().addSource(itemsource);
@@ -245,7 +246,7 @@ public class LightListener implements Listener {
                 if (LightSource.getInstance().getSourceManager().getSource(player) != null) {
                     Source source = LightSource.getInstance().getSourceManager().getSource(player);
                     if (source.getType() == ItemType.HAND) {
-                        LightSource.getInstance().getRegistry().deleteLight(source.getLocation(), true);
+                        LightAPI.deleteLight(source.getLocation());
                     }
                 }
             }
@@ -256,7 +257,7 @@ public class LightListener implements Listener {
     public void onChunkLoad(ChunkLoadEvent event) {
         for (Source light : LightSource.getInstance().getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+                LightAPI.deleteLight(light.getLocation());
             }
         }
     }
@@ -267,7 +268,7 @@ public class LightListener implements Listener {
             return;
         for (Source light : LightSource.getInstance().getSourceManager().getSourceList()) {
             if (event.getChunk().getX() == light.getLocation().getChunk().getX() && event.getChunk().getZ() == light.getLocation().getChunk().getZ()) {
-                LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), false);
+                LightAPI.deleteLight(light.getLocation());
             }
         }
     }
@@ -276,7 +277,7 @@ public class LightListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
             LightSource.getInstance().getSourceManager().removeSource(light);
         }
     }
@@ -287,7 +288,7 @@ public class LightListener implements Listener {
             return;
         if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
             LightSource.getInstance().getSourceManager().removeSource(light);
         }
     }
@@ -298,7 +299,7 @@ public class LightListener implements Listener {
             return;
         if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
@@ -306,7 +307,7 @@ public class LightListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (LightSource.getInstance().getSourceManager().getSource(event.getEntity()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getEntity());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
@@ -316,7 +317,7 @@ public class LightListener implements Listener {
             return;
         if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 
@@ -324,7 +325,7 @@ public class LightListener implements Listener {
     public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
         if (LightSource.getInstance().getSourceManager().getSource(event.getPlayer()) != null) {
             Source light = LightSource.getInstance().getSourceManager().getSource(event.getPlayer());
-            LightSource.getInstance().getRegistry().deleteLight(light.getLocation(), true);
+            LightAPI.deleteLight(light.getLocation());
         }
     }
 

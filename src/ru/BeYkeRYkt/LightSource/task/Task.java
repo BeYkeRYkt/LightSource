@@ -2,29 +2,29 @@ package ru.BeYkeRYkt.LightSource.task;
 
 public abstract class Task {
 
-    private boolean started;
+	private boolean started;
 
-    public void start() {
-        if (!isStarted()) {
-            setStarted(true);
-        }
-    }
+	public void start() {
+		if (!isStarted()) {
+			setStarted(true);
+		}
+	}
 
-    public void stop() {
-        if (isStarted()) {
-            setStarted(false);
-        }
-    }
+	public void stop() {
+		if (isStarted()) {
+			setStarted(false);
+		}
+	}
 
-    public abstract String getId();
+	public abstract String getId();
 
-    public abstract void doTick();
+	public abstract void doTick();
 
-    public boolean isStarted() {
-        return started;
-    }
+	public boolean isStarted() {
+		return started;
+	}
 
-    public void setStarted(boolean start) {
-        this.started = start;
-    }
+	public void setStarted(boolean start) {
+		this.started = start;
+	}
 }

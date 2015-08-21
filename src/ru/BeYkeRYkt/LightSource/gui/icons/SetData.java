@@ -12,28 +12,28 @@ import ru.BeYkeRYkt.LightSource.gui.editor.PlayerEditor;
 
 public class SetData extends Icon {
 
-    public SetData() {
-        super("editorData", Material.BOOKSHELF);
-        setName(ChatColor.AQUA + "Change data");
-        getLore().add("");
-        getLore().add(ChatColor.WHITE + "Current data: ");
-        getLore().add(ChatColor.GOLD + "Click item for edit...");
-    }
+	public SetData() {
+		super("editorData", Material.BOOKSHELF);
+		setName(ChatColor.AQUA + "Change data");
+		getLore().add("");
+		getLore().add(ChatColor.WHITE + "Current data: ");
+		getLore().add(ChatColor.GOLD + "Click item for edit...");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        LightSource.getInstance().log(player, "Enter new data (Chat)");
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		LightSource.getInstance().log(player, "Enter new data (Chat)");
 
-        PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
-        editor.setStage(3);
-        player.closeInventory();
-    }
+		PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
+		editor.setStage(3);
+		player.closeInventory();
+	}
 
-    @Override
-    public void onMenuOpen(Menu menu, Player player) {
-        PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
-        getLore().set(1, ChatColor.WHITE + "Current data: " + ChatColor.GREEN + editor.getItem().getData());
-    }
+	@Override
+	public void onMenuOpen(Menu menu, Player player) {
+		PlayerEditor editor = LightSource.getInstance().getEditorManager().getEditor(player.getName());
+		getLore().set(1, ChatColor.WHITE + "Current data: " + ChatColor.GREEN + editor.getItem().getData());
+	}
 
 }

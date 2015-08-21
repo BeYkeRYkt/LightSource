@@ -12,17 +12,17 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class Options extends Icon {
 
-    public Options() {
-        super("options", Material.BOOKSHELF);
-        setName(ChatColor.GREEN + "Options");
-    }
+	public Options() {
+		super("options", Material.BOOKSHELF);
+		setName(ChatColor.GREEN + "Options");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        player.playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		player.playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
 
-        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
-        LightSource.getInstance().getGUIManager().openMenu(player, menu);
-    }
+		Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
+		LightSource.getInstance().getGUIManager().openMenu(player, menu);
+	}
 }

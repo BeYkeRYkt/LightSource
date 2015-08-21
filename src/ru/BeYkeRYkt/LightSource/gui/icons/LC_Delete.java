@@ -5,41 +5,41 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import ru.BeYkeRYkt.LightAPI.LightAPI;
 import ru.BeYkeRYkt.LightSource.LightSource;
 import ru.BeYkeRYkt.LightSource.gui.Icon;
 import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class LC_Delete extends Icon {
 
-    public LC_Delete() {
-        super("lc_delete", Material.WATER_BUCKET);
-        setName(ChatColor.YELLOW + "Delete light");
-        getLore().add("");
-        getLore().add(ChatColor.WHITE + "Delete an invisible light source on your position");
-        // needed
-        getLore().add("");
-        getLore().add("");
-        getLore().add("");
-        getLore().add("");
-        getLore().add("");
-    }
+	public LC_Delete() {
+		super("lc_delete", Material.WATER_BUCKET);
+		setName(ChatColor.YELLOW + "Delete light");
+		getLore().add("");
+		getLore().add(ChatColor.WHITE + "Delete an invisible light source on your position");
+		// needed
+		getLore().add("");
+		getLore().add("");
+		getLore().add("");
+		getLore().add("");
+		getLore().add("");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        player.closeInventory();
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		player.closeInventory();
 
-        LightAPI.deleteLight(player.getLocation());
-        LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully deleted!");
-    }
+		LightSource.getInstance().getLightRegistry().deleteLight(player.getLocation());
+		LightSource.getInstance().getLightRegistry().collectChunks(player.getLocation());
+		LightSource.getInstance().log(player, ChatColor.GREEN + "Light successfully deleted!");
+	}
 
-    @Override
-    public void onMenuOpen(Menu menu, Player player) {
-        getLore().set(2, ChatColor.GOLD + "Your Location:");
-        getLore().set(3, ChatColor.WHITE + "X= " + player.getLocation().getBlockX());
-        getLore().set(4, ChatColor.WHITE + "Y= " + player.getLocation().getBlockY());
-        getLore().set(5, ChatColor.WHITE + "Z= " + player.getLocation().getBlockZ());
-        getLore().set(6, ChatColor.GREEN + "LightLevel: " + player.getLocation().getBlock().getLightLevel());
-    }
+	@Override
+	public void onMenuOpen(Menu menu, Player player) {
+		getLore().set(2, ChatColor.GOLD + "Your Location:");
+		getLore().set(3, ChatColor.WHITE + "X= " + player.getLocation().getBlockX());
+		getLore().set(4, ChatColor.WHITE + "Y= " + player.getLocation().getBlockY());
+		getLore().set(5, ChatColor.WHITE + "Z= " + player.getLocation().getBlockZ());
+		getLore().set(6, ChatColor.GREEN + "LightLevel: " + player.getLocation().getBlock().getLightLevel());
+	}
 }

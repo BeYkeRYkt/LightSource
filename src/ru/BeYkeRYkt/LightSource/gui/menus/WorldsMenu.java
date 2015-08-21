@@ -12,24 +12,24 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class WorldsMenu extends Menu {
 
-    public WorldsMenu() {
-        super("worldsMenu", ChatColor.GREEN + "Worlds", 54);
+	public WorldsMenu() {
+		super("worldsMenu", ChatColor.GREEN + "Worlds", 54);
 
-        for (int i = 0; i < Bukkit.getWorlds().size(); i++) {
-            World world = Bukkit.getWorlds().get(i);
-            Icon world_icon = LightSource.getInstance().getGUIManager().getIconFromId("world_" + world.getName());
-            addItem(world_icon, i + 1);
-        }
+		for (int i = 0; i < Bukkit.getWorlds().size(); i++) {
+			World world = Bukkit.getWorlds().get(i);
+			Icon world_icon = LightSource.getInstance().getGUIManager().getIconFromId("world_" + world.getName());
+			addItem(world_icon, i + 1);
+		}
 
-        Icon back = LightSource.getInstance().getGUIManager().getIconFromId("back");
-        addItem(back, 54);
-    }
+		Icon back = LightSource.getInstance().getGUIManager().getIconFromId("back");
+		addItem(back, 54);
+	}
 
-    @Override
-    public void onOpenMenu(InventoryOpenEvent event) {
-    }
+	@Override
+	public void onOpenMenu(InventoryOpenEvent event) {
+	}
 
-    @Override
-    public void onCloseMenu(InventoryCloseEvent event) {
-    }
+	@Override
+	public void onCloseMenu(InventoryCloseEvent event) {
+	}
 }

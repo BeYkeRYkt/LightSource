@@ -12,17 +12,17 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class Back_Pages extends Icon {
 
-    public Back_Pages() {
-        super("back_pages", Material.WORKBENCH);
-        setName(ChatColor.RED + "Back");
-    }
+	public Back_Pages() {
+		super("back_pages", Material.WORKBENCH);
+		setName(ChatColor.RED + "Back");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("page_0");
-        Player player = (Player) event.getWhoClicked();
-        LightSource.getInstance().getGUIManager().openMenu(player, menu);
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("page_0");
+		Player player = (Player) event.getWhoClicked();
+		LightSource.getInstance().getGUIManager().openMenu(player, menu);
 
-        player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
-    }
+		player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
+	}
 }

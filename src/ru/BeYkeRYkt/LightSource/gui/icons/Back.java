@@ -11,16 +11,16 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class Back extends Icon {
 
-    public Back() {
-        super("back", Material.WORKBENCH);
+	public Back() {
+		super("back", Material.WORKBENCH);
 
-        setName(ChatColor.GREEN + "Back");
-    }
+		setName(ChatColor.GREEN + "Back");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Menu menu1 = LightSource.getInstance().getGUIManager().getMenuFromId("mainMenu");
-        Player player = (Player) event.getWhoClicked();
-        LightSource.getInstance().getGUIManager().openMenu(player, menu1);
-    }
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Menu menu1 = LightSource.getInstance().getGUIManager().getMenuFromId("mainMenu");
+		Player player = (Player) event.getWhoClicked();
+		LightSource.getInstance().getGUIManager().openMenu(player, menu1);
+	}
 }

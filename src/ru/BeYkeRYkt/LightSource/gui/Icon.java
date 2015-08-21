@@ -11,102 +11,102 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class Icon {
 
-    private Material material;
-    private String name;
-    private List<String> lore = new ArrayList<String>();
-    private int amount = 1;
-    private short data;
+	private Material material;
+	private String name;
+	private List<String> lore = new ArrayList<String>();
+	private int amount = 1;
+	private short data;
 
-    private String id;
+	private String id;
 
-    public Icon(String id, Material material) {
-        this(id, material, (short) 0);
-    }
+	public Icon(String id, Material material) {
+		this(id, material, (short) 0);
+	}
 
-    public Icon(String id, Material material, short data) {
-        this.id = id;
-        this.material = material;
-        this.data = data;
-    }
+	public Icon(String id, Material material, short data) {
+		this.id = id;
+		this.material = material;
+		this.data = data;
+	}
 
-    public Icon(String id, ItemStack item) {
-        this(id, item.getType());
-        if (item.getItemMeta().hasDisplayName()) {
-            this.name = item.getItemMeta().getDisplayName();
-        }
+	public Icon(String id, ItemStack item) {
+		this(id, item.getType());
+		if (item.getItemMeta().hasDisplayName()) {
+			this.name = item.getItemMeta().getDisplayName();
+		}
 
-        if (item.getItemMeta().hasLore()) {
-            this.lore = item.getItemMeta().getLore();
-        }
-        this.data = item.getData().getData();
-    }
+		if (item.getItemMeta().hasLore()) {
+			this.lore = item.getItemMeta().getLore();
+		}
+		this.data = item.getData().getData();
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public Material getMaterial() {
-        return material;
-    }
+	public Material getMaterial() {
+		return material;
+	}
 
-    public Icon setMaterial(Material material) {
-        this.material = material;
-        return this;
-    }
+	public Icon setMaterial(Material material) {
+		this.material = material;
+		return this;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Icon setName(String name) {
-        this.name = name;
-        return this;
-    }
+	public Icon setName(String name) {
+		this.name = name;
+		return this;
+	}
 
-    public Icon setLore(List<String> lore) {
-        this.lore = lore;
-        return this;
-    }
+	public Icon setLore(List<String> lore) {
+		this.lore = lore;
+		return this;
+	}
 
-    public List<String> getLore() {
-        return lore;
-    }
+	public List<String> getLore() {
+		return lore;
+	}
 
-    public int getAmount() {
-        return amount;
-    }
+	public int getAmount() {
+		return amount;
+	}
 
-    public Icon setAmount(int amount) {
-        this.amount = amount;
-        return this;
-    }
+	public Icon setAmount(int amount) {
+		this.amount = amount;
+		return this;
+	}
 
-    public ItemStack getItemStack() {
-        ItemStack item = new ItemStack(material, amount, data);
-        ItemMeta meta = item.getItemMeta();
+	public ItemStack getItemStack() {
+		ItemStack item = new ItemStack(material, amount, data);
+		ItemMeta meta = item.getItemMeta();
 
-        if (name != null) {
-            meta.setDisplayName(name);
-        }
+		if (name != null) {
+			meta.setDisplayName(name);
+		}
 
-        if (!lore.isEmpty()) {
-            meta.setLore(lore);
-        }
+		if (!lore.isEmpty()) {
+			meta.setLore(lore);
+		}
 
-        item.setItemMeta(meta);
-        return item;
-    }
+		item.setItemMeta(meta);
+		return item;
+	}
 
-    public abstract void onItemClick(InventoryClickEvent event);
+	public abstract void onItemClick(InventoryClickEvent event);
 
-    public void onMenuOpen(Menu menu, Player player) {
-    }
+	public void onMenuOpen(Menu menu, Player player) {
+	}
 
-    public short getData() {
-        return data;
-    }
+	public short getData() {
+		return data;
+	}
 
-    public void setData(short data) {
-        this.data = data;
-    }
+	public void setData(short data) {
+		this.data = data;
+	}
 }

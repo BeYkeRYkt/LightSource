@@ -11,21 +11,21 @@ import ru.BeYkeRYkt.LightSource.gui.editor.PlayerCreator;
 
 public class CreateItem extends Icon {
 
-    public CreateItem() {
-        super("createItem", Material.ANVIL);
-        setName(ChatColor.GOLD + "Create new item");
-    }
+	public CreateItem() {
+		super("createItem", Material.ANVIL);
+		setName(ChatColor.GOLD + "Create new item");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        if (!LightSource.getInstance().getEditorManager().isCreator(player.getName())) {
-            PlayerCreator creator = new PlayerCreator(player.getName());
-            LightSource.getInstance().getEditorManager().addCreator(creator);
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		if (!LightSource.getInstance().getEditorManager().isCreator(player.getName())) {
+			PlayerCreator creator = new PlayerCreator(player.getName());
+			LightSource.getInstance().getEditorManager().addCreator(creator);
 
-            LightSource.getInstance().log(player, "Enter item id " + ChatColor.YELLOW + "(Example: MyBestItem or MYBESTITEMTOO) ");
-            player.closeInventory();
-        }
-    }
+			LightSource.getInstance().log(player, "Enter item id " + ChatColor.YELLOW + "(Example: MyBestItem or MYBESTITEMTOO) ");
+			player.closeInventory();
+		}
+	}
 
 }

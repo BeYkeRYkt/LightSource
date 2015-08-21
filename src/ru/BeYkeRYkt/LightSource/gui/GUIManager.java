@@ -54,184 +54,184 @@ import ru.BeYkeRYkt.LightSource.items.LightItem;
  */
 public class GUIManager {
 
-    private List<Menu> menus = new ArrayList<Menu>();
-    private List<Icon> icons = new ArrayList<Icon>();
+	private List<Menu> menus = new ArrayList<Menu>();
+	private List<Icon> icons = new ArrayList<Icon>();
 
-    public void load() {
-        // Icons
-        // getGUIManager().registerIcon(new NullLOL());
-        registerIcon(new About());
-        registerIcon(new Back());
-        registerIcon(new EntityLight());
-        registerIcon(new ItemLight());
-        registerIcon(new Items());
-        registerIcon(new PlayerLight());
-        registerIcon(new Worlds());
-        registerIcon(new LightSourceDamage());
-        registerIcon(new IgnoreSaveUpdate());
-        registerIcon(new LC_Create());
-        registerIcon(new LC_Delete());
-        registerIcon(new ChangeName());
-        registerIcon(new ChangeLightLevel());
-        registerIcon(new Back_Pages());
-        registerIcon(new CreateItem());
-        registerIcon(new DeleteItem());
-        registerIcon(new Options());
-        registerIcon(new CheckUpdate());
-        registerIcon(new BurnLight());
-        registerIcon(new SetData());
+	public void load() {
+		// Icons
+		// getGUIManager().registerIcon(new NullLOL());
+		registerIcon(new About());
+		registerIcon(new Back());
+		registerIcon(new EntityLight());
+		registerIcon(new ItemLight());
+		registerIcon(new Items());
+		registerIcon(new PlayerLight());
+		registerIcon(new Worlds());
+		registerIcon(new LightSourceDamage());
+		registerIcon(new IgnoreSaveUpdate());
+		registerIcon(new LC_Create());
+		registerIcon(new LC_Delete());
+		registerIcon(new ChangeName());
+		registerIcon(new ChangeLightLevel());
+		registerIcon(new Back_Pages());
+		registerIcon(new CreateItem());
+		registerIcon(new DeleteItem());
+		registerIcon(new Options());
+		registerIcon(new CheckUpdate());
+		registerIcon(new BurnLight());
+		registerIcon(new SetData());
 
-        // init worlds
-        // also: MONSTERKILL!
-        for (World world : Bukkit.getWorlds()) {
-            WorldBlockTransform wbt = new WorldBlockTransform(world);
-            registerIcon(new World_Name(wbt));
-        }
+		// init worlds
+		// also: MONSTERKILL!
+		for (World world : Bukkit.getWorlds()) {
+			WorldBlockTransform wbt = new WorldBlockTransform(world);
+			registerIcon(new World_Name(wbt));
+		}
 
-        // init lightlevels :D
-        for (int i = 0; i < 15; i++) {
-            LC_LightLevel light = new LC_LightLevel(i + 1);
-            registerIcon(light);
-        }
+		// init lightlevels :D
+		for (int i = 0; i < 15; i++) {
+			LC_LightLevel light = new LC_LightLevel(i + 1);
+			registerIcon(light);
+		}
 
-        // 2.0.3: init more lightitems :D
-        for (int i = 0; i < ItemManager.getList().size(); i++) {
-            LightItem item = ItemManager.getList().get(i);
-            ItemIcon icon = new ItemIcon(item);
-            registerIcon(icon);
-        }
+		// 2.0.3: init more lightitems :D
+		for (int i = 0; i < ItemManager.getList().size(); i++) {
+			LightItem item = ItemManager.getList().get(i);
+			ItemIcon icon = new ItemIcon(item);
+			registerIcon(icon);
+		}
 
-        // 2.0.3: init large pages :D
-        for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
-            registerIcon(new GoToPage(i));
-        }
+		// 2.0.3: init large pages :D
+		for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
+			registerIcon(new GoToPage(i));
+		}
 
-        // Menus
-        registerMenu(new MainMenu());
-        registerMenu(new WorldsMenu());
-        registerMenu(new LightCreatorMenu());
-        registerMenu(new LightCreatorCreate());
-        registerMenu(new EditorMenu());
-        registerMenu(new OptionsMenu());
+		// Menus
+		registerMenu(new MainMenu());
+		registerMenu(new WorldsMenu());
+		registerMenu(new LightCreatorMenu());
+		registerMenu(new LightCreatorCreate());
+		registerMenu(new EditorMenu());
+		registerMenu(new OptionsMenu());
 
-        // 2.0.3: init large pages :D
-        for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
-            registerMenu(new PageMenu(i));
-        }
-    }
+		// 2.0.3: init large pages :D
+		for (int i = 0; i < LightSource.getInstance().getEditorManager().getPages(); i++) {
+			registerMenu(new PageMenu(i));
+		}
+	}
 
-    public void refresh() {
-        icons.clear();
-        menus.clear();
+	public void refresh() {
+		icons.clear();
+		menus.clear();
 
-        LightSource.getInstance().getEditorManager().refreshCachedItemsList();
-        load();
-    }
+		LightSource.getInstance().getEditorManager().refreshCachedItemsList();
+		load();
+	}
 
-    public Inventory openMenu(Player player, Menu menu) {
-        PlayerOpenMenuEvent event = new PlayerOpenMenuEvent(player, menu);
-        Bukkit.getPluginManager().callEvent(event);
+	public Inventory openMenu(Player player, Menu menu) {
+		PlayerOpenMenuEvent event = new PlayerOpenMenuEvent(player, menu);
+		Bukkit.getPluginManager().callEvent(event);
 
-        if (event.isCancelled())
-            return Bukkit.createInventory(null, menu.getSlots(), menu.getName());
+		if (event.isCancelled())
+			return Bukkit.createInventory(null, menu.getSlots(), menu.getName());
 
-        Inventory inv = Bukkit.createInventory(null, event.getMenu().getSlots(), event.getMenu().getName());
-        // init icons
-        if (!event.getMenu().getIcons().isEmpty()) {
-            for (Icon icon : event.getMenu().getIcons().keySet()) {
-                int num = event.getMenu().getIcons().get(icon);
-                icon.onMenuOpen(event.getMenu(), player);
-                ItemStack item = icon.getItemStack();
-                inv.setItem(num, item);
-            }
-        }
-        event.getPlayer().openInventory(inv);
-        return inv;
-    }
+		Inventory inv = Bukkit.createInventory(null, event.getMenu().getSlots(), event.getMenu().getName());
+		// init icons
+		if (!event.getMenu().getIcons().isEmpty()) {
+			for (Icon icon : event.getMenu().getIcons().keySet()) {
+				int num = event.getMenu().getIcons().get(icon);
+				icon.onMenuOpen(event.getMenu(), player);
+				ItemStack item = icon.getItemStack();
+				inv.setItem(num, item);
+			}
+		}
+		event.getPlayer().openInventory(inv);
+		return inv;
+	}
 
-    public void registerMenu(Menu menu) {
-        if (menu == null)
-            return;
-        if (!isMenu(menu.getName())) {
-            menus.add(menu);
-        }
-    }
+	public void registerMenu(Menu menu) {
+		if (menu == null)
+			return;
+		if (!isMenu(menu.getName())) {
+			menus.add(menu);
+		}
+	}
 
-    public void registerIcon(Icon icon) {
-        if (icon == null)
-            return;
-        if (!isIcon(icon.getItemStack())) {
-            icons.add(icon);
-        }
-    }
+	public void registerIcon(Icon icon) {
+		if (icon == null)
+			return;
+		if (!isIcon(icon.getItemStack())) {
+			icons.add(icon);
+		}
+	}
 
-    @Deprecated
-    public void unregisterMenu(Menu menu) {
-    }
+	@Deprecated
+	public void unregisterMenu(Menu menu) {
+	}
 
-    @Deprecated
-    public void unregisterIcon(Icon icon) {
-    }
+	@Deprecated
+	public void unregisterIcon(Icon icon) {
+	}
 
-    public Menu getMenuFromId(String id) {
-        for (Menu menu : menus) {
-            if (menu.getId().equals(id)) {
-                return menu;
-            }
-        }
-        return null;
-    }
+	public Menu getMenuFromId(String id) {
+		for (Menu menu : menus) {
+			if (menu.getId().equals(id)) {
+				return menu;
+			}
+		}
+		return null;
+	}
 
-    public Menu getMenuFromName(String name) {
-        for (Menu menu : menus) {
-            if (menu.getName().equals(name)) {
-                return menu;
-            }
-        }
-        return null;
-    }
+	public Menu getMenuFromName(String name) {
+		for (Menu menu : menus) {
+			if (menu.getName().equals(name)) {
+				return menu;
+			}
+		}
+		return null;
+	}
 
-    public Icon getIconFromId(String id) {
-        for (Icon icon : icons) {
-            if (icon.getId().equals(id)) {
-                return icon;
-            }
-        }
-        return null;
-    }
+	public Icon getIconFromId(String id) {
+		for (Icon icon : icons) {
+			if (icon.getId().equals(id)) {
+				return icon;
+			}
+		}
+		return null;
+	}
 
-    public Icon getIconFromName(String name) {
-        for (Icon icon : icons) {
-            if (icon.getName().equals(name)) {
-                return icon;
-            }
-        }
-        return null;
-    }
+	public Icon getIconFromName(String name) {
+		for (Icon icon : icons) {
+			if (icon.getName().equals(name)) {
+				return icon;
+			}
+		}
+		return null;
+	}
 
-    public boolean isMenu(String nameInv) {
-        if (nameInv == null)
-            return false;
-        for (Menu menu : menus) {
-            if (menu.getName().equals(nameInv)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean isMenu(String nameInv) {
+		if (nameInv == null)
+			return false;
+		for (Menu menu : menus) {
+			if (menu.getName().equals(nameInv)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public boolean isIcon(ItemStack item) {
-        if (item == null)
-            return false;
-        for (Icon icon : icons) {
-            if (icon.getMaterial() == item.getType()) {
-                if (!item.getItemMeta().hasDisplayName())
-                    return false;
-                if (icon.getName().equals(item.getItemMeta().getDisplayName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	public boolean isIcon(ItemStack item) {
+		if (item == null)
+			return false;
+		for (Icon icon : icons) {
+			if (icon.getMaterial() == item.getType()) {
+				if (!item.getItemMeta().hasDisplayName())
+					return false;
+				if (icon.getName().equals(item.getItemMeta().getDisplayName())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

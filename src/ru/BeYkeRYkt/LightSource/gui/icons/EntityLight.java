@@ -12,29 +12,29 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class EntityLight extends Icon {
 
-    public EntityLight() {
-        super("entityLight", Material.SKULL_ITEM);
-        setName(ChatColor.GREEN + "EntityLight");
-        getLore().add("");
-        getLore().add(ChatColor.DARK_RED + "WARNING!");
-        getLore().add(ChatColor.RED + "This option can cause colossal lags!");
-        getLore().add(ChatColor.GOLD + "Status: ");
-        getLore().add(String.valueOf(LightSource.getInstance().getDB().isEntityLight()));
-    }
+	public EntityLight() {
+		super("entityLight", Material.SKULL_ITEM);
+		setName(ChatColor.GREEN + "EntityLight");
+		getLore().add("");
+		getLore().add(ChatColor.DARK_RED + "WARNING!");
+		getLore().add(ChatColor.RED + "This option can cause colossal lags!");
+		getLore().add(ChatColor.GOLD + "Status: ");
+		getLore().add(String.valueOf(LightSource.getInstance().getDB().isEntityLight()));
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        if (!LightSource.getInstance().getDB().isEntityLight()) {
-            LightSource.getInstance().getDB().setEntityLight(true);
-        } else {
-            LightSource.getInstance().getDB().setEntityLight(false);
-        }
-        // replace
-        getLore().set(4, String.valueOf(LightSource.getInstance().getDB().isEntityLight()));
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		if (!LightSource.getInstance().getDB().isEntityLight()) {
+			LightSource.getInstance().getDB().setEntityLight(true);
+		} else {
+			LightSource.getInstance().getDB().setEntityLight(false);
+		}
+		// replace
+		getLore().set(4, String.valueOf(LightSource.getInstance().getDB().isEntityLight()));
 
-        Player player = (Player) event.getWhoClicked();
-        player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1, 1);
-        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
-        LightSource.getInstance().getGUIManager().openMenu(player, menu);
-    }
+		Player player = (Player) event.getWhoClicked();
+		player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1, 1);
+		Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("optionsMenu");
+		LightSource.getInstance().getGUIManager().openMenu(player, menu);
+	}
 }

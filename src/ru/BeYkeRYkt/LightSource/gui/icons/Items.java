@@ -11,18 +11,18 @@ import ru.BeYkeRYkt.LightSource.gui.Icon;
 
 public class Items extends Icon {
 
-    public Items() {
-        super("items", Material.CHEST);
-        setName(ChatColor.GREEN + "Items");
+	public Items() {
+		super("items", Material.CHEST);
+		setName(ChatColor.GREEN + "Items");
 
-        getLore().add(ChatColor.WHITE + "Online item editor!");
-    }
+		getLore().add(ChatColor.WHITE + "Online item editor!");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
 
-        LightSource.getInstance().getGUIManager().openMenu(player, LightSource.getInstance().getGUIManager().getMenuFromId("page_0"));
-    }
+		LightSource.getInstance().getGUIManager().openMenu(player, LightSource.getInstance().getGUIManager().getMenuFromId("page_0"));
+	}
 }

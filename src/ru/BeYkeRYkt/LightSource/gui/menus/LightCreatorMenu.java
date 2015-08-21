@@ -9,21 +9,21 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class LightCreatorMenu extends Menu {
 
-    public LightCreatorMenu() {
-        super("lc_mainMenu", "Light Static Creator", 18);
+	public LightCreatorMenu() {
+		super("lc_mainMenu", "Light Static Creator", 18);
 
-        Icon create = LightSource.getInstance().getGUIManager().getIconFromId("lc_create");
-        addItem(create, 1);
+		Icon create = LightSource.getInstance().getGUIManager().getIconFromId("lc_create");
+		addItem(create, 1);
 
-        Icon delete = LightSource.getInstance().getGUIManager().getIconFromId("lc_delete");
-        addItem(delete, 2);
-    }
+		Icon delete = LightSource.getInstance().getGUIManager().getIconFromId("lc_delete");
+		addItem(delete, 2);
+	}
 
-    @Override
-    public void onOpenMenu(InventoryOpenEvent event) {
-    }
+	@Override
+	public void onOpenMenu(InventoryOpenEvent event) {
+	}
 
-    @Override
-    public void onCloseMenu(InventoryCloseEvent event) {
-    }
+	@Override
+	public void onCloseMenu(InventoryCloseEvent event) {
+	}
 }

@@ -9,20 +9,20 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class LightCreatorCreate extends Menu {
 
-    public LightCreatorCreate() {
-        super("lc_createMenu", "Create light", 18);
+	public LightCreatorCreate() {
+		super("lc_createMenu", "Create light", 18);
 
-        for (int i = 0; i < 15; i++) {
-            Icon lightIcon = LightSource.getInstance().getGUIManager().getIconFromId("lc_lightlevel_" + (i + 1));
-            addItem(lightIcon, i + 1);
-        }
-    }
+		for (int i = 0; i < 15; i++) {
+			Icon lightIcon = LightSource.getInstance().getGUIManager().getIconFromId("lc_lightlevel_" + (i + 1));
+			addItem(lightIcon, i + 1);
+		}
+	}
 
-    @Override
-    public void onOpenMenu(InventoryOpenEvent event) {
-    }
+	@Override
+	public void onOpenMenu(InventoryOpenEvent event) {
+	}
 
-    @Override
-    public void onCloseMenu(InventoryCloseEvent event) {
-    }
+	@Override
+	public void onCloseMenu(InventoryCloseEvent event) {
+	}
 }

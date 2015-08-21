@@ -12,16 +12,16 @@ import ru.BeYkeRYkt.LightSource.gui.Menu;
 
 public class Worlds extends Icon {
 
-    public Worlds() {
-        super("worlds", Material.GRASS);
-        setName(ChatColor.GREEN + "Worlds");
-    }
+	public Worlds() {
+		super("worlds", Material.GRASS);
+		setName(ChatColor.GREEN + "Worlds");
+	}
 
-    @Override
-    public void onItemClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("worldsMenu");
-        LightSource.getInstance().getGUIManager().openMenu(player, menu);
-        player.playSound(player.getLocation(), Sound.SHEEP_IDLE, 1, 1);
-    }
+	@Override
+	public void onItemClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		Menu menu = LightSource.getInstance().getGUIManager().getMenuFromId("worldsMenu");
+		LightSource.getInstance().getGUIManager().openMenu(player, menu);
+		player.playSound(player.getLocation(), Sound.SHEEP_IDLE, 1, 1);
+	}
 }

@@ -81,7 +81,7 @@ public class LightSource extends JavaPlugin {
 		task.init();
 		gui.load();
 		registry = LightAPI.getRegistry(this);
-		registry.startAutoUpdate(getDB().getTaskTicks());
+		registry.startAutoSend(getDB().getTaskTicks());
 		Bukkit.getPluginManager().registerEvents(new LightListener(), this);
 
 		createExampleItems();

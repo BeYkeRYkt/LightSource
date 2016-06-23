@@ -82,6 +82,7 @@ public class Item {
 				if (!rfe.onCheckRequirement(entity, itemStack, this, args)) {
 					return false;
 				}
+				rfe.execute(entity, itemStack, this);
 			}
 		}
 		return true;

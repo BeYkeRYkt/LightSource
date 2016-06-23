@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.sources.HoldItemInHandSource;
+import ru.beykerykt.lightsource.sources.HoldItemInHandSource.ItemHand;
 import ru.beykerykt.lightsource.sources.LivingOwnedSource;
 import ru.beykerykt.lightsource.sources.Source;
 
@@ -53,7 +54,7 @@ public class SearchSourcesTask implements Runnable {
 					}
 
 					// Main item hand
-					ItemStack itemStack = le.getEquipment().getItemInHand();
+					ItemStack itemStack = le.getEquipment().getItemInMainHand();
 					if (itemStack == null || itemStack.getType() == Material.AIR)
 						continue;
 					if (!LightSourceAPI.getItemManager().isItem(itemStack))
@@ -62,7 +63,21 @@ public class SearchSourcesTask implements Runnable {
 					if (item.getFlagsList().isEmpty())
 						continue;
 					if (item.callRequirementFlags(le, itemStack)) {
-						Source source = new HoldItemInHandSource(le, item);
+						Source source = new HoldItemInHandSource(le, item, ItemHand.MAIN);
+						LightSourceAPI.getSourceManager().addSource(source);
+					}
+					
+					// Off item hand
+					ItemStack itemStackOff = le.getEquipment().getItemInOffHand();
+					if (itemStackOff == null || itemStackOff.getType() == Material.AIR)
+						continue;
+					if (!LightSourceAPI.getItemManager().isItem(itemStackOff))
+						continue;
+					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
+					if (itemOff.getFlagsList().isEmpty())
+						continue;
+					if (itemOff.callRequirementFlags(le, itemStackOff)) {
+						Source source = new HoldItemInHandSource(le, itemOff, ItemHand.OFF);
 						LightSourceAPI.getSourceManager().addSource(source);
 					}
 				}

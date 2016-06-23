@@ -25,12 +25,6 @@ public class LightSource extends JavaPlugin {
 		getServer().getScheduler().runTaskTimer(getInstance(), new UpdateSourcesTask(10), 0, 10).getTaskId();
 		getServer().getScheduler().runTaskTimer(getInstance(), new SearchSourcesTask(10), 0, 10).getTaskId();
 
-		Item item = new Item("torch", Material.TORCH, 0, 14);
-		List<String> list = new ArrayList<String>();
-		list.add("update:true");
-		list.add("delete_light");
-		item.setFlagsList(list);
-		LightSourceAPI.getItemManager().addItem(item);
 		// register checkers
 		LightSourceAPI.getFlagManager().registerFlag("permission", new PermissionCheckExecutor());
 		LightSourceAPI.getFlagManager().registerFlag("entity", new EntityCheckExecutor());
@@ -40,6 +34,13 @@ public class LightSource extends JavaPlugin {
 
 		// register post execturos
 		LightSourceAPI.getFlagManager().registerFlag("delete_light", new DeleteLightExecutor());
+		
+		Item item = new Item("torch", Material.TORCH, 0, 14);
+		List<String> list = new ArrayList<String>();
+		list.add("update:true");
+		list.add("delete_light");
+		item.setFlagsList(list);
+		LightSourceAPI.getItemManager().addItem(item);
 	}
 
 	@Override

@@ -8,8 +8,16 @@ import ru.beykerykt.lightsource.items.Item;
 
 public class HoldItemInHandSource extends LivingOwnedSource {
 
-	public HoldItemInHandSource(LivingEntity entity, Item item) {
+	public enum ItemHand {
+		MAIN,
+		OFF;
+	}
+
+	private ItemHand hand;
+
+	public HoldItemInHandSource(LivingEntity entity, Item item, ItemHand hand) {
 		super(entity, item);
+		this.hand = hand;
 	}
 
 	@Override
@@ -17,7 +25,14 @@ public class HoldItemInHandSource extends LivingOwnedSource {
 		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack());
 	}
 
+	public ItemHand getItemHand() {
+		return hand;
+	}
+
 	public ItemStack getItemStack() {
-		return getOwner().getEquipment().getItemInHand();
+		if (hand == ItemHand.OFF) {
+			return getOwner().getEquipment().getItemInOffHand();
+		}
+		return getOwner().getEquipment().getItemInMainHand();
 	}
 }

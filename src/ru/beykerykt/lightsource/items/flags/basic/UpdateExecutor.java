@@ -14,13 +14,13 @@ public class UpdateExecutor implements TickableFlagExecutor {
 			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), flag);
 			LightAPI.createLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), source.getItem().getLevelLight(), flag);
 			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
-				LightAPI.updateChunks(info);
+				LightAPI.updateChunk(info);
 			}
 		} else {
 			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), true);
 			LightAPI.createLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), source.getItem().getLevelLight(), true);
 			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
-				LightAPI.updateChunks(info);
+				LightAPI.updateChunk(info);
 			}
 		}
 	}

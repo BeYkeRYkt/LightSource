@@ -12,12 +12,12 @@ public class DeleteLightExecutor implements EndingFlagExecutor {
 		if (args.length == 0) {
 			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), true);
 			for (ChunkInfo info : LightAPI.collectChunks(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ())) {
-				LightAPI.updateChunks(info);
+				LightAPI.updateChunk(info);
 			}
 
 			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), true);
 			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
-				LightAPI.updateChunks(info);
+				LightAPI.updateChunk(info);
 			}
 		} else {
 			for (int i = 0; i < args.length; i++) {

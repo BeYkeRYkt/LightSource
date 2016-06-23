@@ -19,6 +19,7 @@ public class LightSource extends JavaPlugin {
 
 	private static LightSource plugin;
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void onEnable() {
 		this.plugin = this;

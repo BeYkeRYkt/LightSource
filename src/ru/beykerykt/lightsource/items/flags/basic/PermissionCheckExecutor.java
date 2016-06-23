@@ -20,4 +20,8 @@ public class PermissionCheckExecutor implements RequirementFlagExecutor {
 		}
 		return false;
 	}
+
+	@Override
+	public void execute(Entity entity, ItemStack itemStack, Item item) {
+	}
 }

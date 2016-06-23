@@ -9,4 +9,5 @@ public interface RequirementFlagExecutor extends FlagExecutor {
 
 	public boolean onCheckRequirement(Entity entity, ItemStack itemStack, Item item, String[] args);
 
+	public void execute(Entity entity, ItemStack itemStack, Item item);
 }

@@ -1,9 +1,9 @@
-package ru.BeYkeRYkt.LightSource.sources;
+package ru.beykerykt.lightsource.sources;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
 public class SourceManager {
@@ -11,41 +11,38 @@ public class SourceManager {
 	private List<Source> sources;
 
 	public SourceManager() {
-		this.sources = new ArrayList<Source>();
+		this.sources = new CopyOnWriteArrayList<Source>();
 	}
 
 	public boolean addSource(Source source) {
-		if (!sources.isEmpty()) {
-			for (Source i : sources) {
-				if (!i.equals(source)) {
-					sources.add(source);
-					return true;
-				}
-			}
-		} else {
-			sources.add(source);
-		}
-
-		return false;
+		if (sources.contains(source))
+			return false;
+		sources.add(source);
+		return true;
 	}
 
-	public synchronized boolean removeSource(Source source) {
-		Iterator<Source> it = getSourceList().iterator();
-		while (it.hasNext()) {
-			Source i = it.next();
-			if (i.equals(source)) {
-				it.remove();
-				return true;
+	public boolean removeSource(Source source) {
+		if (!sources.contains(source))
+			return false;
+		sources.remove(source);
+		return true;
+	}
+
+	public Source getSource(Location loc) {
+		for (Source source : getSourceList()) {
+			if (source.getLocation().getX() == loc.getX() && source.getLocation().getY() == loc.getY() && source.getLocation().getZ() == loc.getZ()) {
+				return source;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public Source getSource(Entity entity) {
-		if (!sources.isEmpty()) {
-			for (Source i : sources) {
-				if (i.getOwner().getEntityId() == entity.getEntityId()) {
-					return i;
+		for (Source source : getSourceList()) {
+			if (source instanceof OwnedSource) {
+				OwnedSource os = (OwnedSource) source;
+				if (os.getOwner().getUniqueId().equals(entity.getUniqueId())) {
+					return source;
 				}
 			}
 		}

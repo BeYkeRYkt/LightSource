@@ -1,17 +1,5 @@
 name: LightSource
-main: ru.BeYkeRYkt.LightSource.LightSource
-version: 2.2.6
+main: ru.beykerykt.lightsource.LightSource
+version: 3.0.0
 description: More Lights!
 author: BeYkeRYkt
-softdepend: [Multiverse-Core]
-depend: [LightAPI]
-commands:
-   ls:
-      description: Main command
-   light:
-      description: Main command for static lights
-permissions:
-  ls.admin:
-    default: false
-  ls.lightcreator:
-    default: false

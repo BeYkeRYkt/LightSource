@@ -1,7 +1,7 @@
 package ru.beykerykt.lightsource;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.CommandSender;
 
 import ru.beykerykt.lightsource.items.ItemManager;
 import ru.beykerykt.lightsource.items.flags.FlagManager;
@@ -12,10 +12,6 @@ public class LightSourceAPI {
 	private static ItemManager itemManager;
 	private static FlagManager flagManager;
 	private static SourceManager sourceManager;
-
-	public static void log(ConsoleCommandSender sender, String message) {
-		sender.sendMessage(ChatColor.AQUA + "[LightAPI]: " + ChatColor.WHITE + message);
-	}
 
 	public static ItemManager getItemManager() {
 		if (itemManager == null) {
@@ -36,5 +32,9 @@ public class LightSourceAPI {
 			sourceManager = new SourceManager();
 		}
 		return sourceManager;
+	}
+
+	public static void sendMessage(CommandSender sender, String message) {
+		sender.sendMessage(ChatColor.AQUA + "[LightSource]: " + ChatColor.WHITE + message);
 	}
 }

@@ -73,7 +73,8 @@ public class LightSource extends JavaPlugin {
 					List<String> list = new ArrayList<String>();
 					list.add("update:true");
 					list.add("delete_light:true");
-					list.add("play_effect:smoke:0");
+					list.add("play_effect:smoke:0:1");
+					list.add("play_effect:flame:0:1");
 					list.add("permission:lightsource.torch");
 					fc.set("torch.flags", list);
 					fc.save(file);

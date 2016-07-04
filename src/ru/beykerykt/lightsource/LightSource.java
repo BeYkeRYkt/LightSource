@@ -14,6 +14,7 @@ import ru.beykerykt.lightapi.utils.Metrics;
 import ru.beykerykt.lightsource.items.flags.basic.DeleteLightExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.EntityCheckExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.PermissionCheckExecutor;
+import ru.beykerykt.lightsource.items.flags.basic.PlayEffectExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
@@ -33,6 +34,7 @@ public class LightSource extends JavaPlugin {
 
 		// register tickers
 		LightSourceAPI.getFlagManager().registerFlag("update", new UpdateExecutor());
+		LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
 
 		// register post execturos
 		LightSourceAPI.getFlagManager().registerFlag("delete_light", new DeleteLightExecutor());
@@ -72,6 +74,7 @@ public class LightSource extends JavaPlugin {
 					List<String> list = new ArrayList<String>();
 					list.add("update:true");
 					list.add("delete_light:true");
+					list.add("play_effect:smoke:0");
 					list.add("permission:lightsource.torch");
 					fc.set("torch.flags", list);
 					fc.save(file);

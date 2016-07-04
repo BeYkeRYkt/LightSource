@@ -14,7 +14,7 @@ public class UpdateSourcesTask implements Runnable {
 	public void start(int ticks) {
 		if (!isStarted) {
 			isStarted = true;
-			id = Bukkit.getScheduler().runTaskTimer(LightSource.getInstance(), this, 0, ticks).getTaskId();
+			id = Bukkit.getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), this, 0, ticks).getTaskId();
 		}
 	}
 

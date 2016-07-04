@@ -31,7 +31,7 @@ public class SearchSourcesMachine implements Runnable {
 		if (!isStarted) {
 			ignoreList = new CopyOnWriteArrayList<IgnoreEntityEntry>();
 			isStarted = true;
-			id = Bukkit.getScheduler().runTaskTimer(LightSource.getInstance(), this, 0, ticks).getTaskId();
+			id = Bukkit.getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), this, 0, ticks).getTaskId();
 		}
 	}
 

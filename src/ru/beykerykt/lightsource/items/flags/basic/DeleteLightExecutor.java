@@ -9,19 +9,18 @@ public class DeleteLightExecutor implements EndingFlagExecutor {
 
 	@Override
 	public void onEnd(Source source, String[] args) {
-		if (args.length == 0) {
-			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), true);
-			for (ChunkInfo info : LightAPI.collectChunks(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ())) {
-				LightAPI.updateChunk(info);
-			}
-
-			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), true);
+		if (args.length > 0) {
+			boolean flag = Boolean.parseBoolean(args[0]);
+			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), flag);
+			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), flag);
 			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
 				LightAPI.updateChunk(info);
 			}
 		} else {
-			for (int i = 0; i < args.length; i++) {
-				// TODO: delay removing light
+			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), false);
+			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), false);
+			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
+				LightAPI.updateChunk(info);
 			}
 		}
 	}

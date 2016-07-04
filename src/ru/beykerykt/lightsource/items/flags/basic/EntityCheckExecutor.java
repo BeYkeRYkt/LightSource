@@ -23,7 +23,10 @@ public class EntityCheckExecutor implements RequirementFlagExecutor {
 	}
 
 	@Override
-	public void execute(Entity entity, ItemStack itemStack, Item item) {
+	public void onCheckingSuccess(Entity entity, ItemStack itemStack, Item item, String[] args) {
 	}
 
+	@Override
+	public void onCheckingFailure(Entity entity, ItemStack itemStack, Item item, String[] args) {
+	}
 }

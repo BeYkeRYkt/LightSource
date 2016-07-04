@@ -44,7 +44,6 @@ public class LightSource extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		this.plugin = this;
-		getServer().getScheduler().runTaskTimer(getInstance(), new UpdateSourcesTask(), 0, 10).getTaskId();
 		this.searchMachine = new SearchSourcesMachine();
 		searchMachine.start(10);
 		this.updateTask = new UpdateSourcesTask();

@@ -3,17 +3,7 @@ package ru.beykerykt.lightsource.items;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-
-import ru.beykerykt.lightsource.LightSourceAPI;
-import ru.beykerykt.lightsource.items.flags.EndingFlagExecutor;
-import ru.beykerykt.lightsource.items.flags.FlagExecutor;
-import ru.beykerykt.lightsource.items.flags.RequirementFlagExecutor;
-import ru.beykerykt.lightsource.items.flags.TickableFlagExecutor;
-import ru.beykerykt.lightsource.sources.Source;
 
 public class Item {
 
@@ -70,46 +60,6 @@ public class Item {
 
 	public void setFlagsList(List<String> flags) {
 		this.flags = flags;
-	}
-
-	public boolean callRequirementFlags(Entity entity, ItemStack itemStack) {
-		for (String flag : getFlagsList()) {
-			String[] args = flag.split(":").clone();
-			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
-			args = (String[]) ArrayUtils.remove(args, 0);
-			if (executor instanceof RequirementFlagExecutor) {
-				RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
-				if (!rfe.onCheckRequirement(entity, itemStack, this, args)) {
-					return false;
-				}
-				rfe.execute(entity, itemStack, this);
-			}
-		}
-		return true;
-	}
-
-	public void callUpdateFlag(Source source) {
-		for (String flag : getFlagsList()) {
-			String[] args = flag.split(":").clone();
-			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
-			args = (String[]) ArrayUtils.remove(args, 0);
-			if (executor instanceof TickableFlagExecutor) {
-				TickableFlagExecutor tfe = (TickableFlagExecutor) executor;
-				tfe.onTick(source, args);
-			}
-		}
-	}
-
-	public void callEndingFlag(Source source) {
-		for (String flag : getFlagsList()) {
-			String[] args = flag.split(":").clone();
-			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
-			args = (String[]) ArrayUtils.remove(args, 0);
-			if (executor instanceof EndingFlagExecutor) {
-				EndingFlagExecutor efe = (EndingFlagExecutor) executor;
-				efe.onEnd(source, args);
-			}
-		}
 	}
 
 	@Override

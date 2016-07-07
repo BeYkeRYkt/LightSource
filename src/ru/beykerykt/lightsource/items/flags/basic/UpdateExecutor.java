@@ -21,7 +21,7 @@ public class UpdateExecutor implements TickableFlagExecutor {
 			boolean flag = Boolean.parseBoolean(args[0]);
 			boolean saveMove = Boolean.parseBoolean(args[1]);
 			if (saveMove) {
-				if (source.getOldLocation().getBlockX() != source.getLocation().getBlockX() && source.getOldLocation().getBlockY() != source.getLocation().getBlockY() && source.getOldLocation().getBlockZ() != source.getLocation().getBlockZ()) {
+				if (source.getOldLocation().getBlockX() != source.getLocation().getBlockX() || source.getOldLocation().getBlockY() != source.getLocation().getBlockY() || source.getOldLocation().getBlockZ() != source.getLocation().getBlockZ()) {
 					LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), flag);
 					LightAPI.createLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), source.getItem().getLevelLight(), flag);
 					for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {

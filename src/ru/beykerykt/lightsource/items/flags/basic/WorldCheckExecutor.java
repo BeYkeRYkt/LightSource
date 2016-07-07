@@ -33,7 +33,7 @@ public class WorldCheckExecutor implements RequirementFlagExecutor {
 		LightSourceAPI.sendMessage(entity, ChatColor.GREEN + "You can use it in the following worlds");
 		for (int i = 0; i < args.length; i++) {
 			String world = args[i];
-			LightSourceAPI.sendMessage(entity, world);
+			LightSourceAPI.sendMessage(entity, "-" + world);
 		}
 	}
 

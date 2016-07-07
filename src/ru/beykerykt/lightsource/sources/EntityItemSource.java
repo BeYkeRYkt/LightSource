@@ -1,5 +1,6 @@
 package ru.beykerykt.lightsource.sources;
 
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import ru.beykerykt.lightsource.LightSourceAPI;
@@ -18,6 +19,11 @@ public class EntityItemSource extends OwnedSource {
 
 	public ItemStack getItemStack() {
 		return getOwner().getItemStack();
+	}
+
+	@Override
+	public void setLocation(Location loc) {
+		super.setLocation(loc.add(0, 0.3, 0));
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import ru.beykerykt.lightsource.LightSourceAPI;
@@ -14,9 +15,11 @@ public class PermissionCheckExecutor implements RequirementFlagExecutor {
 	public boolean onCheckRequirement(Entity entity, ItemStack itemStack, Item item, String[] args) {
 		if (args.length > 0) {
 			for (int i = 0; i < args.length; i++) {
-				String permission = args[i];
-				if (!entity.hasPermission(permission)) {
-					return false;
+				if (entity.getType() == EntityType.PLAYER) {
+					String permission = args[i];
+					if (!entity.hasPermission(permission)) {
+						return false;
+					}
 				}
 			}
 		}

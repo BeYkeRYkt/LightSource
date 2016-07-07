@@ -17,6 +17,7 @@ import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
 import ru.beykerykt.lightsource.items.flags.FlagExecutor;
+import ru.beykerykt.lightsource.items.flags.FlagHelper;
 import ru.beykerykt.lightsource.items.flags.RequirementFlagExecutor;
 import ru.beykerykt.lightsource.sources.EntityItemSource;
 import ru.beykerykt.lightsource.sources.InventorySlotSource;
@@ -191,7 +192,7 @@ public class SearchSourcesMachine implements Runnable {
 					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
 					if (item.getFlagsList().isEmpty())
 						continue;
-					if (callRequirementFlags(ie, itemStack, item, ItemSlot.RIGHT_HAND)) { // ?
+					if (FlagHelper.callRequirementFlags(ie, itemStack, item, false)) { // ?
 						Source source = new EntityItemSource(ie, item);
 						LightSourceAPI.getSourceManager().addSource(source);
 					}

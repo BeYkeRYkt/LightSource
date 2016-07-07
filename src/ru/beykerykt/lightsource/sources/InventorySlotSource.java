@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
+import ru.beykerykt.lightsource.items.flags.FlagHelper;
 
 public class InventorySlotSource extends LivingOwnedSource {
 
@@ -18,7 +19,7 @@ public class InventorySlotSource extends LivingOwnedSource {
 
 	@Override
 	public boolean shouldExecute() {
-		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack());
+		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem());
 	}
 
 	public ItemSlot getItemSlot() {

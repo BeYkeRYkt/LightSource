@@ -3,3 +3,7 @@ main: ru.beykerykt.lightsource.LightSource
 version: 3.0.0
 description: More Lights!
 author: BeYkeRYkt
+depend: [LightAPI]
+commands:
+   ls:
+      description: Main command

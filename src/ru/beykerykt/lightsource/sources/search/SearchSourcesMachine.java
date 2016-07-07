@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,6 +18,7 @@ import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
 import ru.beykerykt.lightsource.items.flags.FlagExecutor;
 import ru.beykerykt.lightsource.items.flags.RequirementFlagExecutor;
+import ru.beykerykt.lightsource.sources.EntityItemSource;
 import ru.beykerykt.lightsource.sources.InventorySlotSource;
 import ru.beykerykt.lightsource.sources.Source;
 
@@ -179,6 +181,18 @@ public class SearchSourcesMachine implements Runnable {
 						Source source = new InventorySlotSource(le, itemOff, ItemSlot.LEFT_HAND);
 						LightSourceAPI.getSourceManager().addSource(source);
 					}
+				} else if (entity.getType() == EntityType.DROPPED_ITEM) {
+					org.bukkit.entity.Item ie = (org.bukkit.entity.Item) entity;
+					ItemStack itemStack = ie.getItemStack();
+					if (itemStack == null || itemStack.getType() == Material.AIR)
+						continue;
+					if (!LightSourceAPI.getItemManager().isItem(itemStack))
+						continue;
+					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+					if (item.getFlagsList().isEmpty())
+						continue;
+					Source source = new EntityItemSource(ie, item);
+					LightSourceAPI.getSourceManager().addSource(source);
 				}
 			}
 		}

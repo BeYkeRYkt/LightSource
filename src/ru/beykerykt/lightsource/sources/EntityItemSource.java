@@ -23,7 +23,7 @@ public class EntityItemSource extends OwnedSource {
 
 	@Override
 	public void setLocation(Location loc) {
-		super.setLocation(loc.add(0, 0.3, 0));
+		super.setLocation(loc.add(0, 0.4, 0));
 	}
 
 	@Override

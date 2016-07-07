@@ -10,7 +10,7 @@ import ru.beykerykt.lightsource.sources.Source;
 
 public class FlagHelper {
 
-	public static boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item) {
+	public static boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, boolean sendMessage) {
 		for (String flag : item.getFlagsList()) {
 			String[] args = flag.split(":").clone();
 			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
@@ -18,10 +18,14 @@ public class FlagHelper {
 			if (executor instanceof RequirementFlagExecutor) {
 				RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
 				if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-					rfe.onCheckingFailure(entity, itemStack, item, args);
+					if (sendMessage) {
+						rfe.onCheckingFailure(entity, itemStack, item, args);
+					}
 					return false;
 				}
-				rfe.onCheckingSuccess(entity, itemStack, item, args);
+				if (sendMessage) {
+					rfe.onCheckingSuccess(entity, itemStack, item, args);
+				}
 			}
 		}
 		return true;

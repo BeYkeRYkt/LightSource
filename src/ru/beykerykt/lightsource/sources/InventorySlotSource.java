@@ -19,7 +19,7 @@ public class InventorySlotSource extends LivingOwnedSource {
 
 	@Override
 	public boolean shouldExecute() {
-		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem());
+		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem(), false);
 	}
 
 	public ItemSlot getItemSlot() {

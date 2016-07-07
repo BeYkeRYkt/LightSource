@@ -191,8 +191,10 @@ public class SearchSourcesMachine implements Runnable {
 					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
 					if (item.getFlagsList().isEmpty())
 						continue;
-					Source source = new EntityItemSource(ie, item);
-					LightSourceAPI.getSourceManager().addSource(source);
+					if (callRequirementFlags(ie, itemStack, item, ItemSlot.RIGHT_HAND)) { // ?
+						Source source = new EntityItemSource(ie, item);
+						LightSourceAPI.getSourceManager().addSource(source);
+					}
 				}
 			}
 		}

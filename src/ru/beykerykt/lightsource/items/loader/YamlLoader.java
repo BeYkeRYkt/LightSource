@@ -36,7 +36,7 @@ public class YamlLoader implements ItemLoader {
 		Item item = new Item(id, material, data, level);
 
 		// Load other info
-		String displayName = file.getString(id + ".displayName");
+		String displayName = file.getString(id + ".displayname");
 		if (displayName != null) {
 			displayName = ChatColor.translateAlternateColorCodes('&', displayName);
 			item.setDisplayName(displayName);

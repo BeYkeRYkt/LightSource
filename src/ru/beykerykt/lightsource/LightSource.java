@@ -16,6 +16,7 @@ import ru.beykerykt.lightsource.items.flags.basic.EntityCheckExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.PermissionCheckExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.PlayEffectExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
+import ru.beykerykt.lightsource.items.flags.basic.WorldCheckExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
 import ru.beykerykt.lightsource.sources.search.SearchSourcesMachine;
@@ -31,6 +32,7 @@ public class LightSource extends JavaPlugin {
 		// register checkers
 		LightSourceAPI.getFlagManager().registerFlag("permission", new PermissionCheckExecutor());
 		LightSourceAPI.getFlagManager().registerFlag("entity", new EntityCheckExecutor());
+		LightSourceAPI.getFlagManager().registerFlag("world", new WorldCheckExecutor());
 
 		// register tickers
 		LightSourceAPI.getFlagManager().registerFlag("update", new UpdateExecutor());
@@ -70,13 +72,14 @@ public class LightSource extends JavaPlugin {
 				if (fc != null) {
 					fc.set("torch.material", "TORCH");
 					fc.set("torch.lightlevel", 14);
-					List<String> list = new ArrayList<String>();
-					list.add("update:true");
-					list.add("delete_light:true");
-					list.add("play_effect:smoke:0:1");
-					list.add("play_effect:flame:0:1");
-					list.add("permission:lightsource.torch");
-					fc.set("torch.flags", list);
+					List<String> listTorch = new ArrayList<String>();
+					listTorch.add("permission:lightsource.torch");
+					listTorch.add("update:true:false");
+					listTorch.add("delete_light:true");
+					listTorch.add("play_effect:smoke:0:1");
+					listTorch.add("play_effect:flame:0:1");
+					fc.set("torch.flags", listTorch);
+
 					fc.save(file);
 				}
 			}

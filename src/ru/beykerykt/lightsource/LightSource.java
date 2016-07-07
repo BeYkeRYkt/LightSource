@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -88,6 +91,20 @@ public class LightSource extends JavaPlugin {
 					listGlowstone.add("delete_light:true");
 					fc.set("glowstone.flags", listGlowstone);
 
+					fc.set("testItem.material", "DIAMOND");
+					fc.set("testItem.lightlevel", 10);
+					fc.set("testItem.displayname", "HAHAHA, NICE JOKE :)");
+					List<String> listTest = new ArrayList<String>();
+					listTest.add("entity:PLAYER:DROPPED_ITEM");
+					listTest.add("permission:lightsource.testItem");
+					listTest.add("world:world:world_nether:world_the_end");
+					listTest.add("update:true:true");
+					listTest.add("play_effect:ENDER_SIGNAL:0:1");
+					listTest.add("play_effect:HEART:0:1");
+					listTest.add("play_effect:MOBSPAWNER_FLAMES:0:1");
+					listTest.add("delete_light:true");
+					fc.set("testItem.flags", listTest);
+
 					fc.save(file);
 				}
 			}
@@ -105,4 +122,11 @@ public class LightSource extends JavaPlugin {
 		return plugin;
 	}
 
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (command.getName().equalsIgnoreCase("ls")) {
+			LightSourceAPI.sendMessage(sender, ChatColor.RED + "Sorry, but right now it is not available :(");
+		}
+		return true;
+	}
 }

@@ -80,6 +80,14 @@ public class LightSource extends JavaPlugin {
 					listTorch.add("play_effect:flame:0:1");
 					fc.set("torch.flags", listTorch);
 
+					fc.set("glowstone.material", "GLOWSTONE");
+					fc.set("glowstone.lightlevel", 15);
+					List<String> listGlowstone = new ArrayList<String>();
+					listGlowstone.add("permission:lightsource.glowstone");
+					listGlowstone.add("update:true:true");
+					listGlowstone.add("delete_light:true");
+					fc.set("glowstone.flags", listGlowstone);
+
 					fc.save(file);
 				}
 			}

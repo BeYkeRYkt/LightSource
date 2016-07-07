@@ -33,7 +33,7 @@ public class ItemManager {
 			return false;
 		}
 		items.remove(id);
-		LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), "Revmoed item: " + ChatColor.YELLOW + id);
+		LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), "Removed item: " + ChatColor.YELLOW + id);
 		return true;
 	}
 

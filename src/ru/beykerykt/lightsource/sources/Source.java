@@ -2,18 +2,16 @@ package ru.beykerykt.lightsource.sources;
 
 import org.bukkit.Location;
 
-import ru.beykerykt.lightsource.items.Item;
-
 public abstract class Source {
 
-	private Item item;
 	private Location old;
 	private Location loc;
+	private int lightLevel;
 
-	public Source(Location location, Item item) {
+	public Source(Location location, int lightLevel) {
 		this.old = location;
 		this.loc = location;
-		setItem(item);
+		setLightLevel(lightLevel);
 	}
 
 	public Location getLocation() {
@@ -29,12 +27,12 @@ public abstract class Source {
 		this.loc = loc;
 	}
 
-	public Item getItem() {
-		return item;
+	public int getLightLevel() {
+		return lightLevel;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
+	public void setLightLevel(int lightLevel) {
+		this.lightLevel = lightLevel;
 	}
 
 	public abstract boolean shouldExecute();
@@ -45,8 +43,9 @@ public abstract class Source {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((item == null) ? 0 : item.hashCode());
-		result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
+		result = prime * result + lightLevel;
+		result = prime * result + ((loc == null) ? 0 : loc.hashCode());
+		result = prime * result + ((old == null) ? 0 : old.hashCode());
 		return result;
 	}
 
@@ -62,21 +61,23 @@ public abstract class Source {
 			return false;
 		}
 		Source other = (Source) obj;
-		if (item == null) {
-			if (other.item != null) {
-				return false;
-			}
-		} else if (!item.equals(other.item)) {
+		if (lightLevel != other.lightLevel) {
 			return false;
 		}
-		if (getLocation() == null) {
-			if (other.getLocation() != null) {
+		if (loc == null) {
+			if (other.loc != null) {
 				return false;
 			}
-		} else if (!getLocation().equals(other.getLocation())) {
+		} else if (!loc.equals(other.loc)) {
+			return false;
+		}
+		if (old == null) {
+			if (other.old != null) {
+				return false;
+			}
+		} else if (!old.equals(other.old)) {
 			return false;
 		}
 		return true;
 	}
-
 }

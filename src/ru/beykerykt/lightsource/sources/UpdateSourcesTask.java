@@ -31,7 +31,9 @@ public class UpdateSourcesTask implements Runnable {
 			if (source.shouldExecute()) {
 				source.onUpdate();
 			} else {
-				FlagHelper.callEndingFlag(source);
+				if (source instanceof ItemableSource) {
+					FlagHelper.callEndingFlag((ItemableSource) source);
+				}
 				LightSourceAPI.getSourceManager().removeSource(source);
 			}
 		}

@@ -6,9 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,22 +15,17 @@ import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
 import ru.beykerykt.lightsource.items.flags.FlagExecutor;
-import ru.beykerykt.lightsource.items.flags.FlagHelper;
 import ru.beykerykt.lightsource.items.flags.RequirementFlagExecutor;
-import ru.beykerykt.lightsource.sources.EntityItemSource;
-import ru.beykerykt.lightsource.sources.InventorySlotSource;
-import ru.beykerykt.lightsource.sources.Source;
 
-public class SearchSourcesMachine implements Runnable {
-
-	private List<IgnoreEntityEntry> ignoreList = null;
+public class SearchMachine implements Runnable {
 
 	private boolean isStarted;
 	private int id;
+	private List<SearchTask> tasks = new CopyOnWriteArrayList<SearchTask>();
+	private List<IgnoreEntityEntry> ignoreList = new CopyOnWriteArrayList<>();
 
 	public void start(int ticks) {
 		if (!isStarted) {
-			ignoreList = new CopyOnWriteArrayList<IgnoreEntityEntry>();
 			isStarted = true;
 			id = Bukkit.getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), this, 0, ticks).getTaskId();
 		}
@@ -41,9 +34,14 @@ public class SearchSourcesMachine implements Runnable {
 	public void shutdown() {
 		if (isStarted) {
 			isStarted = false;
+			tasks.clear();
 			ignoreList.clear();
 			Bukkit.getScheduler().cancelTask(id);
 		}
+	}
+
+	public void addTask(SearchTask task) {
+		tasks.add(task);
 	}
 
 	public boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, ItemSlot slot) {
@@ -127,78 +125,8 @@ public class SearchSourcesMachine implements Runnable {
 			}
 		}
 
-		// search
-		for (World world : Bukkit.getWorlds()) {
-			for (Entity entity : world.getEntities()) {
-				if (LightSourceAPI.getSourceManager().isSource(entity))
-					continue;
-				if (entity.getType().isAlive()) {
-					LivingEntity le = (LivingEntity) entity;
-
-					// all armor set
-					if (le.getEquipment().getArmorContents().length == 0)
-						continue;
-					for (int i = 0; i < le.getEquipment().getArmorContents().length; i++) {
-						ItemStack itemStack = le.getEquipment().getArmorContents()[i];
-						if (itemStack == null || itemStack.getType() == Material.AIR)
-							continue;
-						if (!LightSourceAPI.getItemManager().isItem(itemStack))
-							continue;
-						Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-						if (item.getFlagsList().isEmpty())
-							continue;
-						ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
-						if (callRequirementFlags(le, itemStack, item, slot)) {
-							Source source = new InventorySlotSource(le, item, slot);
-							LightSourceAPI.getSourceManager().addSource(source);
-						}
-					}
-
-					// Main item hand
-					ItemStack itemStack = le.getEquipment().getItemInMainHand();
-					if (itemStack == null || itemStack.getType() == Material.AIR)
-						continue;
-					if (!LightSourceAPI.getItemManager().isItem(itemStack))
-						continue;
-					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-					if (item.getFlagsList().isEmpty())
-						continue;
-					if (callRequirementFlags(le, itemStack, item, ItemSlot.RIGHT_HAND)) {
-						Source source = new InventorySlotSource(le, item, ItemSlot.RIGHT_HAND);
-						LightSourceAPI.getSourceManager().addSource(source);
-					}
-
-					// Off item hand
-					ItemStack itemStackOff = le.getEquipment().getItemInOffHand();
-					if (itemStackOff == null || itemStackOff.getType() == Material.AIR) {
-						continue;
-					}
-					if (!LightSourceAPI.getItemManager().isItem(itemStackOff))
-						continue;
-					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
-					if (itemOff.getFlagsList().isEmpty())
-						continue;
-					if (callRequirementFlags(le, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-						Source source = new InventorySlotSource(le, itemOff, ItemSlot.LEFT_HAND);
-						LightSourceAPI.getSourceManager().addSource(source);
-					}
-				} else if (entity.getType() == EntityType.DROPPED_ITEM) {
-					org.bukkit.entity.Item ie = (org.bukkit.entity.Item) entity;
-					ItemStack itemStack = ie.getItemStack();
-					if (itemStack == null || itemStack.getType() == Material.AIR)
-						continue;
-					if (!LightSourceAPI.getItemManager().isItem(itemStack))
-						continue;
-					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-					if (item.getFlagsList().isEmpty())
-						continue;
-					if (FlagHelper.callRequirementFlags(ie, itemStack, item, false)) { // ?
-						Source source = new EntityItemSource(ie, item);
-						LightSourceAPI.getSourceManager().addSource(source);
-					}
-				}
-			}
+		for (SearchTask task : tasks) {
+			task.onTick();
 		}
-
 	}
 }

@@ -22,16 +22,21 @@ import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.WorldCheckExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
-import ru.beykerykt.lightsource.sources.search.SearchSourcesMachine;
+import ru.beykerykt.lightsource.sources.search.EntitySearchMachine;
+import ru.beykerykt.lightsource.sources.search.ItemEntitySearchMachine;
+import ru.beykerykt.lightsource.sources.search.PlayerSearchMachine;
 
 public class LightSource extends JavaPlugin {
 
 	private static LightSource plugin;
-	private SearchSourcesMachine searchMachine;
 	private UpdateSourcesTask updateTask;
+	private Configuration config;
+	private int configVer = 1;
 
 	@Override
 	public void onLoad() {
+		this.config = new Configuration();
+
 		// register checkers
 		LightSourceAPI.getFlagManager().registerFlag("permission", new PermissionCheckExecutor());
 		LightSourceAPI.getFlagManager().registerFlag("entity", new EntityCheckExecutor());
@@ -49,13 +54,40 @@ public class LightSource extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		this.plugin = this;
-		this.searchMachine = new SearchSourcesMachine();
-		searchMachine.start(10);
-		this.updateTask = new UpdateSourcesTask();
-		updateTask.start(10);
+		// Config
+		try {
+			FileConfiguration fc = getConfig();
+			File file = new File(getDataFolder(), "config.yml");
+			if (file.exists()) {
+				if (fc.getInt("version") < configVer) {
+					file.delete(); // got a better idea?
+					generateConfig(file);
+				}
+			} else {
+				generateConfig(file);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		// Default item config
 		initDefaultConfig();
 		new YamlLoader().loadFromFile(new File(getDataFolder(), "sources.yml"));
+		config.exportFromConfiguration(getConfig());
+
+		if (getConfiguration().isSearchPlayers()) {
+			LightSourceAPI.getSearchMachine().addTask(new PlayerSearchMachine());
+		}
+		if (getConfiguration().isSearchEntities()) {
+			LightSourceAPI.getSearchMachine().addTask(new EntitySearchMachine(getConfiguration().getSearchRadius()));
+		}
+		if (getConfiguration().isSearchItems()) {
+			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchMachine(getConfiguration().getSearchRadius()));
+		}
+		LightSourceAPI.getSearchMachine().start(getConfiguration().getSearchDelayTicks());
+
+		this.updateTask = new UpdateSourcesTask();
+		updateTask.start(getConfiguration().getUpdateTicks());
 
 		// init metrics
 		try {
@@ -64,6 +96,36 @@ public class LightSource extends JavaPlugin {
 		} catch (IOException e) {
 			// nothing...
 		}
+
+		if (getConfiguration().isUpdaterEnable()) {
+			// TODO: Enable updater
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		LightSourceAPI.getSearchMachine().shutdown();
+		LightSourceAPI.getSourceManager().getSourceList().clear();
+		LightSourceAPI.getItemManager().getItems().clear();
+		LightSourceAPI.getFlagManager().getFlags().clear();
+
+		getServer().getScheduler().cancelTasks(this);
+	}
+
+	public static Plugin getInstance() {
+		return plugin;
+	}
+
+	public Configuration getConfiguration() {
+		return config;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (command.getName().equalsIgnoreCase("ls")) {
+			LightSourceAPI.sendMessage(sender, ChatColor.RED + "Sorry, but right now it is not available :(");
+		}
+		return true;
 	}
 
 	public void initDefaultConfig() {
@@ -113,20 +175,20 @@ public class LightSource extends JavaPlugin {
 		}
 	}
 
-	@Override
-	public void onDisable() {
-		getServer().getScheduler().cancelTasks(this);
-	}
+	private void generateConfig(File file) {
+		FileConfiguration fc = getConfig();
+		if (!file.exists()) {
+			fc.options().header(getDescription().getName() + " v" + getDescription().getVersion() + " Configuration" + "\nby BeYkeRYkt");
+			fc.set("version", configVer);
+			fc.set("enable-updater", true);
+			fc.set("sources.search.search-players", true);
+			fc.set("sources.search.search-entities", true);
+			fc.set("sources.search.search-items", true);
+			fc.set("sources.search.search-radius", 20);
+			fc.set("sources.search.search-delay-ticks", 10);
+			fc.set("sources.update-ticks", 10);
 
-	public static Plugin getInstance() {
-		return plugin;
-	}
-
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (command.getName().equalsIgnoreCase("ls")) {
-			LightSourceAPI.sendMessage(sender, ChatColor.RED + "Sorry, but right now it is not available :(");
+			saveConfig();
 		}
-		return true;
 	}
 }

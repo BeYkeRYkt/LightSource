@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.flags.FlagHelper;
 
-public class OwnedSource extends Source {
+public class OwnedSource extends ItemableSource {
 
 	private Entity owner;
 

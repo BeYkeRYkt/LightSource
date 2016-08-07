@@ -6,12 +6,14 @@ import org.bukkit.command.CommandSender;
 import ru.beykerykt.lightsource.items.ItemManager;
 import ru.beykerykt.lightsource.items.flags.FlagManager;
 import ru.beykerykt.lightsource.sources.SourceManager;
+import ru.beykerykt.lightsource.sources.search.SearchMachine;
 
 public class LightSourceAPI {
 
 	private static ItemManager itemManager;
 	private static FlagManager flagManager;
 	private static SourceManager sourceManager;
+	private static SearchMachine searchMachine;
 
 	public static ItemManager getItemManager() {
 		if (itemManager == null) {
@@ -32,6 +34,13 @@ public class LightSourceAPI {
 			sourceManager = new SourceManager();
 		}
 		return sourceManager;
+	}
+
+	public static SearchMachine getSearchMachine() {
+		if (searchMachine == null) {
+			searchMachine = new SearchMachine();
+		}
+		return searchMachine;
 	}
 
 	public static void sendMessage(CommandSender sender, String message) {

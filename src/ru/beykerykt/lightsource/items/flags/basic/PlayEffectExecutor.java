@@ -3,12 +3,13 @@ package ru.beykerykt.lightsource.items.flags.basic;
 import org.bukkit.Effect;
 
 import ru.beykerykt.lightsource.items.flags.TickableFlagExecutor;
+import ru.beykerykt.lightsource.sources.ItemableSource;
 import ru.beykerykt.lightsource.sources.Source;
 
 public class PlayEffectExecutor implements TickableFlagExecutor {
 
 	@Override
-	public void onTick(Source source, String[] args) {
+	public void onTick(ItemableSource source, String[] args) {
 		if (args.length >= 3) {
 			String effectName = args[0];
 			int data = Integer.parseInt(args[1]);

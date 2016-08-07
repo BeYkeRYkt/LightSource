@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
-import ru.beykerykt.lightsource.sources.Source;
+import ru.beykerykt.lightsource.sources.ItemableSource;
 
 public class FlagHelper {
 
@@ -31,7 +31,7 @@ public class FlagHelper {
 		return true;
 	}
 
-	public static void callUpdateFlag(Source source) {
+	public static void callUpdateFlag(ItemableSource source) {
 		for (String flag : source.getItem().getFlagsList()) {
 			String[] args = flag.split(":").clone();
 			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
@@ -43,7 +43,7 @@ public class FlagHelper {
 		}
 	}
 
-	public static void callEndingFlag(Source source) {
+	public static void callEndingFlag(ItemableSource source) {
 		for (String flag : source.getItem().getFlagsList()) {
 			String[] args = flag.split(":").clone();
 			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);

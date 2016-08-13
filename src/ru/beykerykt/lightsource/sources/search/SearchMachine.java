@@ -46,6 +46,7 @@ public class SearchMachine implements Runnable {
 	}
 
 	public boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, ItemSlot slot) {
+		// if entity is not alive (example item), slot can be null
 		for (String flag : item.getFlagsList()) {
 			String[] args = flag.split(":").clone();
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
@@ -58,7 +59,12 @@ public class SearchMachine implements Runnable {
 			if (executor instanceof RequirementFlagExecutor) {
 				RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
 				if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-					IgnoreEntityEntry entry = new IgnoreEntityEntry(entity, itemStack, slot);
+					IgnoreEntityEntry entry = null;
+					if (entity.getType().isAlive()) {
+						entry = new IgnoreEntityLivingEntry(entity, itemStack, slot);
+					} else {
+						entry = new IgnoreEntityEntry(entity, itemStack);
+					}
 					if (!ignoreList.contains(entry)) {
 						rfe.onCheckingFailure(entity, itemStack, item, args);
 						ignoreList.add(entry);
@@ -76,6 +82,7 @@ public class SearchMachine implements Runnable {
 	public void run() {
 		// ignoreList
 		for (IgnoreEntityEntry iee : ignoreList) {
+			// Basic
 			if (iee.getEntity().isDead()) {
 				ignoreList.remove(iee);
 				continue;
@@ -86,9 +93,10 @@ public class SearchMachine implements Runnable {
 				continue;
 			}
 
+			// If entity is alive type (Player, sheep and etc)
 			if (iee.getEntity().getType().isAlive()) {
 				LivingEntity le = (LivingEntity) iee.getEntity();
-				ItemSlot slot = iee.getSlot();
+				ItemSlot slot = ((IgnoreEntityLivingEntry) iee).getSlot();
 
 				if (slot == ItemSlot.RIGHT_HAND) {
 					// Main item hand
@@ -116,7 +124,7 @@ public class SearchMachine implements Runnable {
 					}
 				} else {
 					// armor set
-					ItemStack itemStack = le.getEquipment().getArmorContents()[ItemSlot.getArmorContentFromItemSlot(iee.getSlot())];
+					ItemStack itemStack = le.getEquipment().getArmorContents()[ItemSlot.getArmorContentFromItemSlot(((IgnoreEntityLivingEntry) iee).getSlot())];
 
 					if (itemStack == null || itemStack.getType() == Material.AIR) {
 						ignoreList.remove(iee);

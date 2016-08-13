@@ -19,7 +19,7 @@ public class InventorySlotSource extends LivingOwnedSource {
 
 	@Override
 	public boolean shouldExecute() {
-		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem(), false);
+		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem(), true);
 	}
 
 	public ItemSlot getItemSlot() {
@@ -41,5 +41,31 @@ public class InventorySlotSource extends LivingOwnedSource {
 			default:
 				return getOwner().getEquipment().getItemInMainHand();
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((slot == null) ? 0 : slot.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof InventorySlotSource)) {
+			return false;
+		}
+		InventorySlotSource other = (InventorySlotSource) obj;
+		if (slot != other.slot) {
+			return false;
+		}
+		return true;
 	}
 }

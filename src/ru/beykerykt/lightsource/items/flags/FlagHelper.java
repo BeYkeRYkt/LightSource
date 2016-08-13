@@ -12,7 +12,7 @@ import ru.beykerykt.lightsource.sources.ItemableSource;
 
 public class FlagHelper {
 
-	public static boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, boolean sendMessage) {
+	public static boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, boolean onlyCheck) {
 		for (String flag : item.getFlagsList()) {
 			String[] args = flag.split(":").clone();
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
@@ -25,12 +25,12 @@ public class FlagHelper {
 			if (executor instanceof RequirementFlagExecutor) {
 				RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
 				if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-					if (sendMessage) {
+					if (!onlyCheck) {
 						rfe.onCheckingFailure(entity, itemStack, item, args);
 					}
 					return false;
 				}
-				if (sendMessage) {
+				if (!onlyCheck) {
 					rfe.onCheckingSuccess(entity, itemStack, item, args);
 				}
 			}

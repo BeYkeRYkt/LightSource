@@ -3,6 +3,7 @@ package ru.beykerykt.lightsource.items.loader;
 import java.io.File;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -43,9 +44,17 @@ public class YamlLoader implements ItemLoader {
 		}
 
 		@SuppressWarnings("unchecked")
-		List<String> tags = (List<String>) file.getList(id + ".flags");
-		if (tags != null && !tags.isEmpty()) {
-			item.getFlagsList().addAll(tags);
+		List<String> flags = (List<String>) file.getList(id + ".flags");
+		if (flags != null && !flags.isEmpty()) {
+			// item.getFlagsList().addAll(tags);
+			for (int i = 0; i < flags.size(); i++) {
+				String flagId = flags.get(i);
+				if (!LightSourceAPI.getFlagManager().hasFlag(flagId)) {
+					LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + flagId + ChatColor.RED + " is not found. This tag will not be processed flag system.");
+					continue;
+				}
+				item.getFlagsList().add(flagId);
+			}
 		}
 		return item;
 	}

@@ -48,12 +48,13 @@ public class YamlLoader implements ItemLoader {
 		if (flags != null && !flags.isEmpty()) {
 			// item.getFlagsList().addAll(tags);
 			for (int i = 0; i < flags.size(); i++) {
-				String flagId = flags.get(i);
-				if (!LightSourceAPI.getFlagManager().hasFlag(flagId)) {
-					LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + flagId + ChatColor.RED + " is not found. This tag will not be processed flag system.");
+				String flagLine = flags.get(i);
+				String[] args = flagLine.split(":").clone();
+				if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
+					LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 					continue;
 				}
-				item.getFlagsList().add(flagId);
+				item.getFlagsList().add(args[0]);
 			}
 		}
 		return item;

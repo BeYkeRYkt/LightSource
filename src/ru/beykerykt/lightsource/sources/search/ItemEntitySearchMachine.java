@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
-import ru.beykerykt.lightsource.items.flags.FlagHelper;
 import ru.beykerykt.lightsource.sources.EntityItemSource;
 import ru.beykerykt.lightsource.sources.Source;
 
@@ -37,7 +36,7 @@ public class ItemEntitySearchMachine implements SearchTask {
 					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
 					if (item.getFlagsList().isEmpty())
 						continue;
-					if (FlagHelper.callRequirementFlags(ie, itemStack, item, false)) { // ?
+					if (LightSourceAPI.getSearchMachine().callRequirementFlags(ie, itemStack, item, null)) { // ?
 						Source source = new EntityItemSource(ie, item);
 						LightSourceAPI.getSourceManager().addSource(source);
 					}

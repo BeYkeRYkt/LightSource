@@ -12,11 +12,11 @@ import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.sources.EntityItemSource;
 import ru.beykerykt.lightsource.sources.Source;
 
-public class ItemEntitySearchMachine implements SearchTask {
+public class ItemEntitySearchTask implements SearchTask {
 
 	private double radius = 20;
 
-	public ItemEntitySearchMachine(double radius) {
+	public ItemEntitySearchTask(double radius) {
 		this.radius = radius;
 	}
 

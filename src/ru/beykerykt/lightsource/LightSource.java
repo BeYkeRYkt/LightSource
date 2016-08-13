@@ -22,9 +22,9 @@ import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.WorldCheckExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
-import ru.beykerykt.lightsource.sources.search.EntitySearchMachine;
-import ru.beykerykt.lightsource.sources.search.ItemEntitySearchMachine;
-import ru.beykerykt.lightsource.sources.search.PlayerSearchMachine;
+import ru.beykerykt.lightsource.sources.search.EntitySearchTask;
+import ru.beykerykt.lightsource.sources.search.ItemEntitySearchTask;
+import ru.beykerykt.lightsource.sources.search.PlayerSearchTask;
 
 public class LightSource extends JavaPlugin {
 
@@ -76,13 +76,13 @@ public class LightSource extends JavaPlugin {
 		config.exportFromConfiguration(getConfig());
 
 		if (getConfiguration().isSearchPlayers()) {
-			LightSourceAPI.getSearchMachine().addTask(new PlayerSearchMachine());
+			LightSourceAPI.getSearchMachine().addTask(new PlayerSearchTask());
 		}
 		if (getConfiguration().isSearchEntities()) {
-			LightSourceAPI.getSearchMachine().addTask(new EntitySearchMachine(getConfiguration().getSearchRadius()));
+			LightSourceAPI.getSearchMachine().addTask(new EntitySearchTask(getConfiguration().getSearchRadius()));
 		}
 		if (getConfiguration().isSearchItems()) {
-			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchMachine(getConfiguration().getSearchRadius()));
+			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchTask(getConfiguration().getSearchRadius()));
 		}
 		LightSourceAPI.getSearchMachine().start(getConfiguration().getSearchDelayTicks());
 

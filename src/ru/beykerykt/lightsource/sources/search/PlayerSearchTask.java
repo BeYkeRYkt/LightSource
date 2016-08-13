@@ -11,7 +11,7 @@ import ru.beykerykt.lightsource.items.ItemSlot;
 import ru.beykerykt.lightsource.sources.InventorySlotSource;
 import ru.beykerykt.lightsource.sources.Source;
 
-public class PlayerSearchMachine implements SearchTask {
+public class PlayerSearchTask implements SearchTask {
 
 	@Override
 	public void onTick() {

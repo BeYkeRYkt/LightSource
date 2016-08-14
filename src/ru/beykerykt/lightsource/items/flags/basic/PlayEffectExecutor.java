@@ -4,7 +4,6 @@ import org.bukkit.Effect;
 
 import ru.beykerykt.lightsource.items.flags.TickableFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
-import ru.beykerykt.lightsource.sources.Source;
 
 public class PlayEffectExecutor implements TickableFlagExecutor {
 

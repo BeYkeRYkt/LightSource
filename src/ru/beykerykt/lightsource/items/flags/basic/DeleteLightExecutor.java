@@ -4,7 +4,6 @@ import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
 import ru.beykerykt.lightsource.items.flags.EndingFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
-import ru.beykerykt.lightsource.sources.Source;
 
 public class DeleteLightExecutor implements EndingFlagExecutor {
 

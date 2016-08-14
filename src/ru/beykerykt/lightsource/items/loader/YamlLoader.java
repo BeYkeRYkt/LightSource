@@ -54,7 +54,7 @@ public class YamlLoader implements ItemLoader {
 					LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 					continue;
 				}
-				item.getFlagsList().add(args[0]);
+				item.getFlagsList().add(flagLine);
 			}
 		}
 		return item;

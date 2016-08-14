@@ -51,29 +51,30 @@ public class SearchMachine implements Runnable {
 			String[] args = flag.split(":").clone();
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
 				LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
-				item.getFlagsList().remove(args[0]);
+				item.getFlagsList().remove(flag);
 				continue;
 			}
 			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
 			args = (String[]) ArrayUtils.remove(args, 0);
-			if (executor instanceof RequirementFlagExecutor) {
-				RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
-				if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-					IgnoreEntityEntry entry = null;
-					if (entity.getType().isAlive()) {
-						entry = new IgnoreEntityLivingEntry(entity, itemStack, slot);
-					} else {
-						entry = new IgnoreEntityEntry(entity, itemStack);
-					}
-					if (!ignoreList.contains(entry)) {
-						rfe.onCheckingFailure(entity, itemStack, item, args);
-						ignoreList.add(entry);
-					}
-					entry = null; // seriously :/ ?
-					return false;
-				}
-				rfe.onCheckingSuccess(entity, itemStack, item, args);
+			if (!(executor instanceof RequirementFlagExecutor)) {
+				continue;
 			}
+			RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
+			if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
+				IgnoreEntityEntry entry = null;
+				if (entity.getType().isAlive()) {
+					entry = new IgnoreEntityLivingEntry(entity, itemStack, slot);
+				} else {
+					entry = new IgnoreEntityEntry(entity, itemStack);
+				}
+				if (!ignoreList.contains(entry)) {
+					rfe.onCheckingFailure(entity, itemStack, item, args);
+					ignoreList.add(entry);
+				}
+				entry = null; // seriously :/ ?
+				return false;
+			}
+			rfe.onCheckingSuccess(entity, itemStack, item, args);
 		}
 		return true;
 	}

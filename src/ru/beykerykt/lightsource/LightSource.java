@@ -185,7 +185,7 @@ public class LightSource extends JavaPlugin {
 			fc.set("sources.search.search-entities", true);
 			fc.set("sources.search.search-items", true);
 			fc.set("sources.search.search-radius", 20);
-			fc.set("sources.search.search-delay-ticks", 10);
+			fc.set("sources.search.search-delay-ticks", 5);
 			fc.set("sources.update-ticks", 10);
 
 			saveConfig();

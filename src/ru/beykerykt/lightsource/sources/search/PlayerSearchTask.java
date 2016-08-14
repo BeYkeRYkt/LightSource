@@ -33,7 +33,7 @@ public class PlayerSearchTask implements SearchTask {
 					continue;
 				ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
 				if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, slot)) {
-					Source source = new InventorySlotSource(player, item, slot);
+					Source source = new InventorySlotSource(player, item, itemStack, slot);
 					LightSourceAPI.getSourceManager().addSource(source);
 				}
 			}
@@ -48,7 +48,7 @@ public class PlayerSearchTask implements SearchTask {
 			if (item.getFlagsList().isEmpty())
 				continue;
 			if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, ItemSlot.RIGHT_HAND)) {
-				Source source = new InventorySlotSource(player, item, ItemSlot.RIGHT_HAND);
+				Source source = new InventorySlotSource(player, item, itemStack, ItemSlot.RIGHT_HAND);
 				LightSourceAPI.getSourceManager().addSource(source);
 			}
 
@@ -63,7 +63,7 @@ public class PlayerSearchTask implements SearchTask {
 			if (itemOff.getFlagsList().isEmpty())
 				continue;
 			if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-				Source source = new InventorySlotSource(player, itemOff, ItemSlot.LEFT_HAND);
+				Source source = new InventorySlotSource(player, itemOff, itemStack, ItemSlot.LEFT_HAND);
 				LightSourceAPI.getSourceManager().addSource(source);
 			}
 		}

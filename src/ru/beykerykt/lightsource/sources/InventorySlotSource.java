@@ -11,15 +11,17 @@ import ru.beykerykt.lightsource.items.flags.FlagHelper;
 public class InventorySlotSource extends LivingOwnedSource {
 
 	private ItemSlot slot;
+	private ItemStack itemStack;
 
-	public InventorySlotSource(LivingEntity entity, Item item, ItemSlot slot) {
+	public InventorySlotSource(LivingEntity entity, Item item, ItemStack itemStack, ItemSlot slot) {
 		super(entity, item);
 		this.slot = slot;
+		this.itemStack = itemStack;
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		return super.shouldExecute() && LightSourceAPI.getItemManager().isItem(getItemStack()) && FlagHelper.callRequirementFlags(getOwner(), getItemStack(), getItem(), true);
+		return super.shouldExecute() && getItemStack().equals(getItemStackFromItemSlot()) && LightSourceAPI.getItemManager().isItem(getItemStackFromItemSlot()) && FlagHelper.callRequirementFlags(getOwner(), getItemStackFromItemSlot(), getItem(), true);
 	}
 
 	public ItemSlot getItemSlot() {
@@ -27,6 +29,10 @@ public class InventorySlotSource extends LivingOwnedSource {
 	}
 
 	public ItemStack getItemStack() {
+		return itemStack;
+	}
+
+	public ItemStack getItemStackFromItemSlot() {
 		switch (slot) {
 			case HELMET:
 				return getOwner().getEquipment().getHelmet();

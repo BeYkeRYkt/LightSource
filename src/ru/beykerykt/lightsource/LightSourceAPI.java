@@ -67,6 +67,6 @@ public class LightSourceAPI {
 	}
 
 	public static void sendMessage(CommandSender sender, String message) {
-		sender.sendMessage(ChatColor.AQUA + "[LightSource]: " + ChatColor.WHITE + message);
+		sender.sendMessage(ChatColor.AQUA + "<LightSource>: " + ChatColor.WHITE + message);
 	}
 }

@@ -136,7 +136,7 @@ public class LightSource extends JavaPlugin {
 		}
 
 		if (getConfiguration().isUpdaterEnable()) {
-			runUpdater(getServer().getConsoleSender(), getConfiguration().getUpdateDelayTicks());
+			runUpdater(getServer().getConsoleSender(), getConfiguration().getUpdaterDelayTicks());
 		}
 	}
 

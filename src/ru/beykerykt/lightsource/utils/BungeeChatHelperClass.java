@@ -46,7 +46,7 @@ public class BungeeChatHelperClass {
 		}
 		return false;
 	}
-	
+
 	public static void sendMessageAboutPlugin(Player player, LightSource plugin) {
 		player.sendMessage(ChatColor.AQUA + " ------- <LightSource " + ChatColor.WHITE + plugin.getDescription().getVersion() + "> ------- ");
 

@@ -34,18 +34,27 @@ public class Configuration {
 	private boolean search_entities;
 	private boolean search_items;
 
-	private int update_ticks = 0;
+	private int update_delay_ticks = 0;
 
 	private boolean updater_enable;
+	private String repo = "BeYkeRYkt/LightSource";
+	private int updater_delay_ticks = 40;
+	private boolean viewChangelog;
+
+	private boolean lighting_queue;
 
 	public void exportFromConfiguration(FileConfiguration config) {
-		setUpdaterEnable(config.getBoolean("enable-updater"));
+		setAddToLightingQueue(config.getBoolean("add-to-async-lighting-queue"));
+		setUpdaterEnable(config.getBoolean("updater.enable"));
+		setRepo(config.getString("updater.repo"));
+		setUpdaterDelayTicks(config.getInt("updater.update-delay-ticks"));
+		setViewChangelog(config.getBoolean("updater.view-changelog"));
 		setSearchPlayers(config.getBoolean("sources.search.search-players"));
 		setSearchEntities(config.getBoolean("sources.search.search-entities"));
 		setSearchItems(config.getBoolean("sources.search.search-items"));
 		setSearchRadius(config.getDouble("sources.search.search-radius"));
 		setSearchDelayTicks(config.getInt("sources.search.search-delay-ticks"));
-		setUpdateTicks(config.getInt("sources.update-ticks"));
+		setUpdateDelayTicks(config.getInt("sources.update-delay-ticks"));
 	}
 
 	public double getSearchRadius() {
@@ -64,12 +73,12 @@ public class Configuration {
 		this.search_delay_ticks = search_delay_ticks;
 	}
 
-	public int getUpdateTicks() {
-		return update_ticks;
+	public int getUpdateDelayTicks() {
+		return update_delay_ticks;
 	}
 
-	public void setUpdateTicks(int update_ticks) {
-		this.update_ticks = update_ticks;
+	public void setUpdateDelayTicks(int update_ticks) {
+		this.update_delay_ticks = update_ticks;
 	}
 
 	public boolean isSearchPlayers() {
@@ -96,6 +105,14 @@ public class Configuration {
 		this.search_items = search_items;
 	}
 
+	public boolean isAddToLightingQueue() {
+		return lighting_queue;
+	}
+
+	public void setAddToLightingQueue(boolean lighting_queue) {
+		this.lighting_queue = lighting_queue;
+	}
+
 	public boolean isUpdaterEnable() {
 		return updater_enable;
 	}
@@ -104,4 +121,27 @@ public class Configuration {
 		this.updater_enable = updater_enable;
 	}
 
+	public String getRepo() {
+		return repo;
+	}
+
+	public void setRepo(String repo) {
+		this.repo = repo;
+	}
+
+	public int getUpdaterDelayTicks() {
+		return updater_delay_ticks;
+	}
+
+	public void setUpdaterDelayTicks(int updater_delay_ticks) {
+		this.updater_delay_ticks = updater_delay_ticks;
+	}
+
+	public boolean isViewChangelog() {
+		return viewChangelog;
+	}
+
+	public void setViewChangelog(boolean viewChangelog) {
+		this.viewChangelog = viewChangelog;
+	}
 }

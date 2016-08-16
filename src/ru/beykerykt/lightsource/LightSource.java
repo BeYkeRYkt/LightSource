@@ -28,15 +28,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.beykerykt.lightapi.LightAPI;
+import ru.beykerykt.lightapi.chunks.ChunkInfo;
+import ru.beykerykt.lightapi.updater.Response;
+import ru.beykerykt.lightapi.updater.UpdateType;
+import ru.beykerykt.lightapi.updater.Updater;
+import ru.beykerykt.lightapi.updater.Version;
 import ru.beykerykt.lightapi.utils.Metrics;
 import ru.beykerykt.lightsource.items.flags.basic.DeleteLightExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.EntityCheckExecutor;
@@ -49,6 +59,7 @@ import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
 import ru.beykerykt.lightsource.sources.search.EntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.ItemEntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.PlayerSearchTask;
+import ru.beykerykt.lightsource.utils.BungeeChatHelperClass;
 
 public class LightSource extends JavaPlugin {
 
@@ -68,7 +79,10 @@ public class LightSource extends JavaPlugin {
 
 		// register tickers
 		LightSourceAPI.getFlagManager().registerFlag("update", new UpdateExecutor());
-		LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
+		if (!Bukkit.getVersion().equalsIgnoreCase("CraftBukkit")) {
+			LightSourceAPI.sendMessage(getServer().getConsoleSender(), Color.RED + "Sorry, but flag 'play_effect' using SpigotAPI code. This flag doesn't work in CraftBukkit.");
+			LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
+		}
 
 		// register post execturos
 		LightSourceAPI.getFlagManager().registerFlag("delete_light", new DeleteLightExecutor());
@@ -111,7 +125,7 @@ public class LightSource extends JavaPlugin {
 		LightSourceAPI.getSearchMachine().start(getConfiguration().getSearchDelayTicks());
 
 		this.updateTask = new UpdateSourcesTask();
-		updateTask.start(getConfiguration().getUpdateTicks());
+		updateTask.start(getConfiguration().getUpdateDelayTicks());
 
 		// init metrics
 		try {
@@ -122,7 +136,7 @@ public class LightSource extends JavaPlugin {
 		}
 
 		if (getConfiguration().isUpdaterEnable()) {
-			// TODO: Enable updater
+			runUpdater(getServer().getConsoleSender(), getConfiguration().getUpdateDelayTicks());
 		}
 	}
 
@@ -147,9 +161,62 @@ public class LightSource extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (command.getName().equalsIgnoreCase("ls")) {
-			// LightSourceAPI.sendMessage(sender, ChatColor.RED + "Sorry, but right now it is not available :(");
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
+				if (args.length == 0) {
+					if (BungeeChatHelperClass.hasBungeeChatAPI()) {
+						BungeeChatHelperClass.sendMessageAboutPlugin(player, this);
+					} else {
+						player.sendMessage(ChatColor.AQUA + " ------- <LightSource " + ChatColor.WHITE + getDescription().getVersion() + "> ------- ");
+						player.sendMessage(ChatColor.AQUA + " Current version: " + ChatColor.WHITE + getDescription().getVersion());
+						player.sendMessage(ChatColor.AQUA + " Server name: " + ChatColor.WHITE + getServer().getName());
+						player.sendMessage(ChatColor.AQUA + " Server version: " + ChatColor.WHITE + getServer().getVersion());
+						player.sendMessage(ChatColor.AQUA + " Source code: " + ChatColor.WHITE + "http://github.com/BeYkeRYkt/LightSource/");
+						player.sendMessage(ChatColor.AQUA + " Developer: " + ChatColor.WHITE + "BeYkeRYkt");
+						player.sendMessage("");
+						player.sendMessage(ChatColor.WHITE + " Licensed under: " + ChatColor.AQUA + "MIT License");
+					}
+				} else if (args.length == 1) {
+					if (args[0].equalsIgnoreCase("create")) {
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "Need more arguments!");
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "/ls create [level 1-15]");
+					} else if (args[0].equalsIgnoreCase("delete")) {
+						if (LightAPI.deleteLight(player.getLocation(), getConfiguration().isAddToLightingQueue())) {
+							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+								LightAPI.updateChunk(info);
+							}
+							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
+						}
+					}
+				} else if (args.length >= 2) {
+					if (args[0].equalsIgnoreCase("create")) {
+						int level = Integer.parseInt(args[1]);
+						if (level > 15) {
+							level = 15;
+						}
+						if (LightAPI.createLight(player.getLocation(), level, getConfiguration().isAddToLightingQueue())) {
+							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been placed!");
+							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+								LightAPI.updateChunk(info);
+							}
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to place the light. Houston, we have a problem?");
+						}
+					} else if (args[0].equalsIgnoreCase("delete")) {
+						if (LightAPI.deleteLight(player.getLocation(), getConfiguration().isAddToLightingQueue())) {
+							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+								LightAPI.updateChunk(info);
+							}
+							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
+						}
+					}
+				}
+			} else {
+				LightSourceAPI.sendMessage(sender, ChatColor.RED + "Sorry, but right now it is not available :(");
 			}
 		}
 		return true;
@@ -202,12 +269,53 @@ public class LightSource extends JavaPlugin {
 		}
 	}
 
+	private void runUpdater(final CommandSender sender, int delay) {
+		Bukkit.getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+
+			@Override
+			public void run() {
+				Version version = Version.parse(getDescription().getVersion());
+				Updater updater;
+				try {
+					updater = new Updater(version, getConfiguration().getRepo());
+
+					Response response = updater.getResult();
+					if (response == Response.SUCCESS) {
+						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.WHITE + "!");
+						UpdateType update = UpdateType.compareVersion(updater.getVersion().toString());
+						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Repository: " + getConfiguration().getRepo());
+						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Update type: " + update.getName());
+						if (update == UpdateType.MAJOR) {
+							LightSourceAPI.sendMessage(sender, ChatColor.RED + "WARNING ! A MAJOR UPDATE! Not updating plugins may produce errors after starting the server! Notify developers about update.");
+						}
+						if (getConfiguration().isViewChangelog()) {
+							LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Changes: ");
+							sender.sendMessage(updater.getChanges());// for normal view
+						}
+					} else if (response == Response.REPO_NOT_FOUND) {
+						LightSourceAPI.sendMessage(sender, ChatColor.RED + "Repo not found! Check that your repo exists!");
+					} else if (response == Response.REPO_NO_RELEASES) {
+						LightSourceAPI.sendMessage(sender, ChatColor.RED + "Releases not found! Check your repo!");
+					} else if (response == Response.NO_UPDATE) {
+						LightSourceAPI.sendMessage(sender, ChatColor.GREEN + "You are running the latest version!");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}, delay);
+	}
+
 	private void generateConfig(File file) {
 		FileConfiguration fc = getConfig();
 		if (!file.exists()) {
 			fc.options().header(getDescription().getName() + " v" + getDescription().getVersion() + " Configuration" + "\nby BeYkeRYkt");
 			fc.set("version", configVer);
-			fc.set("enable-updater", true);
+			fc.set("add-to-async-lighting-queue", true);
+			fc.set("updater.enable", true);
+			fc.set("updater.repo", "BeYkeRYkt/LightSource");
+			fc.set("updater.update-delay-ticks", 40);
+			fc.set("updater.view-changelog", false);
 			fc.set("sources.search.search-players", true);
 			fc.set("sources.search.search-entities", true);
 			fc.set("sources.search.search-items", true);
@@ -216,6 +324,17 @@ public class LightSource extends JavaPlugin {
 			fc.set("sources.update-ticks", 10);
 
 			saveConfig();
+		}
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+
+		if (getConfiguration().isUpdaterEnable()) {
+			if (player.hasPermission("lightapi.updater")) {
+				runUpdater(player, getConfiguration().getUpdateDelayTicks());
+			}
 		}
 	}
 }

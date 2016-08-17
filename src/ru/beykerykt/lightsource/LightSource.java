@@ -75,10 +75,7 @@ public class LightSource extends JavaPlugin {
 
 		// register tickers
 		LightSourceAPI.getFlagManager().registerFlag("update", new UpdateExecutor());
-		if (!Bukkit.getVersion().equalsIgnoreCase("CraftBukkit")) {
-			LightSourceAPI.sendMessage(getServer().getConsoleSender(), ChatColor.RED + "Sorry, but flag 'play_effect' using SpigotAPI code. This flag doesn't work in CraftBukkit.");
-			LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
-		}
+		LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
 
 		// register post execturos
 		LightSourceAPI.getFlagManager().registerFlag("delete_light", new DeleteLightExecutor());

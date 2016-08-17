@@ -80,7 +80,7 @@ public class BungeeChatHelperClass {
 		text.addExtra(new TextComponent(ChatColor.WHITE + " | "));
 
 		player.spigot().sendMessage(text);
-
+		player.sendMessage("");
 		TextComponent licensed = new TextComponent(" Licensed under ");
 		TextComponent MIT = new TextComponent(ChatColor.AQUA + "MIT License");
 		MIT.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://opensource.org/licenses/MIT/"));

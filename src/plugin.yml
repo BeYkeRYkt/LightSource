@@ -7,3 +7,6 @@ depend: [LightAPI]
 commands:
    ls:
       description: Main command
+permissions:
+  ls.updater:
+    default: false

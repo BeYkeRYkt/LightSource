@@ -294,6 +294,15 @@ public class LightSource extends JavaPlugin {
 					listGlowstone.add("delete_light:false");
 					fc.set("glowstone.flags", listGlowstone);
 
+					// Jack o Lantern
+					fc.set("jack.material", " JACK_O_LANTERN");
+					fc.set("jack.lightlevel", 15);
+					List<String> listJack = new ArrayList<String>();
+					// listGlowstone.add("permission:lightsource.jack");
+					listJack.add("update:false:true");
+					listJack.add("delete_light:false");
+					fc.set("jack.flags", listJack);
+
 					// Redstone Lamp
 					fc.set("redstonelamp.material", "REDSTONE_LAMP_ON");
 					fc.set("redstonelamp.lightlevel", 15);

@@ -223,7 +223,12 @@ public class LightSource extends JavaPlugin {
 						if (LightSourceAPI.getFlagManager().hasFlag(args[1])) {
 							LightSourceAPI.sendMessage(player, "Getting information about flag: " + ChatColor.AQUA + args[1]);
 							FlagExecutor flag = LightSourceAPI.getFlagManager().getFlag(args[1]);
-							LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + flag.getMaxArgs());
+							int maxArgs = flag.getMaxArgs();
+							if (maxArgs < 0) {
+								LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + "Infinity");
+							} else {
+								LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + maxArgs);
+							}
 							LightSourceAPI.sendMessage(player, "Description: " + ChatColor.AQUA + flag.getDescription());
 						} else {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This flag does not exist. Are you sure write correctly?");
@@ -246,27 +251,102 @@ public class LightSource extends JavaPlugin {
 			if (!file.exists()) {
 				FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
 				if (fc != null) {
+					// Sea lantern
+					fc.set("sealatern.material", "SEA_LANTERN");
+					fc.set("sealatern.lightlevel", 15);
+					List<String> listSeaLatern = new ArrayList<String>();
+					// listSeaLatern.add("permission:lightsource.sealatern");
+					listSeaLatern.add("update:false:true");
+					listSeaLatern.add("delete_light:false");
+					fc.set("sealatern.flags", listSeaLatern);
+
+					// Lava bucket
+					fc.set("lavabucket.material", "LAVA_BUCKET");
+					fc.set("lavabucket.lightlevel", 15);
+					List<String> listLavaBucket = new ArrayList<String>();
+					// listLavaBucket.add("permission:lightsource.lavabucket");
+					listLavaBucket.add("update:false:true");
+					listLavaBucket.add("delete_light:false");
+					fc.set("lavabucket.flags", listLavaBucket);
+
+					// Glowstone
+					fc.set("glowstone.material", "GLOWSTONE");
+					fc.set("glowstone.lightlevel", 15);
+					List<String> listGlowstone = new ArrayList<String>();
+					// listGlowstone.add("permission:lightsource.glowstone");
+					listGlowstone.add("update:false:true");
+					listGlowstone.add("delete_light:false");
+					fc.set("glowstone.flags", listGlowstone);
+
+					// Redstone Lamp
+					fc.set("redstonelamp.material", "REDSTONE_LAMP_ON");
+					fc.set("redstonelamp.lightlevel", 15);
+					List<String> listRedstoneLamp = new ArrayList<String>();
+					// listRedstoneLamp.add("permission:lightsource.redstonelamp");
+					listRedstoneLamp.add("update:false:true");
+					listRedstoneLamp.add("delete_light:false");
+					fc.set("redstonelamp.flags", listRedstoneLamp);
+
+					// Torch
 					fc.set("torch.material", "TORCH");
 					fc.set("torch.lightlevel", 14);
 					List<String> listTorch = new ArrayList<String>();
-					listTorch.add("permission:lightsource.torch");
-					listTorch.add("update:true:false");
-					listTorch.add("delete_light:true");
+					// listTorch.add("permission:lightsource.torch");
+					listTorch.add("update:false:true");
+					listTorch.add("delete_light:false");
 					listTorch.add("play_effect:smoke:0:1");
 					listTorch.add("play_effect:flame:0:1");
 					fc.set("torch.flags", listTorch);
 
-					fc.set("glowstone.material", "GLOWSTONE");
-					fc.set("glowstone.lightlevel", 15);
-					List<String> listGlowstone = new ArrayList<String>();
-					listGlowstone.add("permission:lightsource.glowstone");
-					listGlowstone.add("update:true:true");
-					listGlowstone.add("delete_light:true");
-					fc.set("glowstone.flags", listGlowstone);
+					// End rod
+					fc.set("endrod.material", "END_ROD");
+					fc.set("endrod.lightlevel", 14);
+					List<String> listEndRod = new ArrayList<String>();
+					// listEndRod.add("permission:lightsource.endrod");
+					listEndRod.add("update:false:true");
+					listEndRod.add("delete_light:false");
+					fc.set("endrod.flags", listEndRod);
 
-					fc.set("testItem.material", "DIAMOND");
+					// Burning Furnace
+					fc.set("furnace.material", "BURNING_FURNACE");
+					fc.set("furnace.lightlevel", 13);
+					List<String> listFurnace = new ArrayList<String>();
+					// listFurnace.add("permission:lightsource.furnace");
+					listFurnace.add("update:false:true");
+					listFurnace.add("delete_light:false");
+					fc.set("furnace.flags", listFurnace);
+
+					// Redstone Ore
+					fc.set("redstoneore.material", "GLOWING_REDSTONE_ORE");
+					fc.set("redstoneore.lightlevel", 9);
+					List<String> listRedstoneOre = new ArrayList<String>();
+					// listRedstoneOre.add("permission:lightsource.redstoneore");
+					listRedstoneOre.add("update:false:true");
+					listRedstoneOre.add("delete_light:false");
+					fc.set("redstoneore.flags", listRedstoneOre);
+
+					// Redstone Torch
+					fc.set("redstonetorch.material", "REDSTONE_TORCH_ON");
+					fc.set("redstonetorch.lightlevel", 9);
+					List<String> listRedstoneStone = new ArrayList<String>();
+					// listRedstoneStone.add("permission:lightsource.redstonetorch");
+					listRedstoneStone.add("update:false:true");
+					listRedstoneStone.add("delete_light:false");
+					fc.set("redstonetorch.flags", listRedstoneStone);
+
+					// Ender chest
+					fc.set("enderchest.material", "ENDER_CHEST");
+					fc.set("enderchest.lightlevel", 6);
+					List<String> listEnderChest = new ArrayList<String>();
+					// listEnderChest.add("permission:lightsource.enderchest");
+					listEnderChest.add("update:false:true");
+					listEnderChest.add("delete_light:false");
+					fc.set("enderchest.flags", listEnderChest);
+
+					// Test item
+					fc.set("testItem.material", "BEDROCK");
 					fc.set("testItem.lightlevel", 10);
-					fc.set("testItem.displayname", "HAHAHA, NICE JOKE :)");
+					fc.set("testItem.displayname", "DEV_TEST");
 					List<String> listTest = new ArrayList<String>();
 					listTest.add("entity:PLAYER:DROPPED_ITEM");
 					listTest.add("permission:lightsource.testItem");

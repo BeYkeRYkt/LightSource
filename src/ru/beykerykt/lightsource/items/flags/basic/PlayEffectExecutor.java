@@ -25,10 +25,10 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import org.bukkit.Effect;
 
-import ru.beykerykt.lightsource.items.flags.UpdateableFlagExecutor;
+import ru.beykerykt.lightsource.items.flags.UpdatableFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
-public class PlayEffectExecutor implements UpdateableFlagExecutor {
+public class PlayEffectExecutor implements UpdatableFlagExecutor {
 
 	@Override
 	public void onUpdate(ItemableSource source, String[] args) {

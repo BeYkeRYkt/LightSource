@@ -25,7 +25,7 @@ package ru.beykerykt.lightsource.items.flags;
 
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
-public interface UpdateableFlagExecutor extends FlagExecutor {
+public interface UpdatableFlagExecutor extends FlagExecutor {
 
 	public void onUpdate(ItemableSource source, String[] args);
 

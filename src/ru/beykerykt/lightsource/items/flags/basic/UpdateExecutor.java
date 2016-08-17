@@ -25,10 +25,10 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
-import ru.beykerykt.lightsource.items.flags.UpdateableFlagExecutor;
+import ru.beykerykt.lightsource.items.flags.UpdatableFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
-public class UpdateExecutor implements UpdateableFlagExecutor {
+public class UpdateExecutor implements UpdatableFlagExecutor {
 
 	@Override
 	public void onUpdate(ItemableSource source, String[] args) {

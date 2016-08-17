@@ -25,13 +25,13 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import org.bukkit.Effect;
 
-import ru.beykerykt.lightsource.items.flags.TickableFlagExecutor;
+import ru.beykerykt.lightsource.items.flags.UpdateableFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
-public class PlayEffectExecutor implements TickableFlagExecutor {
+public class PlayEffectExecutor implements UpdateableFlagExecutor {
 
 	@Override
-	public void onTick(ItemableSource source, String[] args) {
+	public void onUpdate(ItemableSource source, String[] args) {
 		if (args.length >= getMaxArgs()) {
 			String effectName = args[0];
 			int data = Integer.parseInt(args[1]);

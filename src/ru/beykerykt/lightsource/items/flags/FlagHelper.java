@@ -72,9 +72,9 @@ public class FlagHelper {
 			}
 			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
 			args = (String[]) ArrayUtils.remove(args, 0);
-			if (executor instanceof TickableFlagExecutor) {
-				TickableFlagExecutor tfe = (TickableFlagExecutor) executor;
-				tfe.onTick(source, args);
+			if (executor instanceof UpdateableFlagExecutor) {
+				UpdateableFlagExecutor tfe = (UpdateableFlagExecutor) executor;
+				tfe.onUpdate(source, args);
 			}
 		}
 	}

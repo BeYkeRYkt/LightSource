@@ -25,13 +25,13 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
-import ru.beykerykt.lightsource.items.flags.TickableFlagExecutor;
+import ru.beykerykt.lightsource.items.flags.UpdateableFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
-public class UpdateExecutor implements TickableFlagExecutor {
+public class UpdateExecutor implements UpdateableFlagExecutor {
 
 	@Override
-	public void onTick(ItemableSource source, String[] args) {
+	public void onUpdate(ItemableSource source, String[] args) {
 		if (args.length == 1) {
 			boolean flag = Boolean.parseBoolean(args[0]);
 			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), flag);

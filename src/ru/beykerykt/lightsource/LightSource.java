@@ -43,11 +43,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
-import ru.beykerykt.lightapi.updater.Response;
-import ru.beykerykt.lightapi.updater.UpdateType;
-import ru.beykerykt.lightapi.updater.Updater;
-import ru.beykerykt.lightapi.updater.Version;
-import ru.beykerykt.lightapi.utils.Metrics;
 import ru.beykerykt.lightsource.items.flags.basic.DeleteLightExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.EntityCheckExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.PermissionCheckExecutor;
@@ -59,7 +54,12 @@ import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
 import ru.beykerykt.lightsource.sources.search.EntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.ItemEntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.PlayerSearchTask;
+import ru.beykerykt.lightsource.updater.Response;
+import ru.beykerykt.lightsource.updater.UpdateType;
+import ru.beykerykt.lightsource.updater.Updater;
+import ru.beykerykt.lightsource.updater.Version;
 import ru.beykerykt.lightsource.utils.BungeeChatHelperClass;
+import ru.beykerykt.lightsource.utils.Metrics;
 
 public class LightSource extends JavaPlugin {
 

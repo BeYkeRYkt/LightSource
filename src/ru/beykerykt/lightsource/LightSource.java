@@ -177,6 +177,14 @@ public class LightSource extends JavaPlugin {
 						} else {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
 						}
+					} else if (args[0].equalsIgnoreCase("update")) {
+						if (player.hasPermission("ls.updater") || player.isOp()) {
+							runUpdater(player, 2);
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
+						}
+					} else {
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This command does not exist. Are you sure write correctly?");
 					}
 				} else if (args.length >= 2) {
 					if (args[0].equalsIgnoreCase("create")) {
@@ -201,6 +209,14 @@ public class LightSource extends JavaPlugin {
 						} else {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
 						}
+					} else if (args[0].equalsIgnoreCase("update")) {
+						if (player.hasPermission("ls.updater") || player.isOp()) {
+							runUpdater(player, 2);
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
+						}
+					} else {
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This command does not exist. Are you sure write correctly?");
 					}
 				}
 			} else {

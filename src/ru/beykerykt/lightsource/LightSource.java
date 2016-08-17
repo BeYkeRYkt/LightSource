@@ -170,13 +170,17 @@ public class LightSource extends JavaPlugin {
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "Need more arguments!");
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "/ls create [level 1-15]");
 					} else if (args[0].equalsIgnoreCase("delete")) {
-						if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
-							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
-								LightAPI.updateChunk(info);
+						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
+							if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+									LightAPI.updateChunk(info);
+								}
+								LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
+							} else {
+								LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
 							}
-							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
 						} else {
-							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
 					} else if (args[0].equalsIgnoreCase("update")) {
 						if (player.hasPermission("ls.updater") || player.isOp()) {
@@ -192,26 +196,34 @@ public class LightSource extends JavaPlugin {
 					}
 				} else if (args.length >= 2) {
 					if (args[0].equalsIgnoreCase("create")) {
-						int level = Integer.parseInt(args[1]);
-						if (level > 15) {
-							level = 15;
-						}
-						if (LightAPI.createLight(player.getLocation(), level, getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
-							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been placed!");
-							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
-								LightAPI.updateChunk(info);
+						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
+							int level = Integer.parseInt(args[1]);
+							if (level > 15) {
+								level = 15;
+							}
+							if (LightAPI.createLight(player.getLocation(), level, getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+								LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been placed!");
+								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+									LightAPI.updateChunk(info);
+								}
+							} else {
+								LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to place the light. Houston, we have a problem?");
 							}
 						} else {
-							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to place the light. Houston, we have a problem?");
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
 					} else if (args[0].equalsIgnoreCase("delete")) {
-						if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
-							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
-								LightAPI.updateChunk(info);
+						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
+							if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
+									LightAPI.updateChunk(info);
+								}
+								LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
+							} else {
+								LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
 							}
-							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been deleted!");
 						} else {
-							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to remove the light. Houston, we have a problem?");
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
 					} else if (args[0].equalsIgnoreCase("update")) {
 						if (player.hasPermission("ls.updater") || player.isOp()) {
@@ -220,18 +232,22 @@ public class LightSource extends JavaPlugin {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
 					} else if (args[0].equalsIgnoreCase("info")) {
-						if (LightSourceAPI.getFlagManager().hasFlag(args[1])) {
-							LightSourceAPI.sendMessage(player, "Getting information about flag: " + ChatColor.AQUA + args[1]);
-							FlagExecutor flag = LightSourceAPI.getFlagManager().getFlag(args[1]);
-							int maxArgs = flag.getMaxArgs();
-							if (maxArgs < 0) {
-								LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + "Infinity");
+						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
+							if (LightSourceAPI.getFlagManager().hasFlag(args[1])) {
+								LightSourceAPI.sendMessage(player, "Getting information about flag: " + ChatColor.AQUA + args[1]);
+								FlagExecutor flag = LightSourceAPI.getFlagManager().getFlag(args[1]);
+								int maxArgs = flag.getMaxArgs();
+								if (maxArgs < 0) {
+									LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + "Infinity");
+								} else {
+									LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + maxArgs);
+								}
+								LightSourceAPI.sendMessage(player, "Description: " + ChatColor.AQUA + flag.getDescription());
 							} else {
-								LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + maxArgs);
+								LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This flag does not exist. Are you sure write correctly?");
 							}
-							LightSourceAPI.sendMessage(player, "Description: " + ChatColor.AQUA + flag.getDescription());
 						} else {
-							LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This flag does not exist. Are you sure write correctly?");
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
 					} else {
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This command does not exist. Are you sure write correctly?");

@@ -10,14 +10,13 @@ public class ConfigPath {
 		public static String ENABLE = "updater.enable";
 		public static String REPO = "updater.repo";
 		public static String UPDATE_DELAY_TICKS = "updater.update-delay-ticks";
-		public static String VIEW_CHANGELOG = "view-changelog";
+		public static String VIEW_CHANGELOG = "updater.view-changelog";
 	}
 
 	public static class SOURCES {
 		public static String UPDATE_DELAY_TICKS = "sources.update-delay-ticks";
 
 		public static class SEARCH {
-			public static String SEARCH = "sources.search.search-";
 			public static String SEARCH_PLAYERS = "sources.search.search-players";
 			public static String SEARCH_ENTITIES = "sources.search.search-entities";
 			public static String SEARCH_ITEMS = "sources.search.search-items";

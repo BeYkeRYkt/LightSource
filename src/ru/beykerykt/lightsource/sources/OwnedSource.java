@@ -46,8 +46,6 @@ public class OwnedSource extends Source {
 	@Override
 	public void onUpdate() {
 		setLocation(getOwner().getLocation());
-		// getItem().callUpdateFlag(this);
-		//FlagHelper.callUpdateFlag(this);
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public abstract class ItemableSource extends LivingOwnedSource {
 	public void setItem(Item item) {
 		this.item = item;
 	}
-	
+
 	@Override
 	public void onUpdate() {
 		// TODO Auto-generated method stub

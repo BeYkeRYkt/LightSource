@@ -32,7 +32,7 @@ import ru.beykerykt.lightsource.items.Item;
 public class EntityItemSource extends OwnedSource {
 
 	public EntityItemSource(org.bukkit.entity.Item entity, Item item) {
-		super(entity, item);
+		super(entity, item.getLevelLight());
 	}
 
 	@Override

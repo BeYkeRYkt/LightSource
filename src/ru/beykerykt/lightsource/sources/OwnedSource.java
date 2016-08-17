@@ -25,15 +25,12 @@ package ru.beykerykt.lightsource.sources;
 
 import org.bukkit.entity.Entity;
 
-import ru.beykerykt.lightsource.items.Item;
-import ru.beykerykt.lightsource.items.flags.FlagHelper;
-
-public class OwnedSource extends ItemableSource {
+public class OwnedSource extends Source {
 
 	private Entity owner;
 
-	public OwnedSource(Entity entity, Item item) {
-		super(entity.getLocation(), item);
+	public OwnedSource(Entity entity, int lightlevel) {
+		super(entity.getLocation(), lightlevel);
 		this.owner = entity;
 	}
 
@@ -50,7 +47,7 @@ public class OwnedSource extends ItemableSource {
 	public void onUpdate() {
 		setLocation(getOwner().getLocation());
 		// getItem().callUpdateFlag(this);
-		FlagHelper.callUpdateFlag(this);
+		//FlagHelper.callUpdateFlag(this);
 	}
 
 	@Override

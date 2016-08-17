@@ -26,12 +26,10 @@ package ru.beykerykt.lightsource.sources;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-import ru.beykerykt.lightsource.items.Item;
-
 public class LivingOwnedSource extends OwnedSource {
 
-	public LivingOwnedSource(LivingEntity entity, Item item) {
-		super(entity, item);
+	public LivingOwnedSource(LivingEntity entity, int lightlevel) {
+		super(entity, lightlevel);
 	}
 
 	@Override

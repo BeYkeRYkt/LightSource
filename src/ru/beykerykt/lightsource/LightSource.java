@@ -303,7 +303,7 @@ public class LightSource extends JavaPlugin {
 		if (!file.exists()) {
 			fc.options().header(getDescription().getName() + " v" + getDescription().getVersion() + " Configuration" + "\nby BeYkeRYkt");
 			fc.set("version", configVer);
-			fc.set(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE, true);
+			fc.set(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE, false);
 			fc.set(ConfigPath.UPDATER.ENABLE, true);
 			fc.set(ConfigPath.UPDATER.REPO, "BeYkeRYkt/LightSource");
 			fc.set(ConfigPath.UPDATER.UPDATE_DELAY_TICKS, 40);

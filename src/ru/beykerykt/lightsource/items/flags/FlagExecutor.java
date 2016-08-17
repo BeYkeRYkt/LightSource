@@ -25,6 +25,10 @@ package ru.beykerykt.lightsource.items.flags;
 
 public interface FlagExecutor {
 	/**
-	 * Nothing.
+	 * Nothing. or Not ?
 	 */
+
+	public String getDescription();
+	
+	public int getMaxArgs();
 }

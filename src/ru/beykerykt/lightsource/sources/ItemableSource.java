@@ -23,16 +23,16 @@
  */
 package ru.beykerykt.lightsource.sources;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.flags.FlagHelper;
 
-public abstract class ItemableSource extends LivingOwnedSource {
+public abstract class ItemableSource extends OwnedSource {
 
 	private Item item;
 
-	public ItemableSource(LivingEntity entity, Item item) {
+	public ItemableSource(Entity entity, Item item) {
 		super(entity, item.getLevelLight());
 		this.item = item;
 	}

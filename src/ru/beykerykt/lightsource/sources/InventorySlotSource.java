@@ -31,7 +31,7 @@ import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
 import ru.beykerykt.lightsource.items.flags.FlagHelper;
 
-public class InventorySlotSource extends ItemableSource {
+public class InventorySlotSource extends LivingOwnedSource {
 
 	private ItemSlot slot;
 	private ItemStack itemStack;

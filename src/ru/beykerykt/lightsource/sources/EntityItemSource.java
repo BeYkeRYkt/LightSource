@@ -29,10 +29,10 @@ import org.bukkit.inventory.ItemStack;
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 
-public class EntityItemSource extends OwnedSource {
+public class EntityItemSource extends ItemableSource {
 
 	public EntityItemSource(org.bukkit.entity.Item entity, Item item) {
-		super(entity, item.getLevelLight());
+		super(entity, item);
 	}
 
 	@Override

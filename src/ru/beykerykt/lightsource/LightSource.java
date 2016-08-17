@@ -311,17 +311,17 @@ public class LightSource extends JavaPlugin {
 		if (!file.exists()) {
 			fc.options().header(getDescription().getName() + " v" + getDescription().getVersion() + " Configuration" + "\nby BeYkeRYkt");
 			fc.set("version", configVer);
-			fc.set("add-to-async-lighting-queue", true);
-			fc.set("updater.enable", true);
-			fc.set("updater.repo", "BeYkeRYkt/LightSource");
-			fc.set("updater.update-delay-ticks", 40);
-			fc.set("updater.view-changelog", false);
-			fc.set("sources.search.search-players", true);
-			fc.set("sources.search.search-entities", true);
-			fc.set("sources.search.search-items", true);
-			fc.set("sources.search.search-radius", 20);
-			fc.set("sources.search.search-delay-ticks", 5);
-			fc.set("sources.update-delay-ticks", 10);
+			fc.set(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE, true);
+			fc.set(ConfigPath.UPDATER.ENABLE, true);
+			fc.set(ConfigPath.UPDATER.REPO, "BeYkeRYkt/LightSource");
+			fc.set(ConfigPath.UPDATER.UPDATE_DELAY_TICKS, 40);
+			fc.set(ConfigPath.UPDATER.VIEW_CHANGELOG, false);
+			fc.set(ConfigPath.SOURCES.UPDATE_DELAY_TICKS, 10);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_PLAYERS, true);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_ENTITIES, true);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_ITEMS, true);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS, 20);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_DELAY_TICKS, 5);
 			saveConfig();
 		}
 	}

@@ -65,13 +65,10 @@ public class LightSource extends JavaPlugin {
 
 	private static LightSource plugin;
 	private UpdateSourcesTask updateTask;
-	private Configuration config;
 	private int configVer = 1;
 
 	@Override
 	public void onLoad() {
-		this.config = new Configuration();
-
 		// register checkers
 		LightSourceAPI.getFlagManager().registerFlag("permission", new PermissionCheckExecutor());
 		LightSourceAPI.getFlagManager().registerFlag("entity", new EntityCheckExecutor());
@@ -111,21 +108,20 @@ public class LightSource extends JavaPlugin {
 		// Default item config
 		initDefaultConfig();
 		new YamlLoader().loadFromFile(new File(getDataFolder(), "sources.yml"));
-		config.exportFromConfiguration(getConfig());
 
-		if (getConfiguration().isSearchPlayers()) {
+		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_PLAYERS)) {
 			LightSourceAPI.getSearchMachine().addTask(new PlayerSearchTask());
 		}
-		if (getConfiguration().isSearchEntities()) {
-			LightSourceAPI.getSearchMachine().addTask(new EntitySearchTask(getConfiguration().getSearchRadius()));
+		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_ENTITIES)) {
+			LightSourceAPI.getSearchMachine().addTask(new EntitySearchTask(getConfig().getDouble(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS)));
 		}
-		if (getConfiguration().isSearchItems()) {
-			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchTask(getConfiguration().getSearchRadius()));
+		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_ITEMS)) {
+			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchTask(getConfig().getDouble(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS)));
 		}
-		LightSourceAPI.getSearchMachine().start(getConfiguration().getSearchDelayTicks());
+		LightSourceAPI.getSearchMachine().start(getConfig().getInt(ConfigPath.SOURCES.SEARCH.SEARCH_DELAY_TICKS));
 
 		this.updateTask = new UpdateSourcesTask();
-		updateTask.start(getConfiguration().getUpdateDelayTicks());
+		updateTask.start(getConfig().getInt(ConfigPath.SOURCES.UPDATE_DELAY_TICKS));
 
 		// init metrics
 		try {
@@ -135,8 +131,8 @@ public class LightSource extends JavaPlugin {
 			// nothing...
 		}
 
-		if (getConfiguration().isUpdaterEnable()) {
-			runUpdater(getServer().getConsoleSender(), getConfiguration().getUpdaterDelayTicks());
+		if (getConfig().getBoolean(ConfigPath.UPDATER.ENABLE)) {
+			runUpdater(getServer().getConsoleSender(), getConfig().getInt(ConfigPath.UPDATER.UPDATE_DELAY_TICKS));
 		}
 	}
 
@@ -152,10 +148,6 @@ public class LightSource extends JavaPlugin {
 
 	public static Plugin getInstance() {
 		return plugin;
-	}
-
-	public Configuration getConfiguration() {
-		return config;
 	}
 
 	@Override
@@ -181,7 +173,7 @@ public class LightSource extends JavaPlugin {
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "Need more arguments!");
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "/ls create [level 1-15]");
 					} else if (args[0].equalsIgnoreCase("delete")) {
-						if (LightAPI.deleteLight(player.getLocation(), getConfiguration().isAddToLightingQueue())) {
+						if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
 							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 								LightAPI.updateChunk(info);
 							}
@@ -196,7 +188,7 @@ public class LightSource extends JavaPlugin {
 						if (level > 15) {
 							level = 15;
 						}
-						if (LightAPI.createLight(player.getLocation(), level, getConfiguration().isAddToLightingQueue())) {
+						if (LightAPI.createLight(player.getLocation(), level, getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
 							LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been placed!");
 							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 								LightAPI.updateChunk(info);
@@ -205,7 +197,7 @@ public class LightSource extends JavaPlugin {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "Failed to place the light. Houston, we have a problem?");
 						}
 					} else if (args[0].equalsIgnoreCase("delete")) {
-						if (LightAPI.deleteLight(player.getLocation(), getConfiguration().isAddToLightingQueue())) {
+						if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
 							for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 								LightAPI.updateChunk(info);
 							}
@@ -277,18 +269,18 @@ public class LightSource extends JavaPlugin {
 				Version version = Version.parse(getDescription().getVersion());
 				Updater updater;
 				try {
-					updater = new Updater(version, getConfiguration().getRepo());
+					updater = new Updater(version, getConfig().getString(ConfigPath.UPDATER.REPO));
 
 					Response response = updater.getResult();
 					if (response == Response.SUCCESS) {
 						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "New update is available: " + ChatColor.YELLOW + updater.getLatestVersion() + ChatColor.WHITE + "!");
 						UpdateType update = UpdateType.compareVersion(updater.getVersion().toString());
-						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Repository: " + getConfiguration().getRepo());
+						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Repository: " + getConfig().getString(ConfigPath.UPDATER.REPO));
 						LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Update type: " + update.getName());
 						if (update == UpdateType.MAJOR) {
 							LightSourceAPI.sendMessage(sender, ChatColor.RED + "WARNING ! A MAJOR UPDATE! Not updating plugins may produce errors after starting the server! Notify developers about update.");
 						}
-						if (getConfiguration().isViewChangelog()) {
+						if (getConfig().getBoolean(ConfigPath.UPDATER.VIEW_CHANGELOG)) {
 							LightSourceAPI.sendMessage(sender, ChatColor.WHITE + "Changes: ");
 							sender.sendMessage(updater.getChanges());// for normal view
 						}
@@ -330,9 +322,9 @@ public class LightSource extends JavaPlugin {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 
-		if (getConfiguration().isUpdaterEnable()) {
-			if (player.hasPermission("lightapi.updater")) {
-				runUpdater(player, getConfiguration().getUpdaterDelayTicks());
+		if (getConfig().getBoolean(ConfigPath.UPDATER.VIEW_CHANGELOG)) {
+			if (player.hasPermission("ls.updater")) {
+				runUpdater(player, getConfig().getInt(ConfigPath.UPDATER.UPDATE_DELAY_TICKS));
 			}
 		}
 	}

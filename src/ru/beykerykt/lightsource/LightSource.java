@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,7 +76,7 @@ public class LightSource extends JavaPlugin {
 		// register tickers
 		LightSourceAPI.getFlagManager().registerFlag("update", new UpdateExecutor());
 		if (!Bukkit.getVersion().equalsIgnoreCase("CraftBukkit")) {
-			LightSourceAPI.sendMessage(getServer().getConsoleSender(), Color.RED + "Sorry, but flag 'play_effect' using SpigotAPI code. This flag doesn't work in CraftBukkit.");
+			LightSourceAPI.sendMessage(getServer().getConsoleSender(), ChatColor.RED + "Sorry, but flag 'play_effect' using SpigotAPI code. This flag doesn't work in CraftBukkit.");
 			LightSourceAPI.getFlagManager().registerFlag("play_effect", new PlayEffectExecutor());
 		}
 

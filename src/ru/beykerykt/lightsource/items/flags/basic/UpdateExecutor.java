@@ -40,7 +40,7 @@ public class UpdateExecutor implements TickableFlagExecutor {
 				LightAPI.updateChunk(info);
 			}
 			return;
-		} else if (args.length >= 2) {
+		} else if (args.length >= getMaxArgs()) {
 			boolean flag = Boolean.parseBoolean(args[0]);
 			boolean saveMove = Boolean.parseBoolean(args[1]);
 			if (saveMove) {
@@ -66,5 +66,15 @@ public class UpdateExecutor implements TickableFlagExecutor {
 				LightAPI.updateChunk(info);
 			}
 		}
+	}
+
+	@Override
+	public String getDescription() {
+		return "update:[async]:[savemode]";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return 2;
 	}
 }

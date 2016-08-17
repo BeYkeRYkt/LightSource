@@ -29,6 +29,6 @@ public interface FlagExecutor {
 	 */
 
 	public String getDescription();
-	
+
 	public int getMaxArgs();
 }

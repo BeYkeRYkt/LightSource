@@ -64,4 +64,14 @@ public class PermissionCheckExecutor implements RequirementFlagExecutor {
 			}
 		}
 	}
+
+	@Override
+	public String getDescription() {
+		return "permission:[permission1]:[permission2]:[more permissions]:...";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return -1;
+	}
 }

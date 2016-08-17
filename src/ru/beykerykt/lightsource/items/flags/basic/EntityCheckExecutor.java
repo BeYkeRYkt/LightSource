@@ -52,4 +52,14 @@ public class EntityCheckExecutor implements RequirementFlagExecutor {
 	@Override
 	public void onCheckingFailure(Entity entity, ItemStack itemStack, Item item, String[] args) {
 	}
+
+	@Override
+	public String getDescription() {
+		return "entity:[entity type 1]:[entity type2]:[more entity types]:...";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return -1;
+	}
 }

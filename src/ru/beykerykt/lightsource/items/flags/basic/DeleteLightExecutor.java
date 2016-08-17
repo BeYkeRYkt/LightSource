@@ -48,4 +48,14 @@ public class DeleteLightExecutor implements EndingFlagExecutor {
 		}
 	}
 
+	@Override
+	public String getDescription() {
+		return "delete_light:[async]";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return 1;
+	}
+
 }

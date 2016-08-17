@@ -32,7 +32,7 @@ public class PlayEffectExecutor implements TickableFlagExecutor {
 
 	@Override
 	public void onTick(ItemableSource source, String[] args) {
-		if (args.length >= 3) {
+		if (args.length >= getMaxArgs()) {
 			String effectName = args[0];
 			int data = Integer.parseInt(args[1]);
 			int count = Integer.parseInt(args[2]);
@@ -41,6 +41,16 @@ public class PlayEffectExecutor implements TickableFlagExecutor {
 			// default ?
 			source.getLocation().getWorld().spigot().playEffect(source.getLocation(), Effect.PARTICLE_SMOKE, 0, 0, 0, 0, 0, 0, 1, 10);
 		}
+	}
+
+	@Override
+	public String getDescription() {
+		return "play_effect:[effect name]:[data]:[count]";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return 3;
 	}
 
 }

@@ -60,4 +60,14 @@ public class WorldCheckExecutor implements RequirementFlagExecutor {
 		}
 	}
 
+	@Override
+	public String getDescription() {
+		return "world:[world1]:[world2]:[more worlds]:...";
+	}
+
+	@Override
+	public int getMaxArgs() {
+		return -1;
+	}
+
 }

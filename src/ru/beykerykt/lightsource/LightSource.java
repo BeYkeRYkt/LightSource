@@ -42,6 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
+import ru.beykerykt.lightsource.items.flags.FlagExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.DeleteLightExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.EntityCheckExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.PermissionCheckExecutor;
@@ -183,6 +184,9 @@ public class LightSource extends JavaPlugin {
 						} else {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
 						}
+					} else if (args[0].equalsIgnoreCase("info")) {
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "Need more arguments!");
+						LightSourceAPI.sendMessage(player, ChatColor.RED + "/ls info [flag name]");
 					} else {
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This command does not exist. Are you sure write correctly?");
 					}
@@ -214,6 +218,15 @@ public class LightSource extends JavaPlugin {
 							runUpdater(player, 2);
 						} else {
 							LightSourceAPI.sendMessage(player, ChatColor.RED + "You don't have permission!");
+						}
+					} else if (args[0].equalsIgnoreCase("info")) {
+						if (LightSourceAPI.getFlagManager().hasFlag(args[1])) {
+							LightSourceAPI.sendMessage(player, "Getting information about flag: " + ChatColor.AQUA + args[1]);
+							FlagExecutor flag = LightSourceAPI.getFlagManager().getFlag(args[1]);
+							LightSourceAPI.sendMessage(player, "Max arguments: " + ChatColor.AQUA + flag.getMaxArgs());
+							LightSourceAPI.sendMessage(player, "Description: " + ChatColor.AQUA + flag.getDescription());
+						} else {
+							LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This flag does not exist. Are you sure write correctly?");
 						}
 					} else {
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "Hmm... This command does not exist. Are you sure write correctly?");

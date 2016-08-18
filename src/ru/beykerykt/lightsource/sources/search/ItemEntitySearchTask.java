@@ -52,16 +52,16 @@ public class ItemEntitySearchTask implements SearchTask {
 						continue;
 					org.bukkit.entity.Item ie = (org.bukkit.entity.Item) entity;
 					ItemStack itemStack = ie.getItemStack();
-					if (itemStack != null && itemStack.getType() != Material.AIR) {
-						if (LightSourceAPI.getItemManager().isItem(itemStack)) {
-							Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-							if (!item.getFlagsList().isEmpty()) {
-								if (LightSourceAPI.getSearchMachine().callRequirementFlags(ie, itemStack, item, null)) { // ?
-									Source source = new EntityItemSource(ie, item);
-									LightSourceAPI.getSourceManager().addSource(source);
-								}
-							}
-						}
+					if (itemStack == null || itemStack.getType() == Material.AIR)
+						continue;
+					if (!LightSourceAPI.getItemManager().isItem(itemStack))
+						continue;
+					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+					if (item.getFlagsList().isEmpty())
+						continue;
+					if (LightSourceAPI.getSearchMachine().callRequirementFlags(ie, itemStack, item, null)) { // ?
+						Source source = new EntityItemSource(ie, item);
+						LightSourceAPI.getSourceManager().addSource(source);
 					}
 				}
 			}

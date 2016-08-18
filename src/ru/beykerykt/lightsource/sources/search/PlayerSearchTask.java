@@ -42,6 +42,36 @@ public class PlayerSearchTask implements SearchTask {
 			if (LightSourceAPI.getSourceManager().isSource(player))
 				continue;
 
+			// Main item hand
+			ItemStack itemStackHand = player.getEquipment().getItemInMainHand();
+			if (itemStackHand != null && itemStackHand.getType() != Material.AIR) {
+				if (LightSourceAPI.getItemManager().isItem(itemStackHand)) {
+					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackHand);
+					if (!item.getFlagsList().isEmpty()) {
+						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackHand, item, ItemSlot.RIGHT_HAND)) {
+							Source source = new InventorySlotSource(player, item, itemStackHand, ItemSlot.RIGHT_HAND);
+							LightSourceAPI.getSourceManager().addSource(source);
+							continue;
+						}
+					}
+				}
+			}
+
+			// Off item hand
+			ItemStack itemStackOff = player.getEquipment().getItemInOffHand();
+			if (itemStackOff != null && itemStackOff.getType() != Material.AIR) {
+				if (LightSourceAPI.getItemManager().isItem(itemStackOff)) {
+					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
+					if (!itemOff.getFlagsList().isEmpty()) {
+						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
+							Source source = new InventorySlotSource(player, itemOff, itemStackOff, ItemSlot.LEFT_HAND);
+							LightSourceAPI.getSourceManager().addSource(source);
+							continue;
+						}
+					}
+				}
+			}
+
 			// all armor set
 			if (player.getEquipment().getArmorContents().length != 0) {
 				boolean found = false;
@@ -64,36 +94,6 @@ public class PlayerSearchTask implements SearchTask {
 
 				if (found) {
 					continue;
-				}
-			}
-
-			// Main item hand
-			ItemStack itemStack = player.getEquipment().getItemInMainHand();
-			if (itemStack != null && itemStack.getType() != Material.AIR) {
-				if (LightSourceAPI.getItemManager().isItem(itemStack)) {
-					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-					if (!item.getFlagsList().isEmpty()) {
-						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, ItemSlot.RIGHT_HAND)) {
-							Source source = new InventorySlotSource(player, item, itemStack, ItemSlot.RIGHT_HAND);
-							LightSourceAPI.getSourceManager().addSource(source);
-							continue;
-						}
-					}
-				}
-			}
-
-			// Off item hand
-			ItemStack itemStackOff = player.getEquipment().getItemInOffHand();
-			if (itemStackOff != null && itemStackOff.getType() != Material.AIR) {
-				if (LightSourceAPI.getItemManager().isItem(itemStackOff)) {
-					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
-					if (!itemOff.getFlagsList().isEmpty()) {
-						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-							Source source = new InventorySlotSource(player, itemOff, itemStackOff, ItemSlot.LEFT_HAND);
-							LightSourceAPI.getSourceManager().addSource(source);
-							continue;
-						}
-					}
 				}
 			}
 		}

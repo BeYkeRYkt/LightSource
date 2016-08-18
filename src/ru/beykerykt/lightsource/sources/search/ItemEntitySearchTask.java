@@ -32,7 +32,6 @@ import org.bukkit.inventory.ItemStack;
 
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
-import ru.beykerykt.lightsource.sources.BurningSource;
 import ru.beykerykt.lightsource.sources.EntityItemSource;
 import ru.beykerykt.lightsource.sources.Source;
 
@@ -48,26 +47,21 @@ public class ItemEntitySearchTask implements SearchTask {
 	public void onTick() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-				if (LightSourceAPI.getSourceManager().isSource(entity))
-					continue;
 				if (entity.getType() == EntityType.DROPPED_ITEM) {
+					if (LightSourceAPI.getSourceManager().isSource(entity))
+						continue;
 					org.bukkit.entity.Item ie = (org.bukkit.entity.Item) entity;
 					ItemStack itemStack = ie.getItemStack();
-					if (itemStack == null || itemStack.getType() == Material.AIR)
-						continue;
-					if (!LightSourceAPI.getItemManager().isItem(itemStack))
-						continue;
-					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-					if (item.getFlagsList().isEmpty())
-						continue;
-					if (LightSourceAPI.getSearchMachine().callRequirementFlags(ie, itemStack, item, null)) { // ?
-						Source source = new EntityItemSource(ie, item);
-						LightSourceAPI.getSourceManager().addSource(source);
-					}
-
-					if (ie.getFireTicks() > 0) {
-						Source source = new BurningSource(ie, 15);
-						LightSourceAPI.getSourceManager().addSource(source);
+					if (itemStack != null && itemStack.getType() != Material.AIR) {
+						if (LightSourceAPI.getItemManager().isItem(itemStack)) {
+							Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+							if (!item.getFlagsList().isEmpty()) {
+								if (LightSourceAPI.getSearchMachine().callRequirementFlags(ie, itemStack, item, null)) { // ?
+									Source source = new EntityItemSource(ie, item);
+									LightSourceAPI.getSourceManager().addSource(source);
+								}
+							}
+						}
 					}
 				}
 			}

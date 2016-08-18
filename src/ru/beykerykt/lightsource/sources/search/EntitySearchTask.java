@@ -50,67 +50,67 @@ public class EntitySearchTask implements SearchTask {
 	public void onTick() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-				if (LightSourceAPI.getSourceManager().isSource(entity))
-					continue;
 				if (entity.getType().isAlive() && entity.getType() != EntityType.PLAYER) {
+					if (LightSourceAPI.getSourceManager().isSource(entity))
+						continue;
 					LivingEntity le = (LivingEntity) entity;
 
 					// all armor set
-					if (le.getEquipment().getArmorContents().length == 0)
-						continue;
-					for (int i = 0; i < le.getEquipment().getArmorContents().length; i++) {
-						ItemStack itemStack = le.getEquipment().getArmorContents()[i];
-						if (itemStack == null || itemStack.getType() == Material.AIR)
+					if (le.getEquipment().getArmorContents().length != 0) {
+						boolean found = false;
+						for (int i = 0; i < le.getEquipment().getArmorContents().length; i++) {
+							ItemStack itemStack = le.getEquipment().getArmorContents()[i];
+							if (itemStack == null || itemStack.getType() == Material.AIR)
+								continue;
+							if (!LightSourceAPI.getItemManager().isItem(itemStack))
+								continue;
+							Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+							if (item.getFlagsList().isEmpty())
+								continue;
+							ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
+							if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStack, item, slot)) {
+								Source source = new InventorySlotSource(le, item, itemStack, slot);
+								LightSourceAPI.getSourceManager().addSource(source);
+								found = true;
+							}
+						}
+
+						if (found) {
 							continue;
-						if (!LightSourceAPI.getItemManager().isItem(itemStack))
-							continue;
-						Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-						if (item.getFlagsList().isEmpty())
-							continue;
-						ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
-						if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStack, item, slot)) {
-							Source source = new InventorySlotSource(le, item, itemStack, slot);
-							LightSourceAPI.getSourceManager().addSource(source);
 						}
 					}
 
 					// Main item hand
 					ItemStack itemStack = le.getEquipment().getItemInMainHand();
-					if (itemStack == null || itemStack.getType() == Material.AIR)
-						continue;
-					if (!LightSourceAPI.getItemManager().isItem(itemStack))
-						continue;
-					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-					if (item.getFlagsList().isEmpty())
-						continue;
-					if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStack, item, ItemSlot.RIGHT_HAND)) {
-						Source source = new InventorySlotSource(le, item, itemStack, ItemSlot.RIGHT_HAND);
-						LightSourceAPI.getSourceManager().addSource(source);
+					if (itemStack != null && itemStack.getType() != Material.AIR) {
+						if (LightSourceAPI.getItemManager().isItem(itemStack)) {
+							Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+							if (!item.getFlagsList().isEmpty()) {
+								if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStack, item, ItemSlot.RIGHT_HAND)) {
+									Source source = new InventorySlotSource(le, item, itemStack, ItemSlot.RIGHT_HAND);
+									LightSourceAPI.getSourceManager().addSource(source);
+									continue;
+								}
+							}
+						}
 					}
 
 					// Off item hand
 					ItemStack itemStackOff = le.getEquipment().getItemInOffHand();
-					if (itemStackOff == null || itemStackOff.getType() == Material.AIR) {
-						continue;
-					}
-					if (!LightSourceAPI.getItemManager().isItem(itemStackOff))
-						continue;
-					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
-					if (itemOff.getFlagsList().isEmpty())
-						continue;
-					if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-						Source source = new InventorySlotSource(le, itemOff, itemStack, ItemSlot.LEFT_HAND);
-						LightSourceAPI.getSourceManager().addSource(source);
-					}
-
-					// Burning ?
-					if (le.getFireTicks() > 0) {
-						Source source = new BurningSource(le, 15);
-						LightSourceAPI.getSourceManager().addSource(source);
+					if (itemStackOff != null && itemStackOff.getType() != Material.AIR) {
+						if (LightSourceAPI.getItemManager().isItem(itemStackOff)) {
+							Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
+							if (!itemOff.getFlagsList().isEmpty()) {
+								if (LightSourceAPI.getSearchMachine().callRequirementFlags(le, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
+									Source source = new InventorySlotSource(le, itemOff, itemStack, ItemSlot.LEFT_HAND);
+									LightSourceAPI.getSourceManager().addSource(source);
+									continue;
+								}
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-
 }

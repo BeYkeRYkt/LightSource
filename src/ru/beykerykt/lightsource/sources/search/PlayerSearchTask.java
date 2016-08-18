@@ -44,59 +44,59 @@ public class PlayerSearchTask implements SearchTask {
 				continue;
 
 			// all armor set
-			if (player.getEquipment().getArmorContents().length == 0)
-				continue;
-			for (int i = 0; i < player.getEquipment().getArmorContents().length; i++) {
-				ItemStack itemStack = player.getEquipment().getArmorContents()[i];
-				if (itemStack == null || itemStack.getType() == Material.AIR)
+			if (player.getEquipment().getArmorContents().length != 0) {
+				boolean found = false;
+				for (int i = 0; i < player.getEquipment().getArmorContents().length; i++) {
+					ItemStack itemStack = player.getEquipment().getArmorContents()[i];
+					if (itemStack == null || itemStack.getType() == Material.AIR)
+						continue;
+					if (!LightSourceAPI.getItemManager().isItem(itemStack))
+						continue;
+					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+					if (item.getFlagsList().isEmpty())
+						continue;
+					ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
+					if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, slot)) {
+						Source source = new InventorySlotSource(player, item, itemStack, slot);
+						LightSourceAPI.getSourceManager().addSource(source);
+						found = true;
+					}
+				}
+
+				if (found) {
 					continue;
-				if (!LightSourceAPI.getItemManager().isItem(itemStack))
-					continue;
-				Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-				if (item.getFlagsList().isEmpty())
-					continue;
-				ItemSlot slot = ItemSlot.getItemSlotFromArmorContent(i);
-				if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, slot)) {
-					Source source = new InventorySlotSource(player, item, itemStack, slot);
-					LightSourceAPI.getSourceManager().addSource(source);
 				}
 			}
 
 			// Main item hand
 			ItemStack itemStack = player.getEquipment().getItemInMainHand();
-			if (itemStack == null || itemStack.getType() == Material.AIR)
-				continue;
-			if (!LightSourceAPI.getItemManager().isItem(itemStack))
-				continue;
-			Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
-			if (item.getFlagsList().isEmpty())
-				continue;
-			if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, ItemSlot.RIGHT_HAND)) {
-				Source source = new InventorySlotSource(player, item, itemStack, ItemSlot.RIGHT_HAND);
-				LightSourceAPI.getSourceManager().addSource(source);
+			if (itemStack != null && itemStack.getType() != Material.AIR) {
+				if (LightSourceAPI.getItemManager().isItem(itemStack)) {
+					Item item = LightSourceAPI.getItemManager().getItemFromItemStack(itemStack);
+					if (!item.getFlagsList().isEmpty()) {
+						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStack, item, ItemSlot.RIGHT_HAND)) {
+							Source source = new InventorySlotSource(player, item, itemStack, ItemSlot.RIGHT_HAND);
+							LightSourceAPI.getSourceManager().addSource(source);
+							continue;
+						}
+					}
+				}
 			}
 
 			// Off item hand
 			ItemStack itemStackOff = player.getEquipment().getItemInOffHand();
-			if (itemStackOff == null || itemStackOff.getType() == Material.AIR) {
-				continue;
-			}
-			if (!LightSourceAPI.getItemManager().isItem(itemStackOff))
-				continue;
-			Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
-			if (itemOff.getFlagsList().isEmpty())
-				continue;
-			if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-				Source source = new InventorySlotSource(player, itemOff, itemStack, ItemSlot.LEFT_HAND);
-				LightSourceAPI.getSourceManager().addSource(source);
-			}
-
-			// Burning ?
-			if (player.getFireTicks() > 0) {
-				Source source = new BurningSource(player, 15);
-				LightSourceAPI.getSourceManager().addSource(source);
+			if (itemStackOff != null && itemStackOff.getType() != Material.AIR) {
+				if (LightSourceAPI.getItemManager().isItem(itemStackOff)) {
+					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
+					if (!itemOff.getFlagsList().isEmpty()) {
+						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
+							Source source = new InventorySlotSource(player, itemOff, itemStack, ItemSlot.LEFT_HAND);
+							LightSourceAPI.getSourceManager().addSource(source);
+							continue;
+						}
+					}
+				}
 			}
 		}
 	}
-
 }

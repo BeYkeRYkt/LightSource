@@ -25,6 +25,8 @@ package ru.beykerykt.lightsource.sources.search;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -34,7 +36,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-import ru.beykerykt.lightsource.LightSource;
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
@@ -44,14 +45,14 @@ import ru.beykerykt.lightsource.items.flags.RequirementFlagExecutor;
 public class SearchMachine implements Runnable {
 
 	private boolean isStarted;
-	private int id;
 	private List<SearchTask> tasks = new CopyOnWriteArrayList<SearchTask>();
-	private List<IgnoreEntityEntry> ignoreList = new CopyOnWriteArrayList<>();
+	private List<IgnoreEntityEntry> ignoreList = new CopyOnWriteArrayList<IgnoreEntityEntry>();
+	private ScheduledFuture<?> sch;
 
 	public void start(int ticks) {
 		if (!isStarted) {
 			isStarted = true;
-			id = Bukkit.getScheduler().runTaskTimerAsynchronously(LightSource.getInstance(), this, 0, ticks).getTaskId();
+			sch = LightSourceAPI.getSchedulerExecutor().scheduleWithFixedDelay(this, 0, 50 * ticks, TimeUnit.MILLISECONDS);
 		}
 	}
 
@@ -60,7 +61,7 @@ public class SearchMachine implements Runnable {
 			isStarted = false;
 			tasks.clear();
 			ignoreList.clear();
-			Bukkit.getScheduler().cancelTask(id);
+			sch.cancel(false);
 		}
 	}
 

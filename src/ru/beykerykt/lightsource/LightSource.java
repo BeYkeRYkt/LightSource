@@ -51,6 +51,7 @@ import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.WorldCheckExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
+import ru.beykerykt.lightsource.sources.search.BurningEntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.EntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.ItemEntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.PlayerSearchTask;
@@ -111,6 +112,9 @@ public class LightSource extends JavaPlugin {
 		}
 		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_ENTITIES)) {
 			LightSourceAPI.getSearchMachine().addTask(new EntitySearchTask(getConfig().getDouble(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS)));
+		}
+		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_BURNING_ENTITIES)) {
+			LightSourceAPI.getSearchMachine().addTask(new BurningEntitySearchTask(getConfig().getDouble(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS)));
 		}
 		if (getConfig().getBoolean(ConfigPath.SOURCES.SEARCH.SEARCH_ITEMS)) {
 			LightSourceAPI.getSearchMachine().addTask(new ItemEntitySearchTask(getConfig().getDouble(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS)));
@@ -441,6 +445,7 @@ public class LightSource extends JavaPlugin {
 			fc.set(ConfigPath.SOURCES.UPDATE_DELAY_TICKS, 10);
 			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_PLAYERS, true);
 			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_ENTITIES, true);
+			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_BURNING_ENTITIES, true);
 			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_ITEMS, true);
 			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_RADIUS, 20);
 			fc.set(ConfigPath.SOURCES.SEARCH.SEARCH_DELAY_TICKS, 5);

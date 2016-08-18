@@ -19,6 +19,7 @@ public class ConfigPath {
 		public static class SEARCH {
 			public static String SEARCH_PLAYERS = "sources.search.search-players";
 			public static String SEARCH_ENTITIES = "sources.search.search-entities";
+			public static String SEARCH_BURNING_ENTITIES = "sources.search.search-burning-entities";
 			public static String SEARCH_ITEMS = "sources.search.search-items";
 			public static String SEARCH_RADIUS = "sources.search.search-radius";
 			public static String SEARCH_DELAY_TICKS = "sources.search.search-delay-ticks";

@@ -31,7 +31,6 @@ import org.bukkit.inventory.ItemStack;
 import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.Item;
 import ru.beykerykt.lightsource.items.ItemSlot;
-import ru.beykerykt.lightsource.sources.BurningSource;
 import ru.beykerykt.lightsource.sources.InventorySlotSource;
 import ru.beykerykt.lightsource.sources.Source;
 
@@ -90,7 +89,7 @@ public class PlayerSearchTask implements SearchTask {
 					Item itemOff = LightSourceAPI.getItemManager().getItemFromItemStack(itemStackOff);
 					if (!itemOff.getFlagsList().isEmpty()) {
 						if (LightSourceAPI.getSearchMachine().callRequirementFlags(player, itemStackOff, itemOff, ItemSlot.LEFT_HAND)) {
-							Source source = new InventorySlotSource(player, itemOff, itemStack, ItemSlot.LEFT_HAND);
+							Source source = new InventorySlotSource(player, itemOff, itemStackOff, ItemSlot.LEFT_HAND);
 							LightSourceAPI.getSourceManager().addSource(source);
 							continue;
 						}

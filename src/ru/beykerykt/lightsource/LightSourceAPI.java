@@ -23,6 +23,9 @@
  */
 package ru.beykerykt.lightsource;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -37,6 +40,7 @@ public class LightSourceAPI {
 	private static FlagManager flagManager;
 	private static SourceManager sourceManager;
 	private static SearchMachine searchMachine;
+	private static ScheduledExecutorService schedulerExecutor;
 
 	public static ItemManager getItemManager() {
 		if (itemManager == null) {
@@ -64,6 +68,13 @@ public class LightSourceAPI {
 			searchMachine = new SearchMachine();
 		}
 		return searchMachine;
+	}
+
+	public static ScheduledExecutorService getSchedulerExecutor() {
+		if (schedulerExecutor == null) {
+			schedulerExecutor = Executors.newSingleThreadScheduledExecutor();
+		}
+		return schedulerExecutor;
 	}
 
 	public static void sendMessage(CommandSender sender, String message) {

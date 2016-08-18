@@ -143,6 +143,7 @@ public class LightSource extends JavaPlugin {
 		LightSourceAPI.getSourceManager().getSourceList().clear();
 		LightSourceAPI.getItemManager().getItems().clear();
 		LightSourceAPI.getFlagManager().getFlags().clear();
+		LightSourceAPI.getSchedulerExecutor().shutdown();
 
 		getServer().getScheduler().cancelTasks(this);
 	}

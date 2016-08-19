@@ -36,6 +36,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,6 +51,7 @@ import ru.beykerykt.lightsource.items.flags.basic.PlayEffectExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.UpdateExecutor;
 import ru.beykerykt.lightsource.items.flags.basic.WorldCheckExecutor;
 import ru.beykerykt.lightsource.items.loader.YamlLoader;
+import ru.beykerykt.lightsource.sources.Source;
 import ru.beykerykt.lightsource.sources.UpdateSourcesTask;
 import ru.beykerykt.lightsource.sources.search.BurningEntitySearchTask;
 import ru.beykerykt.lightsource.sources.search.EntitySearchTask;
@@ -62,7 +64,7 @@ import ru.beykerykt.lightsource.updater.Version;
 import ru.beykerykt.lightsource.utils.BungeeChatHelperClass;
 import ru.beykerykt.lightsource.utils.Metrics;
 
-public class LightSource extends JavaPlugin {
+public class LightSource extends JavaPlugin implements Listener{
 
 	private static LightSource plugin;
 	private UpdateSourcesTask updateTask;
@@ -135,11 +137,17 @@ public class LightSource extends JavaPlugin {
 		if (getConfig().getBoolean(ConfigPath.UPDATER.ENABLE)) {
 			runUpdater(getServer().getConsoleSender(), getConfig().getInt(ConfigPath.UPDATER.UPDATE_DELAY_TICKS));
 		}
+		
+		getServer().getPluginManager().registerEvents(this, this);
 	}
 
 	@Override
 	public void onDisable() {
 		LightSourceAPI.getSearchMachine().shutdown();
+		for(Source source: LightSourceAPI.getSourceManager().getSourceList()){
+			LightAPI.deleteLight(source.getOldLocation(), false);
+			LightAPI.deleteLight(source.getLocation(), false);
+		}
 		LightSourceAPI.getSourceManager().getSourceList().clear();
 		LightSourceAPI.getItemManager().getItems().clear();
 		LightSourceAPI.getFlagManager().getFlags().clear();
@@ -464,4 +472,6 @@ public class LightSource extends JavaPlugin {
 			}
 		}
 	}
+	
+	
 }

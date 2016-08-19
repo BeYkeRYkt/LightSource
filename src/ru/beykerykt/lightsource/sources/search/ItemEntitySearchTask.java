@@ -67,4 +67,10 @@ public class ItemEntitySearchTask implements SearchTask {
 			}
 		}
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+
+	}
 }

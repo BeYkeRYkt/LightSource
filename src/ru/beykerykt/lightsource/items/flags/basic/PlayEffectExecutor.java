@@ -53,4 +53,8 @@ public class PlayEffectExecutor implements UpdatableFlagExecutor {
 		return 3;
 	}
 
+	@Override
+	public void close() {
+	}
+
 }

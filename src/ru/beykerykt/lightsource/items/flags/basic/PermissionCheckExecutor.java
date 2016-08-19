@@ -74,4 +74,8 @@ public class PermissionCheckExecutor implements RequirementFlagExecutor {
 	public int getMaxArgs() {
 		return -1;
 	}
+
+	@Override
+	public void close() {
+	}
 }

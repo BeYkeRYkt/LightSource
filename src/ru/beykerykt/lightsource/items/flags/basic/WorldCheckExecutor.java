@@ -70,4 +70,8 @@ public class WorldCheckExecutor implements RequirementFlagExecutor {
 		return -1;
 	}
 
+	@Override
+	public void close() {
+	}
+
 }

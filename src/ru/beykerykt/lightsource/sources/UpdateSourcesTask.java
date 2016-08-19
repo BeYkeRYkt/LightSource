@@ -50,14 +50,21 @@ public class UpdateSourcesTask implements Runnable {
 
 	@Override
 	public void run() {
-		for (Source source : LightSourceAPI.getSourceManager().getSourceList()) {
-			if (source.shouldExecute()) {
-				source.onUpdate();
-			} else {
-				if (source instanceof ItemableSource) {
-					FlagHelper.callEndingFlag((ItemableSource) source);
+		if (LightSourceAPI.getSourceManager().getSourceList().isEmpty())
+			return;
+		for (int i = 0; i < LightSourceAPI.getSourceManager().getSourceList().size(); i++) {
+			try (Source source = LightSourceAPI.getSourceManager().getSourceList().get(i)) {
+				if (source.shouldExecute()) {
+					source.onUpdate();
+				} else {
+					if (source instanceof ItemableSource) {
+						FlagHelper.callEndingFlag((ItemableSource) source);
+					}
+					LightSourceAPI.getSourceManager().removeSource(source);
 				}
-				LightSourceAPI.getSourceManager().removeSource(source);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

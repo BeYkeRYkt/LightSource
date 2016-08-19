@@ -25,7 +25,7 @@ package ru.beykerykt.lightsource.sources;
 
 import org.bukkit.Location;
 
-public abstract class Source {
+public abstract class Source implements AutoCloseable {
 
 	private Location old;
 	private Location loc;
@@ -102,5 +102,10 @@ public abstract class Source {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void close() throws Exception {
+		// System.out.println("Closing!");
 	}
 }

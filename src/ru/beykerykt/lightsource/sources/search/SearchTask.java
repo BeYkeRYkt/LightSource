@@ -23,8 +23,7 @@
  */
 package ru.beykerykt.lightsource.sources.search;
 
-public interface SearchTask {
+public interface SearchTask extends AutoCloseable {
 
 	public void onTick();
-
 }

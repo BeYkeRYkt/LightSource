@@ -41,6 +41,7 @@ public class LightSourceAPI {
 	private static SourceManager sourceManager;
 	private static SearchMachine searchMachine;
 	private static ScheduledExecutorService schedulerExecutor;
+	private static boolean asyncFlag = false;
 
 	public static ItemManager getItemManager() {
 		if (itemManager == null) {
@@ -79,5 +80,13 @@ public class LightSourceAPI {
 
 	public static void sendMessage(CommandSender sender, String message) {
 		sender.sendMessage(ChatColor.AQUA + "<LightSource>: " + ChatColor.WHITE + message);
+	}
+
+	public static boolean isAsyncLightingFlag() {
+		return asyncFlag;
+	}
+
+	public static void setAsyncLightingFlag(boolean flag) {
+		asyncFlag = flag;
 	}
 }

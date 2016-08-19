@@ -25,6 +25,7 @@ package ru.beykerykt.lightsource.items.flags.basic;
 
 import ru.beykerykt.lightapi.LightAPI;
 import ru.beykerykt.lightapi.chunks.ChunkInfo;
+import ru.beykerykt.lightsource.LightSourceAPI;
 import ru.beykerykt.lightsource.items.flags.EndingFlagExecutor;
 import ru.beykerykt.lightsource.sources.ItemableSource;
 
@@ -40,8 +41,8 @@ public class DeleteLightExecutor implements EndingFlagExecutor {
 				LightAPI.updateChunk(info);
 			}
 		} else {
-			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), false);
-			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), false);
+			LightAPI.deleteLight(source.getOldLocation().getWorld(), source.getOldLocation().getBlockX(), source.getOldLocation().getBlockY(), source.getOldLocation().getBlockZ(), LightSourceAPI.isAsyncLightingFlag());
+			LightAPI.deleteLight(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ(), LightSourceAPI.isAsyncLightingFlag());
 			for (ChunkInfo info : LightAPI.collectChunks(source.getLocation().getWorld(), source.getLocation().getBlockX(), source.getLocation().getBlockY(), source.getLocation().getBlockZ())) {
 				LightAPI.updateChunk(info);
 			}

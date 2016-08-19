@@ -34,10 +34,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -64,7 +66,7 @@ import ru.beykerykt.lightsource.updater.Version;
 import ru.beykerykt.lightsource.utils.BungeeChatHelperClass;
 import ru.beykerykt.lightsource.utils.Metrics;
 
-public class LightSource extends JavaPlugin implements Listener{
+public class LightSource extends JavaPlugin implements Listener {
 
 	private static LightSource plugin;
 	private UpdateSourcesTask updateTask;
@@ -137,14 +139,15 @@ public class LightSource extends JavaPlugin implements Listener{
 		if (getConfig().getBoolean(ConfigPath.UPDATER.ENABLE)) {
 			runUpdater(getServer().getConsoleSender(), getConfig().getInt(ConfigPath.UPDATER.UPDATE_DELAY_TICKS));
 		}
-		
+
+		LightSourceAPI.setAsyncLightingFlag(getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE));
 		getServer().getPluginManager().registerEvents(this, this);
 	}
 
 	@Override
 	public void onDisable() {
 		LightSourceAPI.getSearchMachine().shutdown();
-		for(Source source: LightSourceAPI.getSourceManager().getSourceList()){
+		for (Source source : LightSourceAPI.getSourceManager().getSourceList()) {
 			LightAPI.deleteLight(source.getOldLocation(), false);
 			LightAPI.deleteLight(source.getLocation(), false);
 		}
@@ -184,7 +187,7 @@ public class LightSource extends JavaPlugin implements Listener{
 						LightSourceAPI.sendMessage(player, ChatColor.RED + "/ls create [level 1-15]");
 					} else if (args[0].equalsIgnoreCase("delete")) {
 						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
-							if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+							if (LightAPI.deleteLight(player.getLocation(), LightSourceAPI.isAsyncLightingFlag())) {
 								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 									LightAPI.updateChunk(info);
 								}
@@ -214,7 +217,7 @@ public class LightSource extends JavaPlugin implements Listener{
 							if (level > 15) {
 								level = 15;
 							}
-							if (LightAPI.createLight(player.getLocation(), level, getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+							if (LightAPI.createLight(player.getLocation(), level, LightSourceAPI.isAsyncLightingFlag())) {
 								LightSourceAPI.sendMessage(player, ChatColor.GREEN + "Light on your position (x, y, z) has been placed!");
 								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 									LightAPI.updateChunk(info);
@@ -227,7 +230,7 @@ public class LightSource extends JavaPlugin implements Listener{
 						}
 					} else if (args[0].equalsIgnoreCase("delete")) {
 						if (player.hasPermission("ls.creatinglight") || player.isOp()) {
-							if (LightAPI.deleteLight(player.getLocation(), getConfig().getBoolean(ConfigPath.GENERAL.ADD_TO_ASYNC_LIGHTING_QUEUE))) {
+							if (LightAPI.deleteLight(player.getLocation(), LightSourceAPI.isAsyncLightingFlag())) {
 								for (ChunkInfo info : LightAPI.collectChunks(player.getLocation())) {
 									LightAPI.updateChunk(info);
 								}
@@ -472,6 +475,15 @@ public class LightSource extends JavaPlugin implements Listener{
 			}
 		}
 	}
-	
-	
+
+	@EventHandler
+	public void onChunkUnload(ChunkUnloadEvent event) {
+		for (Entity entity : event.getChunk().getEntities()) {
+			if (!LightSourceAPI.getSourceManager().isSource(entity))
+				continue;
+			Source source = LightSourceAPI.getSourceManager().getSource(entity);
+			LightAPI.deleteLight(source.getOldLocation(), LightSourceAPI.isAsyncLightingFlag());
+			LightAPI.deleteLight(source.getLocation(), LightSourceAPI.isAsyncLightingFlag());
+		}
+	}
 }

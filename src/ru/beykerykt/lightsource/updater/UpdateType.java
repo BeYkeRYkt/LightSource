@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 
 import org.bukkit.ChatColor;
 
-import ru.beykerykt.lightapi.LightAPI;
+import ru.beykerykt.lightsource.LightSource;
 
 public enum UpdateType {
 	OUTDATE(ChatColor.GRAY + "Outdate"),
@@ -23,7 +23,7 @@ public enum UpdateType {
 	}
 
 	public static UpdateType compareVersion(String newVersion) {
-		Integer[] pluginMatcher = getMatchers(LightAPI.getInstance().getDescription().getVersion());
+		Integer[] pluginMatcher = getMatchers(LightSource.getInstance().getDescription().getVersion());
 		Integer[] updateMatcher = getMatchers(newVersion);
 
 		if (pluginMatcher[0] < updateMatcher[0]) {

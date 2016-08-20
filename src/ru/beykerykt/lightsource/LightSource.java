@@ -469,7 +469,7 @@ public class LightSource extends JavaPlugin implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 
-		if (getConfig().getBoolean(ConfigPath.UPDATER.VIEW_CHANGELOG)) {
+		if (getConfig().getBoolean(ConfigPath.UPDATER.ENABLE)) {
 			if (player.hasPermission("ls.updater")) {
 				runUpdater(player, getConfig().getInt(ConfigPath.UPDATER.UPDATE_DELAY_TICKS));
 			}

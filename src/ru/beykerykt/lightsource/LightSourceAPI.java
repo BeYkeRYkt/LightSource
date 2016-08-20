@@ -73,7 +73,7 @@ public class LightSourceAPI {
 
 	public static ScheduledExecutorService getSchedulerExecutor() {
 		if (schedulerExecutor == null) {
-			schedulerExecutor = Executors.newSingleThreadScheduledExecutor();
+			schedulerExecutor = Executors.newScheduledThreadPool(1);
 		}
 		return schedulerExecutor;
 	}

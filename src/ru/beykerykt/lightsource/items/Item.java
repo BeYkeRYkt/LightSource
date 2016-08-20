@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.bukkit.Material;
 
-public class Item implements AutoCloseable {
+public class Item {
 
 	private String id;
 	private String displayName;
@@ -121,11 +121,5 @@ public class Item implements AutoCloseable {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public void close() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 }

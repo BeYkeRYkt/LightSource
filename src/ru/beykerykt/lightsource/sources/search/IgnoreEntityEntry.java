@@ -26,7 +26,7 @@ package ru.beykerykt.lightsource.sources.search;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-public class IgnoreEntityEntry implements AutoCloseable {
+public class IgnoreEntityEntry {
 	private Entity entity;
 	private ItemStack itemStack;
 
@@ -79,10 +79,6 @@ public class IgnoreEntityEntry implements AutoCloseable {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public void close() {
 	}
 
 }

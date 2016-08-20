@@ -78,8 +78,4 @@ public class UpdateExecutor implements UpdatableFlagExecutor {
 	public int getMaxArgs() {
 		return 2;
 	}
-
-	@Override
-	public void close() {
-	}
 }

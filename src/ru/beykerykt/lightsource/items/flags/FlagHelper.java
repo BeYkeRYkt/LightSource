@@ -43,26 +43,20 @@ public class FlagHelper {
 				item.getFlagsList().remove(flag);
 				continue;
 			}
-			try (FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0])) {
-				args = (String[]) ArrayUtils.remove(args, 0);
-				if (!(executor instanceof RequirementFlagExecutor)) {
-					continue;
+			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
+			args = (String[]) ArrayUtils.remove(args, 0);
+			if (!(executor instanceof RequirementFlagExecutor)) {
+				continue;
+			}
+			RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
+			if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
+				if (!onlyCheck) {
+					rfe.onCheckingFailure(entity, itemStack, item, args);
 				}
-				// resource warning
-				try (RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor) {
-					if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-						if (!onlyCheck) {
-							rfe.onCheckingFailure(entity, itemStack, item, args);
-						}
-						return false;
-					}
-					if (!onlyCheck) {
-						rfe.onCheckingSuccess(entity, itemStack, item, args);
-					}
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return false;
+			}
+			if (!onlyCheck) {
+				rfe.onCheckingSuccess(entity, itemStack, item, args);
 			}
 		}
 		return true;
@@ -76,18 +70,11 @@ public class FlagHelper {
 				source.getItem().getFlagsList().remove(flag);
 				continue;
 			}
-			try (FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0])) {
-				args = (String[]) ArrayUtils.remove(args, 0);
-				if (!(executor instanceof UpdatableFlagExecutor)) {
-					continue;
-				}
-				// resource warning
-				try (UpdatableFlagExecutor tfe = (UpdatableFlagExecutor) executor) {
-					tfe.onUpdate(source, args);
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
+			args = (String[]) ArrayUtils.remove(args, 0);
+			if (executor instanceof UpdatableFlagExecutor) {
+				UpdatableFlagExecutor tfe = (UpdatableFlagExecutor) executor;
+				tfe.onUpdate(source, args);
 			}
 		}
 	}
@@ -100,18 +87,11 @@ public class FlagHelper {
 				source.getItem().getFlagsList().remove(flag);
 				continue;
 			}
-			try (FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0])) {
-				args = (String[]) ArrayUtils.remove(args, 0);
-				if (!(executor instanceof EndingFlagExecutor)) {
-					continue;
-				}
-				// resource warning
-				try (EndingFlagExecutor efe = (EndingFlagExecutor) executor) {
-					efe.onEnd(source, args);
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
+			args = (String[]) ArrayUtils.remove(args, 0);
+			if (executor instanceof EndingFlagExecutor) {
+				EndingFlagExecutor efe = (EndingFlagExecutor) executor;
+				efe.onEnd(source, args);
 			}
 		}
 	}

@@ -98,10 +98,4 @@ public class PlayerSearchTask implements SearchTask {
 			}
 		}
 	}
-
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-
-	}
 }

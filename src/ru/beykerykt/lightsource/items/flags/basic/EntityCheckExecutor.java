@@ -62,8 +62,4 @@ public class EntityCheckExecutor implements RequirementFlagExecutor {
 	public int getMaxArgs() {
 		return -1;
 	}
-
-	@Override
-	public void close() {
-	}
 }

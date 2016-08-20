@@ -59,7 +59,4 @@ public class DeleteLightExecutor implements EndingFlagExecutor {
 		return 1;
 	}
 
-	@Override
-	public void close() {
-	}
 }

@@ -23,7 +23,7 @@
  */
 package ru.beykerykt.lightsource.items.flags;
 
-public interface FlagExecutor extends AutoCloseable {
+public interface FlagExecutor {
 	/**
 	 * Nothing. or Not ?
 	 */

@@ -78,33 +78,27 @@ public class SearchMachine implements Runnable {
 				item.getFlagsList().remove(flag);
 				continue;
 			}
-			try (FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0])) {
-				args = (String[]) ArrayUtils.remove(args, 0);
-				if (!(executor instanceof RequirementFlagExecutor)) {
-					continue;
-				}
-				// Resource warning
-				try (RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor) {
-					if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
-						IgnoreEntityEntry entry = null;
-						if (entity.getType().isAlive()) {
-							entry = new IgnoreEntityLivingEntry(entity, itemStack, slot);
-						} else {
-							entry = new IgnoreEntityEntry(entity, itemStack);
-						}
-						if (!ignoreList.contains(entry)) {
-							rfe.onCheckingFailure(entity, itemStack, item, args);
-							ignoreList.add(entry);
-						}
-						entry = null; // seriously :/ ?
-						return false;
-					}
-					rfe.onCheckingSuccess(entity, itemStack, item, args);
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			FlagExecutor executor = LightSourceAPI.getFlagManager().getFlag(args[0]);
+			args = (String[]) ArrayUtils.remove(args, 0);
+			if (!(executor instanceof RequirementFlagExecutor)) {
+				continue;
 			}
+			RequirementFlagExecutor rfe = (RequirementFlagExecutor) executor;
+			if (!rfe.onCheckRequirement(entity, itemStack, item, args)) {
+				IgnoreEntityEntry entry = null;
+				if (entity.getType().isAlive()) {
+					entry = new IgnoreEntityLivingEntry(entity, itemStack, slot);
+				} else {
+					entry = new IgnoreEntityEntry(entity, itemStack);
+				}
+				if (!ignoreList.contains(entry)) {
+					rfe.onCheckingFailure(entity, itemStack, item, args);
+					ignoreList.add(entry);
+				}
+				entry = null; // seriously :/ ?
+				return false;
+			}
+			rfe.onCheckingSuccess(entity, itemStack, item, args);
 		}
 		return true;
 	}
@@ -112,73 +106,66 @@ public class SearchMachine implements Runnable {
 	@Override
 	public void run() {
 		// ignoreList
-		for (int i = 0; i < ignoreList.size(); i++) {
-			try (IgnoreEntityEntry iee = ignoreList.get(i)) {
-				// Basic
-				if (iee.getEntity().isDead()) {
-					ignoreList.remove(iee);
-					continue;
-				}
+		for (IgnoreEntityEntry iee : ignoreList) {
+			// Basic
+			if (iee.getEntity().isDead()) {
+				ignoreList.remove(iee);
+				continue;
+			}
 
-				if (LightSourceAPI.getSourceManager().isSource(iee.getEntity())) {
-					ignoreList.remove(iee);
-					continue;
-				}
+			if (LightSourceAPI.getSourceManager().isSource(iee.getEntity())) {
+				ignoreList.remove(iee);
+				continue;
+			}
 
-				// If entity is alive type (Player, sheep and etc)
-				if (iee.getEntity().getType().isAlive()) {
-					LivingEntity le = (LivingEntity) iee.getEntity();
-					ItemSlot slot = ((IgnoreEntityLivingEntry) iee).getSlot();
+			// If entity is alive type (Player, sheep and etc)
+			if (iee.getEntity().getType().isAlive()) {
+				LivingEntity le = (LivingEntity) iee.getEntity();
+				ItemSlot slot = ((IgnoreEntityLivingEntry) iee).getSlot();
 
-					if (slot == ItemSlot.RIGHT_HAND) {
-						// Main item hand
-						ItemStack itemStackMainHand = le.getEquipment().getItemInMainHand();
-						if (itemStackMainHand == null || itemStackMainHand.getType() == Material.AIR) {
-							ignoreList.remove(iee);
-							continue;
-						}
+				if (slot == ItemSlot.RIGHT_HAND) {
+					// Main item hand
+					ItemStack itemStackMainHand = le.getEquipment().getItemInMainHand();
+					if (itemStackMainHand == null || itemStackMainHand.getType() == Material.AIR) {
+						ignoreList.remove(iee);
+						continue;
+					}
 
-						if (!itemStackMainHand.equals(iee.getItemStack())) {
-							ignoreList.remove(iee);
-							continue;
-						}
-					} else if (slot == ItemSlot.LEFT_HAND) {
-						// Off item hand
-						ItemStack itemStackOffHand = le.getEquipment().getItemInOffHand();
-						if (itemStackOffHand == null || itemStackOffHand.getType() == Material.AIR) {
-							ignoreList.remove(iee);
-							continue;
-						}
+					if (!itemStackMainHand.equals(iee.getItemStack())) {
+						ignoreList.remove(iee);
+						continue;
+					}
+				} else if (slot == ItemSlot.LEFT_HAND) {
+					// Off item hand
+					ItemStack itemStackOffHand = le.getEquipment().getItemInOffHand();
+					if (itemStackOffHand == null || itemStackOffHand.getType() == Material.AIR) {
+						ignoreList.remove(iee);
+						continue;
+					}
 
-						if (!itemStackOffHand.equals(iee.getItemStack())) {
-							ignoreList.remove(iee);
-							continue;
-						}
-					} else {
-						// armor set
-						ItemStack itemStack = le.getEquipment().getArmorContents()[ItemSlot.getArmorContentFromItemSlot(((IgnoreEntityLivingEntry) iee).getSlot())];
+					if (!itemStackOffHand.equals(iee.getItemStack())) {
+						ignoreList.remove(iee);
+						continue;
+					}
+				} else {
+					// armor set
+					ItemStack itemStack = le.getEquipment().getArmorContents()[ItemSlot.getArmorContentFromItemSlot(((IgnoreEntityLivingEntry) iee).getSlot())];
 
-						if (itemStack == null || itemStack.getType() == Material.AIR) {
-							ignoreList.remove(iee);
-							continue;
-						}
+					if (itemStack == null || itemStack.getType() == Material.AIR) {
+						ignoreList.remove(iee);
+						continue;
+					}
 
-						if (!itemStack.equals(iee.getItemStack())) {
-							ignoreList.remove(iee);
-							continue;
-						}
+					if (!itemStack.equals(iee.getItemStack())) {
+						ignoreList.remove(iee);
+						continue;
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < tasks.size(); i++) {
-			try (SearchTask task = tasks.get(i)) {
-				task.onTick();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		for (SearchTask task : tasks) {
+			task.onTick();
 		}
 	}
 }

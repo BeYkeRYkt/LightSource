@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -72,7 +73,7 @@ public class SearchMachine implements Runnable {
 	public boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, ItemSlot slot) {
 		// if entity is not alive (example item), slot can be null
 		for (String flag : item.getFlagsList()) {
-			String[] args = flag.split(":").clone();
+			String[] args = StringUtils.split(flag, ":");
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
 				LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 				item.getFlagsList().remove(flag);
@@ -96,6 +97,9 @@ public class SearchMachine implements Runnable {
 					ignoreList.add(entry);
 				}
 				entry = null; // seriously :/ ?
+				for (int i = 0; i < args.length; i++) {
+					ArrayUtils.remove(args, i);
+				}
 				return false;
 			}
 			rfe.onCheckingSuccess(entity, itemStack, item, args);
@@ -106,15 +110,18 @@ public class SearchMachine implements Runnable {
 	@Override
 	public void run() {
 		// ignoreList
-		for (IgnoreEntityEntry iee : ignoreList) {
+		for (int i = 0; i < ignoreList.size(); i++) {
+			IgnoreEntityEntry iee = ignoreList.get(i);
+			if (iee == null)
+				break;
 			// Basic
 			if (iee.getEntity().isDead()) {
-				ignoreList.remove(iee);
+				ignoreList.remove(i);
 				continue;
 			}
 
 			if (LightSourceAPI.getSourceManager().isSource(iee.getEntity())) {
-				ignoreList.remove(iee);
+				ignoreList.remove(i);
 				continue;
 			}
 
@@ -127,24 +134,24 @@ public class SearchMachine implements Runnable {
 					// Main item hand
 					ItemStack itemStackMainHand = le.getEquipment().getItemInMainHand();
 					if (itemStackMainHand == null || itemStackMainHand.getType() == Material.AIR) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 
 					if (!itemStackMainHand.equals(iee.getItemStack())) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 				} else if (slot == ItemSlot.LEFT_HAND) {
 					// Off item hand
 					ItemStack itemStackOffHand = le.getEquipment().getItemInOffHand();
 					if (itemStackOffHand == null || itemStackOffHand.getType() == Material.AIR) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 
 					if (!itemStackOffHand.equals(iee.getItemStack())) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 				} else {
@@ -152,19 +159,22 @@ public class SearchMachine implements Runnable {
 					ItemStack itemStack = le.getEquipment().getArmorContents()[ItemSlot.getArmorContentFromItemSlot(((IgnoreEntityLivingEntry) iee).getSlot())];
 
 					if (itemStack == null || itemStack.getType() == Material.AIR) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 
 					if (!itemStack.equals(iee.getItemStack())) {
-						ignoreList.remove(iee);
+						ignoreList.remove(i);
 						continue;
 					}
 				}
 			}
 		}
 
-		for (SearchTask task : tasks) {
+		for (int i = 0; i < tasks.size(); i++) {
+			SearchTask task = tasks.get(i);
+			if (task == null)
+				break;
 			task.onTick();
 		}
 	}

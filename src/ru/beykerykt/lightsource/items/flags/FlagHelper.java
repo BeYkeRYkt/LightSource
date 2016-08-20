@@ -24,6 +24,7 @@
 package ru.beykerykt.lightsource.items.flags;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -37,7 +38,7 @@ public class FlagHelper {
 
 	public static boolean callRequirementFlags(Entity entity, ItemStack itemStack, Item item, boolean onlyCheck) {
 		for (String flag : item.getFlagsList()) {
-			String[] args = flag.split(":").clone();
+			String[] args = StringUtils.split(flag, ":");
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
 				LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 				item.getFlagsList().remove(flag);
@@ -53,6 +54,9 @@ public class FlagHelper {
 				if (!onlyCheck) {
 					rfe.onCheckingFailure(entity, itemStack, item, args);
 				}
+				for (int i = 0; i < args.length; i++) {
+					ArrayUtils.remove(args, i);
+				}
 				return false;
 			}
 			if (!onlyCheck) {
@@ -64,7 +68,7 @@ public class FlagHelper {
 
 	public static void callUpdateFlag(ItemableSource source) {
 		for (String flag : source.getItem().getFlagsList()) {
-			String[] args = flag.split(":").clone();
+			String[] args = StringUtils.split(flag, ":");
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
 				LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 				source.getItem().getFlagsList().remove(flag);
@@ -76,12 +80,15 @@ public class FlagHelper {
 				UpdatableFlagExecutor tfe = (UpdatableFlagExecutor) executor;
 				tfe.onUpdate(source, args);
 			}
+			for (int i = 0; i < args.length; i++) {
+				ArrayUtils.remove(args, i);
+			}
 		}
 	}
 
 	public static void callEndingFlag(ItemableSource source) {
 		for (String flag : source.getItem().getFlagsList()) {
-			String[] args = flag.split(":").clone();
+			String[] args = StringUtils.split(flag, ":");
 			if (!LightSourceAPI.getFlagManager().hasFlag(args[0])) {
 				LightSourceAPI.sendMessage(Bukkit.getConsoleSender(), ChatColor.RED + "Sorry, but the flag of " + ChatColor.WHITE + args[0] + ChatColor.RED + " is not found. This tag will not be processed flag system.");
 				source.getItem().getFlagsList().remove(flag);
@@ -92,6 +99,9 @@ public class FlagHelper {
 			if (executor instanceof EndingFlagExecutor) {
 				EndingFlagExecutor efe = (EndingFlagExecutor) executor;
 				efe.onEnd(source, args);
+			}
+			for (int i = 0; i < args.length; i++) {
+				ArrayUtils.remove(args, i);
 			}
 		}
 	}
